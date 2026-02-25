@@ -59,7 +59,7 @@ While this thesis strictly analyzes adaptation in the unstructured ambient space
 Install the Python dependencies. Note: It is highly recommended to set up and activate a virtual environment before running the installation to avoid system-wide package conflicts.
 ```bash
 python -m venv .venv
-source .venv/bin/activate
+source venv/bin/activate
 pip install -r requirements.txt
 ```
 
