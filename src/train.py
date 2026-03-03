@@ -9,12 +9,8 @@ from sklearn.model_selection import train_test_split
 
 # Import your custom modules
 from model import get_model
-from metrics import calculate_rbme
+from metrics import calculate_rbme, calculate_feature_wasserstein
 
-# Configuration
-BATCH_SIZE = 64
-EPOCHS = 20
-LEARNING_RATE = 1e-3
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def set_seed(seed=42):
@@ -39,41 +35,35 @@ def load_data(path_X, path_y):
     return tensor_X, tensor_y
 
 if __name__ == "__main__":
-    # 1. Parse CLI Arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("--source_x", type=str, required=True, help="Path to Source X npy")
     parser.add_argument("--source_y", type=str, required=True, help="Path to Source Y npy")
     parser.add_argument("--output_model", type=str, default="baseline_source.pt", help="Output model filename")
+    parser.add_argument("--ref_x", type=str, required=True, help="Path to Source X for distance calculation")
+    
+    parser.add_argument("--batch_size", type=int, default=64)
+    parser.add_argument("--epochs", type=int, default=20)
+    parser.add_argument("--lr", type=float, default=1e-3)
     args = parser.parse_args()
 
-    # CRITICAL FIX: Set the seed immediately
     set_seed(42)
 
-    # 2. Load Data from CLI Arguments
     X, y = load_data(args.source_x, args.source_y)
+    ref_X = np.load(args.ref_x) 
     
-    # 3. Split into Train/Validation
     X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
     
-    # 4. Create DataLoaders
-    train_loader = DataLoader(TensorDataset(X_train, y_train), batch_size=BATCH_SIZE, shuffle=True)
-    val_loader = DataLoader(TensorDataset(X_val, y_val), batch_size=BATCH_SIZE)
+    train_loader = DataLoader(TensorDataset(X_train, y_train), batch_size=args.batch_size, shuffle=True)
+    val_loader = DataLoader(TensorDataset(X_val, y_val), batch_size=args.batch_size)
     
-    # 5. Initialize Model (AUTOMATIC SHAPE DETECTION)
     input_dim = X.shape[1]
-    print(f"Detected input dimension: {input_dim}")
-
     model = get_model(input_dim=input_dim).to(DEVICE)
     
     criterion = nn.MSELoss() 
-    optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
+    optimizer = optim.Adam(model.parameters(), lr=args.lr)
     
-    print(f"\nStarting training on {DEVICE}...")
-    print(f"{'Epoch':<5} | {'Train Loss':<12} | {'Val Loss':<12} | {'Val rBME':<12}")
-    print("-" * 50)
-    
-    # 6. Training Loop
-    for epoch in range(EPOCHS):
+    #  Training Loop
+    for epoch in range(args.epochs):
         model.train()
         train_loss_accum = 0
         
@@ -119,3 +109,11 @@ if __name__ == "__main__":
     # 7. Save the trained baseline
     torch.save(model.state_dict(), args.output_model)
     print(f"\nModel saved to {args.output_model}")
+
+    # 8. Calculate and Output Wasserstein Distance
+    # Calculate the distance between the source (ref_X) and the current training data (X)
+    w_dist = calculate_feature_wasserstein(ref_X, X)
+    
+    print("-" * 50)
+    print(f"{'Wasserstein':<15} | {w_dist:<15.6f}")
+    print("-" * 50)

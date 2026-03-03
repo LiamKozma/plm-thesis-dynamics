@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader, TensorDataset
 
 # Import your custom modules
 from model import get_model
-from metrics import calculate_rbme
+from metrics import calculate_rbme, calculate_feature_wasserstein
 
 # Configuration
 BATCH_SIZE = 64
@@ -33,13 +33,16 @@ if __name__ == "__main__":
     parser.add_argument("--model_path", type=str, required=True, help="Path to the trained source_model.pt")
     parser.add_argument("--target_x", type=str, required=True, help="Path to Target X npy")
     parser.add_argument("--target_y", type=str, required=True, help="Path to Target Y npy")
+    parser.add_argument("--ref_x", type=str, required=True, help="Path to Source X for distance calculation")
+    parser.add_argument("--batch_size", type=int, default=64)
     args = parser.parse_args()
 
     # 2. Load Data from CLI Arguments
     X, y = load_data(args.target_x, args.target_y)
+    ref_X = np.load(args.ref_x) # Load reference data
     
     # Create DataLoader (No shuffling needed for evaluation)
-    test_loader = DataLoader(TensorDataset(X, y), batch_size=BATCH_SIZE, shuffle=False)
+    test_loader = DataLoader(TensorDataset(X, y), batch_size=args.batch_size, shuffle=False)
     
     # 3. Initialize Model & Load Weights
     # Detect input dimension from the target data (must match source data dim)
@@ -81,12 +84,13 @@ if __name__ == "__main__":
     final_preds = torch.cat(all_preds)
     
     val_rbme = calculate_rbme(final_targets, final_preds)
-    
+    w_dist = calculate_feature_wasserstein(ref_X, X) # Calculate distance
+
     # 6. Output Results
-    # Formatting to match the style of your grep or logs
     print("-" * 50)
     print(f"{'Metric':<15} | {'Score':<15}")
     print("-" * 50)
+    print(f"{'Wasserstein':<15} | {w_dist:<15.6f}") # Add this line!
     print(f"{'MSE Loss':<15} | {avg_loss:<15.6f}")
     print(f"{'rBME':<15} | {val_rbme:<15.6f}")
     print("-" * 50)

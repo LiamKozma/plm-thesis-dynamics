@@ -1,111 +1,148 @@
 #!/usr/bin/env nextflow
 
-// DEFAULT PARAMS
-params.mode = 'adapt'       // 'adapt' (train) or 'eval' (inference)
-params.data = 'manifold'    // 'manifold' (Your View) or 'highdim' (Prof View)
+// 1. Setup Channels from config.yaml arrays
+seeds_ch = Channel.fromList((0..<params.num_seeds).collect { it + params.starting_seed })
+n_trains_ch = Channel.fromList(params.n_trains)
+n_pools_ch = Channel.fromList(params.n_pools)
+shifts_ch = Channel.fromList(params.shifts)
 
-// 1. Generate Source Data
+// 2. Processes
 process GEN_SOURCE {
-    publishDir "results/${params.data}/data/source", mode: 'copy' // Separate folders!
+    tag "Src N:${n_train} Seed:${seed}"
+    publishDir "results/${params.dataset}/data/source", mode: 'copy'
+    
+    input:
+    tuple val(seed), val(n_train)
 
     output:
-        path "source_X.npy", emit: x
-        path "source_y.npy", emit: y
+    tuple val(seed), val(n_train), path("source_X_${n_train}_s${seed}.npy"), path("source_y_${n_train}_s${seed}.npy")
 
     script:
     """
     python ${projectDir}/src/generate_simulation.py \
-        --type ${params.data} \
-        --shift 0.0 \
-        --output_x source_X.npy \
-        --output_y source_y.npy
+        --type ${params.dataset} \
+        --mode source \
+        --n_train ${n_train} \
+        --seed ${seed}
+    
+    mv source_train_X.npy source_X_${n_train}_s${seed}.npy
+    mv source_train_y.npy source_y_${n_train}_s${seed}.npy
     """
 }
 
-// 2. Train Source Model
 process TRAIN_SOURCE {
-    publishDir "results/${params.data}/models", mode: 'copy'
+    tag "Train N:${n_train} Seed:${seed}"
+    publishDir "results/${params.dataset}/models", mode: 'copy'
 
     input:
-        path x_file
-        path y_file
+    tuple val(seed), val(n_train), path(x_file), path(y_file)
+    
     output:
-        path "source_model.pt", emit: model
+    tuple val(seed), val(n_train), path(x_file), path("model_N${n_train}_s${seed}.pt")
+    
     script:
     """
     python ${projectDir}/src/train.py \
-        --source_x ${x_file} --source_y ${y_file} --output_model source_model.pt
+        --source_x ${x_file} \
+        --source_y ${y_file} \
+        --ref_x ${x_file} \
+        --epochs ${params.base_epochs} \
+        --batch_size ${params.batch_size} \
+        --lr ${params.learning_rate} \
+        --output_model model_N${n_train}_s${seed}.pt
     """
 }
 
-// 3. Generate Targets
 process GEN_TARGET {
-    tag "Shift: ${shift_val}" 
+    tag "Tgt P:${n_pool} Shf:${shift_val} Seed:${seed}"
+    
     input:
-        val shift_val
+    tuple val(seed), val(n_pool), val(shift_val)
+    
     output:
-        tuple val(shift_val), path("target_X.npy"), path("target_y.npy")
+    tuple val(seed), val(n_pool), val(shift_val), path("tgt_pool_X_${n_pool}_${shift_val}_s${seed}.npy"), path("tgt_pool_y_${n_pool}_${shift_val}_s${seed}.npy"), path("tgt_test_X_${n_pool}_${shift_val}_s${seed}.npy"), path("tgt_test_y_${n_pool}_${shift_val}_s${seed}.npy")
+    
     script:
     """
     python ${projectDir}/src/generate_simulation.py \
-        --type ${params.data} \
+        --type ${params.dataset} \
+        --mode target \
+        --n_pool ${n_pool} \
+        --n_test ${params.n_test} \
         --shift ${shift_val} \
-        --output_x target_X.npy \
-        --output_y target_y.npy
+        --seed ${seed}
+
+    mv target_pool_X.npy tgt_pool_X_${n_pool}_${shift_val}_s${seed}.npy
+    mv target_pool_y.npy tgt_pool_y_${n_pool}_${shift_val}_s${seed}.npy
+    mv target_test_X.npy tgt_test_X_${n_pool}_${shift_val}_s${seed}.npy
+    mv target_test_y.npy tgt_test_y_${n_pool}_${shift_val}_s${seed}.npy
     """
 }
 
-// OPTION A: Adaptation (Train)
 process TEST_ADAPTATION {
-    tag "Adapt [${params.data}] Shift: ${shift_val}"
-    publishDir "results/${params.data}/experiments/adapt", mode: 'copy'
+    tag "Adapt [${params.dataset}] S:${seed} NTr:${n_train} NP:${n_pool} Shf:${shift_val}"
+    publishDir "results/${params.dataset}/experiments/adapt", mode: 'copy'
 
     input:
-    tuple val(shift_val), path(tgt_x), path(tgt_y)
+    // The 'by: 0' cross-join feeds this combined tuple:
+    tuple val(seed), val(n_train), path(ref_x), path(source_model), val(n_pool), val(shift_val), path(pool_x), path(pool_y), path(test_x), path(test_y)
 
     output:
-    path "adapt_result_${shift_val}.log"
+    path "adapt_NTr${n_train}_NP${n_pool}_Shf${shift_val}_s${seed}.log"
+    path "*_batch_log.csv", optional: true // Captures the batch-by-batch metrics!
 
     script:
     """
-    python ${projectDir}/src/train.py \
-        --source_x ${tgt_x} \
-        --source_y ${tgt_y} \
-        --output_model adapted_model.pt > adapt_result_${shift_val}.log
+    python ${projectDir}/src/adapt.py \
+        --base_model ${source_model} \
+        --pool_x ${pool_x} \
+        --pool_y ${pool_y} \
+        --test_x ${test_x} \
+        --test_y ${test_y} \
+        --ref_x ${ref_x} \
+        --batch_size ${params.batch_size} \
+        --lr ${params.learning_rate} \
+        --output_model adapted_model_NTr${n_train}_NP${n_pool}_Shf${shift_val}_s${seed}.pt \
+        > adapt_NTr${n_train}_NP${n_pool}_Shf${shift_val}_s${seed}.log
     """
 }
 
-// OPTION B: Generalization (Eval)
 process TEST_GENERALIZATION {
-    tag "Eval [${params.data}] Shift: ${shift_val}"
-    publishDir "results/${params.data}/experiments/eval", mode: 'copy'
+    tag "Eval [${params.dataset}] S:${seed} NTr:${n_train} NP:${n_pool} Shf:${shift_val}"
+    publishDir "results/${params.dataset}/experiments/eval", mode: 'copy'
 
     input:
-    path model_file
-    tuple val(shift_val), path(tgt_x), path(tgt_y)
+    tuple val(seed), val(n_train), path(ref_x), path(source_model), val(n_pool), val(shift_val), path(pool_x), path(pool_y), path(test_x), path(test_y)
 
     output:
-    path "eval_result_${shift_val}.log"
+    path "eval_NTr${n_train}_NP${n_pool}_Shf${shift_val}_s${seed}.log"
 
     script:
     """
     python ${projectDir}/src/eval.py \
-        --model_path ${model_file} \
-        --target_x ${tgt_x} \
-        --target_y ${tgt_y} > eval_result_${shift_val}.log
+        --model_path ${source_model} \
+        --ref_x ${ref_x} \
+        --target_x ${test_x} \
+        --target_y ${test_y} \
+        --batch_size ${params.batch_size} > eval_NTr${n_train}_NP${n_pool}_Shf${shift_val}_s${seed}.log
     """
 }
 
 workflow {
-    source_ch = GEN_SOURCE()
-    model_ch = TRAIN_SOURCE(source_ch.x, source_ch.y)
-    
-    shifts = Channel.fromList([0.5, 1.0, 1.5, 2.0, 3.0])
-    targets_ch = GEN_TARGET(shifts)
+    // Phase 1: Pre-training (Source)
+    source_params = seeds_ch.combine(n_trains_ch)
+    sources = GEN_SOURCE(source_params) 
+    source_models = TRAIN_SOURCE(sources) // [seed, n_train, ref_x, model]
 
-    if (params.mode == 'adapt') {
-        TEST_ADAPTATION(targets_ch)
-    } else {
-        TEST_GENERALIZATION(model_ch.model, targets_ch)
-    }
+    // Phase 2: Target Data Generation
+    target_params = seeds_ch.combine(n_pools_ch).combine(shifts_ch)
+    targets = GEN_TARGET(target_params) // [seed, n_pool, shift_val, pool_x, pool_y, test_x, test_y]
+
+    // Phase 3: The Cross-Product Engine
+    // 'by: 0' joins the channels wherever the first element (the seed) matches.
+    experiments = source_models.combine(targets, by: 0)
+
+    // Phase 4: Execution Routing
+    TEST_ADAPTATION(experiments)
+    TEST_GENERALIZATION(experiments)
 }

@@ -1,5 +1,7 @@
+from scipy.stats import wasserstein_distance
 import numpy as np
 import torch
+
 
 def calculate_rbme(y_true, y_pred, num_bins=10, epsilon=1e-8):
     """
@@ -59,3 +61,20 @@ def calculate_rbme(y_true, y_pred, num_bins=10, epsilon=1e-8):
         bin_relative_errors.append(mae_k / norm_factor)
         
     return np.mean(bin_relative_errors) if bin_relative_errors else 0.0
+
+def calculate_feature_wasserstein(source_x, target_x):
+    """
+    Calculates the average feature-wise 1D Wasserstein distance.
+    """
+    # Ensure inputs are numpy arrays
+    if hasattr(source_x, 'numpy'): source_x = source_x.cpu().numpy()
+    if hasattr(target_x, 'numpy'): target_x = target_x.cpu().numpy()
+    
+    dist = 0.0
+    num_features = source_x.shape[1]
+    
+    for i in range(num_features):
+        dist += wasserstein_distance(source_x[:, i], target_x[:, i])
+        
+    return dist / num_features
+

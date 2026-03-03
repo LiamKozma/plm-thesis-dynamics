@@ -4,157 +4,181 @@ import pandas as pd
 import argparse
 import matplotlib.pyplot as plt
 import seaborn as sns
+import re
 
 def parse_adapt_log(filepath):
-    """Extracts metrics from the FINAL epoch (20) of a training log."""
-    last_mse = None
-    last_rbme = None
-    
+    """Extracts metrics from the final evaluation block of an adaptation log."""
+    last_mse, last_rbme, w_dist = None, None, None
     with open(filepath, 'r') as f:
-        lines = f.readlines()
-        for line in reversed(lines):
-            parts = line.split('|')
-            if len(parts) == 4 and parts[0].strip().isdigit():
-                last_mse = float(parts[2].strip())
-                last_rbme = float(parts[3].strip())
-                break
-    return last_mse, last_rbme
+        for line in f:
+            if "Wasserstein" in line:
+                w_dist = float(line.split('|')[1].strip())
+            elif "Final Test MSE" in line:
+                last_mse = float(line.split('|')[1].strip())
+            elif "Final Test rBME" in line:
+                last_rbme = float(line.split('|')[1].strip())
+    return last_mse, last_rbme, w_dist
 
 def parse_eval_log(filepath):
     """Extracts metrics from an evaluation log."""
-    mse = None
-    rbme = None
+    mse, rbme, w_dist = None, None, None
     with open(filepath, 'r') as f:
         for line in f:
             if "MSE Loss" in line:
                 mse = float(line.split('|')[1].strip())
             elif "rBME" in line:
                 rbme = float(line.split('|')[1].strip())
-    return mse, rbme
+            elif "Wasserstein" in line:
+                w_dist = float(line.split('|')[1].strip())
+    return mse, rbme, w_dist
 
-def generate_crash_plot(df, output_path, title_prefix=""):
-    """Generates the dual-axis plot: MSE (Standard) vs rBME (Tail)."""
-    
-    # Filter for Adaptation mode only (where the "Crash" happens)
-    plot_df = df[df['Mode'] == "Adaptation (Train)"].sort_values("Shift")
-    
-    if plot_df.empty:
-        return
+def generate_crash_plot(df, output_path, title_prefix="", mode_name=""):
+    """Generates the dual-axis static crash plot based on Wasserstein distance."""
+    plot_df = df.sort_values("Wasserstein")
+    if plot_df.empty: return
 
-    # Setup Plot
     sns.set_style("whitegrid")
     fig, ax1 = plt.subplots(figsize=(10, 6))
 
-    # --- Axis 1: MSE (The "Lie") ---
     color = 'tab:blue'
-    ax1.set_xlabel(r'Distribution Shift Magnitude ($\lambda$)', fontsize=12, fontweight='bold')
+    ax1.set_xlabel('Wasserstein Distance (Source vs Target)', fontsize=12, fontweight='bold')
     ax1.set_ylabel('Validation MSE (Standard)', color=color, fontsize=12, fontweight='bold')
-    ax1.plot(plot_df['Shift'], plot_df['MSE (Standard)'], color=color, marker='o', linewidth=2, label='MSE (Loss)')
+    ax1.plot(plot_df['Wasserstein'], plot_df['MSE (Standard)'], color=color, marker='o', linewidth=2, label='MSE (Loss)')
     ax1.tick_params(axis='y', labelcolor=color)
-    
-    # Adjust ylim to match your previous style (zoomed in to show stability)
-    # or keep it dynamic if data varies wildly
-    max_mse = plot_df['MSE (Standard)'].max()
-    ax1.set_ylim(0, max_mse * 1.5) 
+    ax1.set_ylim(0, plot_df['MSE (Standard)'].max() * 1.5) 
 
-    # --- Axis 2: rBME (The "Truth") ---
     ax2 = ax1.twinx()
     color = 'tab:red'
     ax2.set_ylabel('rBME (Tail-Sensitive)', color=color, fontsize=12, fontweight='bold')
-    ax2.plot(plot_df['Shift'], plot_df['rBME (Tail)'], color=color, marker='s', linestyle='--', linewidth=2, label='rBME')
+    ax2.plot(plot_df['Wasserstein'], plot_df['rBME (Tail)'], color=color, marker='s', linestyle='--', linewidth=2, label='rBME')
     ax2.tick_params(axis='y', labelcolor=color)
-    ax2.set_yscale('log') # Log scale for the crash
+    ax2.set_yscale('log')
 
-    # --- Annotate the Max Failure Point ---
-    # Find the row with the highest rBME (The Crash)
+    # Annotate crash
     crash_row = plot_df.loc[plot_df['rBME (Tail)'].idxmax()]
-    crash_shift = crash_row['Shift']
-    crash_val = crash_row['rBME (Tail)']
-    
-    # Only annotate if it's significant (e.g., > 1.0)
-    if crash_val > 1.0:
-        ax2.annotate(f'CRASH\nrBME={crash_val:.1e}', 
-                     xy=(crash_shift, crash_val), 
-                     xytext=(crash_shift, crash_val * 1.5), 
+    if crash_row['rBME (Tail)'] > 1.0:
+        ax2.annotate(f"CRASH\nrBME={crash_row['rBME (Tail)']:.1e}", 
+                     xy=(crash_row['Wasserstein'], crash_row['rBME (Tail)']), 
+                     xytext=(crash_row['Wasserstein'], crash_row['rBME (Tail)'] * 1.5), 
                      arrowprops=dict(facecolor='black', shrink=0.05),
                      horizontalalignment='center')
 
-    # Title and Layout
-    plt.title(f'{title_prefix} Results: Adaptation Dynamics', fontsize=14)
+    plt.title(f'{title_prefix} Results: {mode_name} Dynamics', fontsize=14)
     plt.tight_layout()
-    
-    # Save
     plt.savefig(output_path, dpi=300)
-    print(f"Plot saved to {output_path}")
+    print(f"-> Summary plot saved to {output_path}")
+    plt.close()
+
+def generate_batch_plots(batch_df, output_dir, title_prefix=""):
+    """Generates the batch-by-batch recovery curves with shaded standard deviation."""
+    if batch_df.empty: return
+    
+    # We group by Train Size and Pool Size to avoid putting 180 lines on one messy chart.
+    # This generates a clean, separate plot for each condition in your matrix.
+    for (n_train, n_pool), group_df in batch_df.groupby(['N_Train', 'N_Pool']):
+        sns.set_style("whitegrid")
+        
+        # --- 1. Plot MSE Recovery ---
+        fig, ax = plt.subplots(figsize=(10, 6))
+        sns.lineplot(
+            data=group_df, x='batch_number', y='test_mse', hue='Shift', 
+            palette='viridis', errorbar='sd', linewidth=2, ax=ax
+        )
+        ax.set_title(f"{title_prefix} MSE Recovery (Train: {n_train}, Pool: {n_pool})", fontsize=14, fontweight='bold')
+        ax.set_xlabel("Number of Pool Batches Consumed", fontsize=12, fontweight='bold')
+        ax.set_ylabel("Validation MSE", fontsize=12, fontweight='bold')
+        plt.tight_layout()
+        plt.savefig(os.path.join(output_dir, f"recovery_mse_NTr{n_train}_NP{n_pool}.png"), dpi=300)
+        plt.close()
+
+        # --- 2. Plot rBME Recovery ---
+        fig, ax = plt.subplots(figsize=(10, 6))
+        sns.lineplot(
+            data=group_df, x='batch_number', y='test_rbme', hue='Shift', 
+            palette='magma', errorbar='sd', linewidth=2, ax=ax
+        )
+        ax.set_title(f"{title_prefix} rBME Recovery (Train: {n_train}, Pool: {n_pool})", fontsize=14, fontweight='bold')
+        ax.set_xlabel("Number of Pool Batches Consumed", fontsize=12, fontweight='bold')
+        ax.set_ylabel("Validation rBME (Tail-Sensitive)", fontsize=12, fontweight='bold')
+        plt.tight_layout()
+        plt.savefig(os.path.join(output_dir, f"recovery_rbme_NTr{n_train}_NP{n_pool}.png"), dpi=300)
+        plt.close()
+        
+        print(f"-> Batch dynamics plots saved for N_Train={n_train}, N_Pool={n_pool}")
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--data", type=str, default="manifold", choices=['manifold', 'highdim', 'old'],
-                        help="Which dataset results to view?")
+    parser.add_argument("--data", type=str, default="highdim", choices=['manifold', 'highdim', 'old'])
+    parser.add_argument("--mode", type=str, required=True, choices=['adapt', 'eval'])
     args = parser.parse_args()
 
-    # Dynamic Directory Selection
-    if args.data == 'old':
-        base_dir = "results/experiments"
-    else:
-        base_dir = f"results/{args.data}/experiments"
-
+    base_dir = f"results/experiments/{args.mode}" if args.data == 'old' else f"results/{args.data}/experiments/{args.mode}"
     print(f"Reading logs from: {base_dir}...")
     
+    # 1. Parse standard logs for summary table
     data = []
     log_files = glob.glob(os.path.join(base_dir, "**/*.log"), recursive=True)
-    
+
     for log in log_files:
         filename = os.path.basename(log)
-        try:
-            shift_str = filename.replace('.log', '').split('_')[-1]
-            shift_val = float(shift_str)
-        except:
-            continue
-
-        mode = "Unknown"
-        mse = 0.0
-        rbme = 0.0
-        
-        if "adapt" in log or "adapt" in filename:
-            mode = "Adaptation (Train)"
-            mse, rbme = parse_adapt_log(log)
-        elif "eval" in log:
-            mode = "Inference (Eval)"
-            mse, rbme = parse_eval_log(log)
+        match = re.search(r'NTr(\d+)_NP(\d+)_Shf([0-9.]+)_s(\d+)', filename)
+        if not match: continue
             
-        if mse is not None and rbme is not None:
+        n_train, n_pool, shift_val, seed = int(match.group(1)), int(match.group(2)), float(match.group(3)), int(match.group(4))
+
+        mse, rbme, w_dist, mode_label = 0.0, 0.0, 0.0, "Unknown"
+        if args.mode == "adapt" and "adapt" in filename:
+            mode_label = "Adaptation (Train)"
+            mse, rbme, w_dist = parse_adapt_log(log)
+        elif args.mode == "eval" and "eval" in filename:
+            mode_label = "Inference (Eval)"
+            mse, rbme, w_dist = parse_eval_log(log)
+            
+        if mse is not None and rbme is not None and mode_label != "Unknown":
             data.append({
-                "Shift": shift_val, 
-                "Mode": mode, 
-                "MSE (Standard)": mse, 
-                "rBME (Tail)": rbme
+                "Wasserstein": w_dist if w_dist is not None else shift_val,
+                "Mode": mode_label, "N_Train": n_train, "N_Pool": n_pool, 
+                "Seed": seed, "MSE (Standard)": mse, "rBME (Tail)": rbme
             })
 
+    output_dir = f"results/{args.data}/{args.mode}"
+    os.makedirs(output_dir, exist_ok=True)
+
     if data:
-        df = pd.DataFrame(data)
-        df = df.sort_values(by=["Mode", "Shift"])
+        df = pd.DataFrame(data).sort_values(by=["Wasserstein"])
+        print("\n" + "="*70)
+        print(f" RESULTS SUMMARY: {args.data.upper()} DATA | {args.mode.upper()} MODE")
+        print("="*70)
+        print(df.to_string(index=False, formatters={'MSE (Standard)': '{:,.6f}'.format, 'rBME (Tail)': '{:,.4f}'.format}))
+        print("="*70 + "\n")
         
-        # 1. Print Table
-        print("\n" + "="*60)
-        print(f" RESULTS SUMMARY: {args.data.upper()} DATA")
-        print("="*60)
-        print(df.to_string(index=False, formatters={
-            'MSE (Standard)': '{:,.6f}'.format,
-            'rBME (Tail)': '{:,.4f}'.format
-        }))
-        print("="*60 + "\n")
-        
-        # 2. Generate Plot
-        output_plot = f"results/{args.data}/results_plot.png"
-        
-        # Make sure directory exists (if using 'old' or custom paths)
-        os.makedirs(os.path.dirname(output_plot), exist_ok=True)
-        
-        generate_crash_plot(df, output_plot, title_prefix=args.data.upper())
-        
+        generate_crash_plot(df, os.path.join(output_dir, "results_plot.png"), title_prefix=args.data.upper(), mode_name="Adaptation" if args.mode == "adapt" else "Evaluation")
     else:
-        print(f"No logs found in {base_dir}.")
+        print(f"No summary logs found in {base_dir}.")
+
+    # 2. Parse batch CSVs for recovery plots (Only for adapt mode)
+    if args.mode == "adapt":
+        print("\nProcessing batch-by-batch recovery logs...")
+        batch_data = []
+        batch_files = glob.glob(os.path.join(base_dir, "**/*_batch_log.csv"), recursive=True)
+        
+        for b_file in batch_files:
+            filename = os.path.basename(b_file)
+            match = re.search(r'NTr(\d+)_NP(\d+)_Shf([0-9.]+)_s(\d+)', filename)
+            if not match: continue
+            
+            df_b = pd.read_csv(b_file)
+            df_b['N_Train'] = int(match.group(1))
+            df_b['N_Pool'] = int(match.group(2))
+            df_b['Shift'] = float(match.group(3)) # Use Shift to color the lines!
+            df_b['Seed'] = int(match.group(4))
+            batch_data.append(df_b)
+            
+        if batch_data:
+            batch_df = pd.concat(batch_data, ignore_index=True)
+            generate_batch_plots(batch_df, output_dir, title_prefix=args.data.upper())
+        else:
+            print("No _batch_log.csv files found.")
 
 if __name__ == "__main__":
     main()
