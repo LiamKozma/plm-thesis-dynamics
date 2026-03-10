@@ -1,0 +1,42 @@
+# ==============================================================================
+# MASTER CONFIGURATION: PLM RECOVERY THRESHOLD EXPERIMENTS
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Pipeline Routing & Data Organization
+# ------------------------------------------------------------------------------
+# Defines the high-level execution path and naming conventions.
+mode: 'adapt'                 # The execution route: 'adapt' for active learning recovery, 'eval' for zero-shot generalization.
+dataset: 'phylogenetic_gmm'   # Root name for the output directories where data/models/plots will be saved.
+
+# ------------------------------------------------------------------------------
+# 2. Biological Landscape & Frozen Oracle Setup
+# ------------------------------------------------------------------------------
+# Parameters defining the synthetic protein universe and the ground-truth labeler.
+n_families: 1000              # Total number of biological families (clusters) generated via Zipf distribution.
+n_classes: 100                # Number of functional classes.
+dim: 1280                     # Dimensionality of the embeddings (e.g., 1280 for standard Protein Language Models like ESM-2).
+oracle_layers: [1024, 512]    # Hidden layer dimensions for the Frozen Random Neural Network mapping 1280D -> 100 classes.
+
+# ------------------------------------------------------------------------------
+# 3. The Cross-Product Engine (Sweep Variables)
+# ------------------------------------------------------------------------------
+# Nextflow will automatically create a combinatorial matrix of all array values here.
+starting_seed: 42             # The baseline random seed for reproducibility (e.g., 42).
+num_seeds: 3                  # How many distinct random initializations to run (e.g., runs seeds 42, 43, 44).
+
+n_trains: [1000000]           # Array of Source training dataset sizes (1 million PLM embeddings).
+n_pools: [100000, 500000]     # Array of Target pool sizes for the active learning adaptation phase.
+shifts: [1.0, 2.0, 5.0]       # Covariate shift multipliers (Dispersion scaling). 1.0 = no shift, >1.0 = increased evolutionary drift in target.
+
+n_test: 50000                 # Static size of the disjoint Target test set used for evaluating recovery thresholds.
+
+# ------------------------------------------------------------------------------
+# 4. Neural Network Hyperparameters
+# ------------------------------------------------------------------------------
+# Architecture and training configurations for the predictive models.
+base_epochs: 20               # Number of epochs for training the initial Source baseline model.
+batch_size: 256               # Number of samples processed before updating model weights.
+learning_rate: 0.001          # Step size for the Adam optimizer during both training and adaptation.
+hidden_dim: 512               # Size of the hidden layers in the ProteinFamilyPredictor network.
+dropout: 0.1                  # Dropout probability to prevent overfitting on the source domain.
