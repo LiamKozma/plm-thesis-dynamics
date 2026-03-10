@@ -1,0 +1,27 @@
+# ==========================================
+# EXPERIMENT: BATCH-BY-BATCH RECOVERY DYNAMICS
+# ==========================================
+mode: 'adapt'
+dataset: 'highdim'  
+
+# --- 1. The Experimental Matrix ---
+n_trains: [1000]     
+n_pools: [10000]     # MASSIVE pool to generate a long, detailed recovery curve
+shifts: [1.5, 2.5]   # Only testing a couple of specific, severe shifts
+
+# Statistical Variance Control
+num_seeds: 1         
+starting_seed: 42            
+
+# --- 2. Static Data Parameters ---
+n_test: 1000         
+
+# --- 3. Training Hyperparameters ---
+batch_size: 64               
+learning_rate: 0.001         
+base_epochs: 20      
+adapt_epochs: 1              
+
+# --- 4. Model Architecture ---
+hidden_dim: 512      
+dropout: 0.1

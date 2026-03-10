@@ -1,117 +1,116 @@
 import numpy as np
 import argparse
 
-def sigmoid(x):
-    return 1 / (1 + np.exp(-x))
-
-# --- OPTION A: (The Manifold Hypothesis) ---
-def generate_manifold_data(n_samples=1000, dim=1280, manifold_dim=50, shift_magnitude=0.0, seed=42):
+def generate_phylogenetic_gmm(n_samples, dim, n_families, shift_magnitude, seed, is_target=False):
     """
-    Generates data on a linear subspace with a 'Fitness Peak' landscape.
+    Generates synthetic protein embeddings using a Hierarchical Gaussian Mixture Model.
+    Simulates evolutionary motifs branching from a shared ancestral root.
     """
+    # 1. Seed for the specific sample generation
     np.random.seed(seed)
     
-    # 1. Define Landscape Structure (Weights) FIRST
-    weights_linear = np.random.randn(manifold_dim)
+    # 2. The Universe Topology (Fixed Seed)
+    # We use a fixed random state here so the 'Root' and 'Base Families' 
+    # are mathematically identical across all your Nextflow runs and source/target splits.
+    rng_structure = np.random.RandomState(42) 
     
-    # 2. Create Manifold
-    basis_matrix = np.random.randn(dim, manifold_dim)
-    q, _ = np.linalg.qr(basis_matrix)
+    # The primordial sequence / core motif
+    root_motif = rng_structure.randn(dim)
     
-    # 3. Latent space z
-    z = np.random.randn(n_samples, manifold_dim)
-    
-    # 4. Apply Shift
-    if shift_magnitude > 0:
-        shift_vector = np.ones(manifold_dim) * shift_magnitude
-        z = z + shift_vector
+    # Create the base families (The "Central Melodies")
+    family_centroids = []
+    for k in range(n_families):
+        # Families diverge from the root
+        mutation = rng_structure.randn(dim) * 2.5 
+        centroid = root_motif + mutation
+        family_centroids.append(centroid)
         
-    X = np.dot(z, q.T)
+    family_centroids = np.array(family_centroids)
     
-    # 5. Fitness Function: "The Quadratic Peak"
-    y_linear = np.dot(z, weights_linear)
-    y_quad = -0.5 * np.mean(z**2, axis=1) * (manifold_dim / 5.0)
+    # 3. Apply Evolutionary Drift (The Distribution Shift)
+    # If this is target data, we mutate the centroids further away from the training distribution
+    if is_target and shift_magnitude > 0:
+        for k in range(n_families):
+            drift_direction = np.random.randn(dim)
+            drift_direction /= np.linalg.norm(drift_direction)
+            # Scale the shift by sqrt(dim) so it doesn't vanish in high-dimensional space
+            family_centroids[k] += drift_direction * (shift_magnitude * np.sqrt(dim))
+            
+    # 4. Generate the Sequence Embeddings (The Leaves)
+    X, y = [], []
     
-    y_raw = y_linear + 0.1 * y_quad + 2.0
-    y = sigmoid(y_raw)
+    # Distribute samples evenly across the families
+    samples_per_family = n_samples // n_families
+    remainders = n_samples % n_families
     
-    return X.astype(np.float32), y.astype(np.float32)
-
-# --- OPTION B: (High-Dim Statistics) ---
-def generate_highdim_data(n_samples=1000, dim=1280, shift_magnitude=0.0, seed=42):
-    """
-    Generates unstructured data with a NON-UNIFORM shift to test the Wasserstein metric.
-    """
-    np.random.seed(seed)
+    for k in range(n_families):
+        n_k = samples_per_family + (1 if k < remainders else 0)
+        
+        # Sub-family variation (simulating natural sequence variance around the motif)
+        variance = 1.0
+        noise = np.random.randn(n_k, dim) * np.sqrt(variance)
+        
+        # --- THE CONSERVATION MASK ---
+        # Pick 30% of the dimensions to be "conserved motifs" for this specific family
+        n_conserved = int(dim * 0.30)
+        # Use a deterministic seed for the mask so the motif stays the same for Train vs Pool
+        mask_rng = np.random.RandomState(42 + k) 
+        conserved_indices = mask_rng.choice(dim, n_conserved, replace=False)
+        
+        # Zero out the noise at the conserved indices (perfectly locking the numbers)
+        noise[:, conserved_indices] = 0.0 
+        
+        family_samples = family_centroids[k] + noise
+        
+        X.append(family_samples)
+        y.extend([k] * n_k)
+        
+    X = np.vstack(X)
+    y = np.array(y)
     
-    # Weights First
-    w_linear = np.random.randn(dim) / np.sqrt(dim) 
-    
-    X = np.random.randn(n_samples, dim)
-    
-    if shift_magnitude > 0:
-        direction = np.random.rand(dim) 
-        direction = direction / np.linalg.norm(direction)
-        shift_vector = direction * (shift_magnitude * np.sqrt(dim))
-        X = X + shift_vector
-
-    # High-Dim Fitness
-    y_linear = np.dot(X, w_linear)
-    y_quad = -0.5 * np.mean(X**2, axis=1)
-    
-    y_raw = y_linear + y_quad + 2.0
-    y = sigmoid(y_raw)
-    
-    return X.astype(np.float32), y.astype(np.float32)
+    # Shuffle the dataset
+    shuffle_idx = np.random.permutation(n_samples)
+    return X[shuffle_idx].astype(np.float32), y[shuffle_idx].astype(np.int64) # y MUST be int64 for CrossEntropyLoss
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--type", type=str, choices=['manifold', 'highdim'], default='manifold')
-    parser.add_argument("--shift", type=float, default=0.0)
-    parser.add_argument("--seed", type=int, default=42, help="Global seed for reproducibility")
+    parser.add_argument("--seed", type=int, default=42, help="Global seed for sample reproducibility")
+    parser.add_argument("--mode", type=str, choices=['source', 'target'], required=True)
+    parser.add_argument("--shift", type=float, default=0.0, help="Magnitude of evolutionary drift")
     
-    # New arguments for data sizing
+    # Sizing
     parser.add_argument("--n_train", type=int, default=1000)
     parser.add_argument("--n_pool", type=int, default=2000)
     parser.add_argument("--n_test", type=int, default=1000)
     
-    # Replaces explicit file outputs with a mode switch
-    parser.add_argument("--mode", type=str, choices=['source', 'target'], required=True, 
-                        help="'source' generates Shift 0 Train data. 'target' generates Shift X Pool/Test data.")
+    # New GMM/PLM Parameters
+    parser.add_argument("--dim", type=int, default=1280, help="Embedding dimension (e.g., 1280 for ESM-2)")
+    parser.add_argument("--n_families", type=int, default=10, help="Number of distinct protein families (classes)")
+    
     args = parser.parse_args()
 
     if args.mode == 'source':
-        print(f"Generating [SOURCE] data (Train) with Seed={args.seed}...")
-        
-        # Hardcode shift to 0.0 to guarantee baseline distribution
-        if args.type == 'manifold':
-            X, y = generate_manifold_data(n_samples=args.n_train, shift_magnitude=0.0, seed=args.seed)
-        else:
-            X, y = generate_highdim_data(n_samples=args.n_train, shift_magnitude=0.0, seed=args.seed)
-        
-        # Output source files
-        np.save("source_train_X.npy", X)
-        np.save("source_train_y.npy", y)
-        print(f"--> Saved source_train_X.npy and source_train_y.npy ({args.n_train} samples)")
+        print(f"Generating [SOURCE] data (Train) | Families: {args.n_families} | Dim: {args.dim} | Seed: {args.seed}")
+        X, y = generate_phylogenetic_gmm(
+            n_samples=args.n_train, dim=args.dim, n_families=args.n_families, 
+            shift_magnitude=0.0, seed=args.seed, is_target=False
+        )
+        np.save(f"source_train_X.npy", X)
+        np.save(f"source_train_y.npy", y)
 
     elif args.mode == 'target':
-        print(f"Generating [TARGET] data (Pool + Test) with Shift={args.shift}, Seed={args.seed}...")
-        
-        # Combine pool and test for a single massive dataset generation
         total_target_samples = args.n_pool + args.n_test
+        print(f"Generating [TARGET] data (Pool+Test) | Shift: {args.shift} | Families: {args.n_families} | Seed: {args.seed}")
         
-        if args.type == 'manifold':
-            X, y = generate_manifold_data(n_samples=total_target_samples, shift_magnitude=args.shift, seed=args.seed)
-        else:
-            X, y = generate_highdim_data(n_samples=total_target_samples, shift_magnitude=args.shift, seed=args.seed)
+        X, y = generate_phylogenetic_gmm(
+            n_samples=total_target_samples, dim=args.dim, n_families=args.n_families, 
+            shift_magnitude=args.shift, seed=args.seed, is_target=True
+        )
         
-        # Slicing guarantees they are disjoint but from the exact same mathematical distribution
         X_pool, y_pool = X[:args.n_pool], y[:args.n_pool]
         X_test, y_test = X[args.n_pool:], y[args.n_pool:]
         
-        # Output target files
         np.save("target_pool_X.npy", X_pool)
         np.save("target_pool_y.npy", y_pool)
         np.save("target_test_X.npy", X_test)
         np.save("target_test_y.npy", y_test)
-        print(f"--> Saved target_pool ({args.n_pool} samples) and target_test ({args.n_test} samples)")

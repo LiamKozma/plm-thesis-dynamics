@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 
 # Import your custom modules
 from model import get_model
-from metrics import calculate_rbme, calculate_feature_wasserstein
+from metrics import calculate_macro_f1, calculate_feature_wasserstein
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -23,14 +23,12 @@ def set_seed(seed=42):
     torch.backends.cudnn.benchmark = False
 
 def load_data(path_X, path_y):
-    """Load .npy files and convert to Tensor objects."""
-    print(f"Loading data from {path_X}...")
+    """Load .npy files and convert to Tensor objects for classification."""
     X = np.load(path_X)
     y = np.load(path_y)
     
-    # Convert to PyTorch Tensors
     tensor_X = torch.FloatTensor(X)
-    tensor_y = torch.FloatTensor(y).view(-1, 1) # Ensure shape is (N, 1)
+    tensor_y = torch.LongTensor(y) # MUST be LongTensor for CrossEntropyLoss
     
     return tensor_X, tensor_y
 
@@ -40,10 +38,12 @@ if __name__ == "__main__":
     parser.add_argument("--source_y", type=str, required=True, help="Path to Source Y npy")
     parser.add_argument("--output_model", type=str, default="baseline_source.pt", help="Output model filename")
     parser.add_argument("--ref_x", type=str, required=True, help="Path to Source X for distance calculation")
-    
     parser.add_argument("--batch_size", type=int, default=64)
     parser.add_argument("--epochs", type=int, default=20)
     parser.add_argument("--lr", type=float, default=1e-3)
+    parser.add_argument("--hidden_dim", type=int, default=512)
+    parser.add_argument("--dropout", type=float, default=0.1)
+    parser.add_argument("--num_classes", type=int, default=20, help="Number of protein families")
     args = parser.parse_args()
 
     set_seed(42)
@@ -57,9 +57,14 @@ if __name__ == "__main__":
     val_loader = DataLoader(TensorDataset(X_val, y_val), batch_size=args.batch_size)
     
     input_dim = X.shape[1]
-    model = get_model(input_dim=input_dim).to(DEVICE)
+    model = get_model(
+        input_dim=input_dim, 
+        num_classes=args.num_classes,
+        hidden_dim=args.hidden_dim, 
+        dropout=args.dropout
+    ).to(DEVICE)
     
-    criterion = nn.MSELoss() 
+    criterion = nn.CrossEntropyLoss() 
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
     
     #  Training Loop
@@ -93,18 +98,22 @@ if __name__ == "__main__":
                 loss = criterion(preds, batch_y)
                 
                 val_loss_accum += loss.item()
-                all_preds.append(preds.cpu())
+                
+                # Extract the predicted class
+                preds_classes = torch.argmax(preds, dim=1)
+                
+                all_preds.append(preds_classes.cpu())
                 all_targets.append(batch_y.cpu())
         
         avg_val_loss = val_loss_accum / len(val_loader)
         
-        # Calculate custom rBME metric
-        val_rbme = calculate_rbme(
+        # Calculate custom Macro F1 metric
+        val_f1 = calculate_macro_f1(
             torch.cat(all_targets), 
             torch.cat(all_preds)
         )
         
-        print(f"{epoch+1:<5} | {avg_train_loss:<12.6f} | {avg_val_loss:<12.6f} | {val_rbme:<12.6f}")
+        print(f"Epoch {epoch+1:<2} | Train CE: {avg_train_loss:<10.6f} | Val CE: {avg_val_loss:<10.6f} | Macro F1: {val_f1:<10.6f}")
 
     # 7. Save the trained baseline
     torch.save(model.state_dict(), args.output_model)

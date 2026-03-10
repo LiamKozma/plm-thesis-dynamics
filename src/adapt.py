@@ -8,21 +8,23 @@ from torch.utils.data import DataLoader, TensorDataset
 
 # Import your custom modules
 from model import get_model
-from metrics import calculate_rbme, calculate_feature_wasserstein
+from metrics import calculate_macro_f1, calculate_feature_wasserstein
 
 # Hardware configuration
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def load_data(path_X, path_y):
-    """Load .npy files and convert to Tensor objects."""
+    """Load .npy files and convert to Tensor objects for classification."""
     X = np.load(path_X)
     y = np.load(path_y)
+    
     tensor_X = torch.FloatTensor(X)
-    tensor_y = torch.FloatTensor(y).view(-1, 1)
+    tensor_y = torch.LongTensor(y) # MUST be LongTensor for CrossEntropyLoss
+    
     return tensor_X, tensor_y
 
 def evaluate_model(model, test_loader, criterion):
-    """Evaluates the model on the disjoint test set and calculates MSE and rBME."""
+    """Evaluates the model on the disjoint test set and calculates CE Loss and Macro F1."""
     model.eval()
     test_loss_accum = 0
     all_preds = []
@@ -35,13 +37,21 @@ def evaluate_model(model, test_loader, criterion):
             loss = criterion(preds, batch_y)
             
             test_loss_accum += loss.item()
-            all_preds.append(preds.cpu())
+            
+            # --- THE CRITICAL CLASSIFICATION CHANGE ---
+            # Get the index of the max logit (the predicted class)
+            preds_classes = torch.argmax(preds, dim=1)
+            
+            # Append the predicted classes, not the raw logits
+            all_preds.append(preds_classes.cpu())
             all_targets.append(batch_y.cpu())
             
     avg_test_loss = test_loss_accum / len(test_loader)
-    test_rbme = calculate_rbme(torch.cat(all_targets), torch.cat(all_preds))
     
-    return avg_test_loss, test_rbme
+    # Calculate Macro F1 instead of rBME
+    test_f1 = calculate_macro_f1(torch.cat(all_targets), torch.cat(all_preds))
+    
+    return avg_test_loss, test_f1
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -52,9 +62,11 @@ if __name__ == "__main__":
     parser.add_argument("--test_y", type=str, required=True)
     parser.add_argument("--ref_x", type=str, required=True, help="Reference source data for Wasserstein")
     parser.add_argument("--output_model", type=str, required=True)
-    
     parser.add_argument("--batch_size", type=int, default=64)
     parser.add_argument("--lr", type=float, default=1e-3)
+    parser.add_argument("--hidden_dim", type=int, default=512)
+    parser.add_argument("--dropout", type=float, default=0.1)
+    parser.add_argument("--num_classes", type=int, default=20, help="Number of protein families")
     args = parser.parse_args()
 
     # 1. Load Data
@@ -68,25 +80,30 @@ if __name__ == "__main__":
 
     # 3. Initialize and Load Base Model
     input_dim = pool_X.shape[1]
-    model = get_model(input_dim=input_dim).to(DEVICE)
+    model = get_model(
+        input_dim=input_dim, 
+        num_classes=args.num_classes,
+        hidden_dim=args.hidden_dim, 
+        dropout=args.dropout
+    ).to(DEVICE)
     model.load_state_dict(torch.load(args.base_model, map_location=DEVICE))
     
-    criterion = nn.MSELoss()
+    criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
-    # 4. Setup CSV Logging
+    # 4. Setup CSV Logging (Changed headers to test_ce and test_f1)
     batch_log_file = args.output_model.replace('.pt', '_batch_log.csv')
     with open(batch_log_file, 'w') as f:
-        f.write("batch_number,samples_seen,train_loss,test_mse,test_rbme\n")
+        f.write("batch_number,samples_seen,train_loss,test_ce,test_f1\n")
 
     print(f"\n--- Starting Adaptation ---")
     print(f"Pool size: {len(pool_X)} | Test size: {len(test_X)} | Batch size: {args.batch_size}")
     
     # 5. Evaluate INITIAL state before any adaptation (Batch 0)
-    initial_mse, initial_rbme = evaluate_model(model, test_loader, criterion)
+    initial_ce, initial_f1 = evaluate_model(model, test_loader, criterion)
     with open(batch_log_file, 'a') as f:
-        f.write(f"0,0,0.0,{initial_mse:.6f},{initial_rbme:.6f}\n")
-    print(f"Initial State (0 Batches) -> Test MSE: {initial_mse:.4f} | Test rBME: {initial_rbme:.4f}")
+        f.write(f"0,0,0.0,{initial_ce:.6f},{initial_f1:.6f}\n")
+    print(f"Initial State (0 Batches) -> Test CE: {initial_ce:.4f} | Test Macro F1: {initial_f1:.4f}")
 
     # 6. The Active Learning Loop
     global_batch = 0
@@ -107,11 +124,11 @@ if __name__ == "__main__":
         optimizer.step()
         
         # B. Immediately evaluate on the entire Test set
-        test_mse, test_rbme = evaluate_model(model, test_loader, criterion)
+        test_ce, test_f1 = evaluate_model(model, test_loader, criterion)
         
         # C. Log the metrics to CSV
         with open(batch_log_file, 'a') as f:
-            f.write(f"{global_batch},{samples_seen},{train_loss.item():.6f},{test_mse:.6f},{test_rbme:.6f}\n")
+            f.write(f"{global_batch},{samples_seen},{train_loss.item():.6f},{test_ce:.6f},{test_f1:.6f}\n")
 
     # 7. Save the final adapted model
     torch.save(model.state_dict(), args.output_model)
@@ -121,6 +138,6 @@ if __name__ == "__main__":
     print("-" * 50)
     print(f"Adaptation Complete.")
     print(f"{'Wasserstein':<15} | {w_dist:<15.6f}")
-    print(f"{'Final Test MSE':<15} | {test_mse:<15.6f}")
-    print(f"{'Final Test rBME':<15} | {test_rbme:<15.6f}")
+    print(f"{'Final Test CE':<15} | {test_ce:<15.6f}")
+    print(f"{'Final Test F1':<15} | {test_f1:<15.6f}")
     print("-" * 50)

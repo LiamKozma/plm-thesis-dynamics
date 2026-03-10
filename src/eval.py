@@ -6,24 +6,19 @@ from torch.utils.data import DataLoader, TensorDataset
 
 # Import your custom modules
 from model import get_model
-from metrics import calculate_rbme, calculate_feature_wasserstein
+from metrics import calculate_macro_f1, calculate_feature_wasserstein
 
 # Configuration
 BATCH_SIZE = 64
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def load_data(path_X, path_y):
-    """
-    Load .npy files and convert to Tensor objects.
-    (Reused from train.py logic)
-    """
-    print(f"Loading data from {path_X}...")
+    """Load .npy files and convert to Tensor objects for classification."""
     X = np.load(path_X)
     y = np.load(path_y)
     
-    # Convert to PyTorch Tensors
     tensor_X = torch.FloatTensor(X)
-    tensor_y = torch.FloatTensor(y).view(-1, 1) # Ensure shape is (N, 1)
+    tensor_y = torch.LongTensor(y) # MUST be LongTensor for CrossEntropyLoss
     
     return tensor_X, tensor_y
 
@@ -34,7 +29,10 @@ if __name__ == "__main__":
     parser.add_argument("--target_x", type=str, required=True, help="Path to Target X npy")
     parser.add_argument("--target_y", type=str, required=True, help="Path to Target Y npy")
     parser.add_argument("--ref_x", type=str, required=True, help="Path to Source X for distance calculation")
+    parser.add_argument("--hidden_dim", type=int, default=512)
+    parser.add_argument("--dropout", type=float, default=0.1)
     parser.add_argument("--batch_size", type=int, default=64)
+    parser.add_argument("--num_classes", type=int, default=20, help="Number of protein families")
     args = parser.parse_args()
 
     # 2. Load Data from CLI Arguments
@@ -49,14 +47,19 @@ if __name__ == "__main__":
     input_dim = X.shape[1]
     print(f"Detected input dimension: {input_dim}")
 
-    model = get_model(input_dim=input_dim).to(DEVICE)
+    model = get_model(
+        input_dim=input_dim, 
+        num_classes=args.num_classes,
+        hidden_dim=args.hidden_dim, 
+        dropout=args.dropout
+    ).to(DEVICE)
     
     # Load the saved state dictionary
     print(f"Loading model weights from {args.model_path}...")
     model.load_state_dict(torch.load(args.model_path, map_location=DEVICE))
     model.eval()
     
-    criterion = nn.MSELoss()
+    criterion = nn.CrossEntropyLoss()
     
     # 4. Evaluation Loop
     total_loss_accum = 0
@@ -73,24 +76,28 @@ if __name__ == "__main__":
             loss = criterion(preds, batch_y)
             
             total_loss_accum += loss.item()
-            all_preds.append(preds.cpu())
+            
+            # Extract the predicted class
+            preds_classes = torch.argmax(preds, dim=1)
+            
+            all_preds.append(preds_classes.cpu())
             all_targets.append(batch_y.cpu())
             
     # 5. Compute Metrics
     avg_loss = total_loss_accum / len(test_loader)
     
-    # Concatenate all batches for rBME calculation
+    # Concatenate all batches for F1 calculation
     final_targets = torch.cat(all_targets)
     final_preds = torch.cat(all_preds)
     
-    val_rbme = calculate_rbme(final_targets, final_preds)
-    w_dist = calculate_feature_wasserstein(ref_X, X) # Calculate distance
+    val_f1 = calculate_macro_f1(final_targets, final_preds)
+    w_dist = calculate_feature_wasserstein(ref_X, X)
 
     # 6. Output Results
     print("-" * 50)
     print(f"{'Metric':<15} | {'Score':<15}")
     print("-" * 50)
-    print(f"{'Wasserstein':<15} | {w_dist:<15.6f}") # Add this line!
-    print(f"{'MSE Loss':<15} | {avg_loss:<15.6f}")
-    print(f"{'rBME':<15} | {val_rbme:<15.6f}")
+    print(f"{'Wasserstein':<15} | {w_dist:<15.6f}") 
+    print(f"{'CE Loss':<15} | {avg_loss:<15.6f}")
+    print(f"{'Macro F1':<15} | {val_f1:<15.6f}")
     print("-" * 50)
