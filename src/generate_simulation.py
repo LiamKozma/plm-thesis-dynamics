@@ -121,16 +121,24 @@ def generate_dispersion_gmm(n_samples, dim, n_families, n_classes, hidden_layers
         
         X.append(family_samples)
         family_assignments.extend([k] * n_k)
+
+    # Stack the list of 2D arrays into one single NumPy matrix of shape (n_samples, dim)
+    X_concat = np.vstack(X)
+    
+    # Convert family_assignments from a list to a NumPy array for proper indexing later
+    family_assignments = np.array(family_assignments)
     
     # 5. Label Assignment via Frozen NN
     with torch.no_grad():
-        X_tensor = torch.tensor(X)
+        # Pass the properly shaped, flat array to PyTorch
+        X_tensor = torch.tensor(X_concat, dtype=torch.float32)
         logits = oracle(X_tensor)
         y = torch.argmax(logits, dim=1).numpy()
         
     # Shuffle the dataset
     shuffle_idx = np.random.permutation(n_samples)
-    return X[shuffle_idx], y[shuffle_idx].astype(np.int64), family_assignments[shuffle_idx]
+    return X_concat[shuffle_idx], y[shuffle_idx].astype(np.int64), family_assignments[shuffle_idx]
+    
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
