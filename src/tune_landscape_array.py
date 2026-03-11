@@ -57,9 +57,9 @@ def main():
         
     task_id = int(sys.argv[1])
     
-    n_train = 100000  # Miniaturized for tuning!
-    n_families = 1000
-    n_classes = 100
+    n_train = 1000000  # Miniaturized for tuning!
+    n_families = 10000
+    n_classes = 1000
     seed = 42
     
     architectures = ["512,256", "1024,512", "2048,1024", "1024,1024,512"]
