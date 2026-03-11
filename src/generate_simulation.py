@@ -84,8 +84,26 @@ def generate_dispersion_gmm(n_samples, dim, n_families, n_classes, hidden_layers
     oracle.eval()
 
     # 2. Universe Topology 
-    rng_structure = np.random.RandomState(42) 
-    family_centroids = rng_structure.randn(n_families, dim) * centroid_spread
+    print(f"Generating landscape using topology: {topology.upper()}")
+    
+    if topology == 'hypercube':
+        family_centroids = np.random.uniform(-1.0, 1.0, size=(n_families, dim)) * centroid_spread
+        
+    elif topology == 'hypersphere':
+        v = np.random.randn(n_families, dim)
+        v_norm = np.linalg.norm(v, axis=1, keepdims=True)
+        u = v / v_norm
+        r = (np.random.uniform(0, 1, size=(n_families, 1)) ** (1.0 / dim))
+        family_centroids = r * u * centroid_spread
+        
+    elif topology == 'projection':
+        latent_dim = 20
+        latent_centroids = np.random.uniform(-1.0, 1.0, size=(n_families, latent_dim))
+        projection_matrix = np.random.randn(latent_dim, dim)
+        family_centroids = np.dot(latent_centroids, projection_matrix) * (centroid_spread / np.sqrt(latent_dim))
+        
+    else: # default gaussian
+        family_centroids = np.random.randn(n_families, dim) * centroid_spread
     
     # 3. Dispersion Logic (The Shift Mechanism)
     if not is_target:
@@ -155,9 +173,13 @@ if __name__ == "__main__":
     parser.add_argument("--n_classes", type=int, default=100) 
     parser.add_argument("--oracle_layers", type=str, default="256,128", help="Comma-separated hidden layer sizes")
     
-    # ---> 1. ADD THE ARGUMENTS TO THE PARSER HERE <---
     parser.add_argument("--centroid_spread", type=float, default=10.0, help="Distance between family centers")
     parser.add_argument("--base_sigma", type=float, default=2.0, help="Variance/spread within a family")
+
+    # Topology
+    parser.add_argument("--centroid_spread", type=float, default=10.0, help="Distance between family centers")
+    parser.add_argument("--base_sigma", type=float, default=2.0, help="Variance/spread within a family")
+    parser.add_argument("--topology", type=str, choices=['hypercube', 'hypersphere', 'projection', 'gaussian'], default='gaussian') # <-- ADD THIS
     
     args = parser.parse_args()
     hidden_layer_sizes = [int(x) for x in args.oracle_layers.split(',')] if args.oracle_layers else []
@@ -167,7 +189,8 @@ if __name__ == "__main__":
         X, y, fams = generate_dispersion_gmm(
             n_samples=args.n_train, dim=args.dim, n_families=args.n_families, 
             n_classes=args.n_classes, hidden_layers=hidden_layer_sizes, shift_k=args.shift, seed=args.seed, is_target=False,
-            centroid_spread=args.centroid_spread, base_sigma=args.base_sigma # ---> 2. PASS TO SOURCE CALL HERE <---
+            centroid_spread=args.centroid_spread, base_sigma=args.base_sigma, 
+            topology=args.topology
         )
         
         # Run Diagnostics on the Source generation

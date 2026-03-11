@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=tune_1M
 #SBATCH --partition=batch
-#SBATCH --array=0-35
+#SBATCH --array=0-11
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=16G          # Increased to 16GB for safety with 1M embeddings
