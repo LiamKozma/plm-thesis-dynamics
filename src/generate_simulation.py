@@ -71,7 +71,7 @@ def calculate_diagnostics(family_assignments, y, n_families, n_classes):
     print(f"Class coverage:       {coverage:.1f} fams/class \t(Target: ~10)")
     print(f"-----------------------------\n")
 
-def generate_dispersion_gmm(n_samples, dim, n_families, n_classes, hidden_layers, shift_k, seed, is_target=False, centroid_spread=10.0, base_sigma=2.0):
+def generate_dispersion_gmm(n_samples, dim, n_families, n_classes, hidden_layers, shift_k, seed, is_target=False, centroid_spread=10.0, base_sigma=2.0, topology='gaussian'):
     """
     Generates synthetic protein embeddings using Biased Sampling Covariate Shift
     and a Zipf (Power-Law) distribution for biological family sizes.
@@ -111,52 +111,34 @@ def generate_dispersion_gmm(n_samples, dim, n_families, n_classes, hidden_layers
     else:
         current_sigma = base_sigma
 
-    # 4. Biological Update: Generate Sequence Embeddings via Power-Law
-    X, family_assignments = [], []
+    # 4. Memory-Efficient Allocation (Pre-allocate the full matrix)
+    X_concat = np.zeros((n_samples, dim), dtype=np.float32)
+    family_assignments = np.zeros(n_samples, dtype=np.int32)
     
-    # Create the Zipf probability distribution
     ranks = np.arange(1, n_families + 1)
-    zipf_exponent = 1.5 # Standard skew for protein databases
-    zipf_probs = 1.0 / (ranks ** zipf_exponent)
-    zipf_probs /= zipf_probs.sum() # Normalize so they sum exactly to 1.0
-    
-    # Allocate the exact n_samples across families based on Zipf probabilities
+    zipf_probs = (1.0 / (ranks ** 1.5))
+    zipf_probs /= zipf_probs.sum()
     family_counts = np.random.multinomial(n_samples, zipf_probs)
     
-    print(f"Sampling {n_samples:,} embeddings from {n_families} GMM components...")
+    print(f"Sampling {n_samples:,} embeddings (Memory-Optimized)...")
     
-    # Wrap the loop with tqdm using a 10-second refresh interval
-    # This prevents the .log file from growing to several hundred MBs
+    current_idx = 0
     for k in tqdm(range(n_families), desc="Generating Families", mininterval=10.0):
         n_k = family_counts[k]
+        if n_k == 0: continue 
         
-        if n_k == 0: 
-            continue 
-        
-        # Sample using the calculated dispersion
+        # Write directly into the pre-allocated slice
         noise = np.random.randn(n_k, dim) * current_sigma
-        family_samples = family_centroids[k] + noise
-        
-        X.append(family_samples)
-        family_assignments.extend([k] * n_k)
+        X_concat[current_idx:current_idx + n_k] = family_centroids[k] + noise
+        family_assignments[current_idx:current_idx + n_k] = k
+        current_idx += n_k
 
-    # Stack the list of 2D arrays into one single NumPy matrix of shape (n_samples, dim)
-    X_concat = np.vstack(X)
-    
-    # Convert family_assignments from a list to a NumPy array for proper indexing later
-    family_assignments = np.array(family_assignments)
-    
-    # 5. Label Assignment via Frozen NN
+    # 5. Zero-Copy Label Assignment
     with torch.no_grad():
-        # Pass the properly shaped, flat array to PyTorch
-        X_tensor = torch.tensor(X_concat, dtype=torch.float32)
+        # torch.from_numpy shares the same memory as the numpy array (No copy!)
+        X_tensor = torch.from_numpy(X_concat)
         logits = oracle(X_tensor)
         y = torch.argmax(logits, dim=1).numpy()
-        
-    # Shuffle the dataset
-    shuffle_idx = np.random.permutation(n_samples)
-    return X_concat[shuffle_idx], y[shuffle_idx].astype(np.int64), family_assignments[shuffle_idx]
-    
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -173,10 +155,6 @@ if __name__ == "__main__":
     parser.add_argument("--n_classes", type=int, default=100) 
     parser.add_argument("--oracle_layers", type=str, default="256,128", help="Comma-separated hidden layer sizes")
     
-    parser.add_argument("--centroid_spread", type=float, default=10.0, help="Distance between family centers")
-    parser.add_argument("--base_sigma", type=float, default=2.0, help="Variance/spread within a family")
-
-    # Topology
     parser.add_argument("--centroid_spread", type=float, default=10.0, help="Distance between family centers")
     parser.add_argument("--base_sigma", type=float, default=2.0, help="Variance/spread within a family")
     parser.add_argument("--topology", type=str, choices=['hypercube', 'hypersphere', 'projection', 'gaussian'], default='gaussian') # <-- ADD THIS

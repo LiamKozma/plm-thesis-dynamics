@@ -1,0 +1,6 @@
+-> Testing: Oracle [1024,512] | Sigma [0.7]
+Failed to parse output. Error:
+
+Generating Families:   0%|          | 0/10000 [00:00<?, ?it/s]
+Generating Families:   0%|          | 2/10000 [00:11<16:23:31,  5.90s/it]
+Generating Families:   5%|▌         | 531/10000 [00:21<05:26, 

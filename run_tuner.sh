@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=tune_1M
 #SBATCH --partition=batch
-#SBATCH --array=0-11
+#SBATCH --array=0-23
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=16G          # Increased to 16GB for safety with 1M embeddings
+#SBATCH --mem=100G          # Increased to 16GB for safety with 1M embeddings
 #SBATCH --time=02:00:00     # 2 hours is plenty, but gives a buffer
 #SBATCH --output=tuner_%A_%a.log
 
