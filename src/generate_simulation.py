@@ -18,14 +18,14 @@ class RandomOracleNN(nn.Module):
         layers = []
         current_dim = input_dim
 
-        # Dynamically build the hidden layers
+        # Dynamically build the hidden layers WITHOUT biases
         for h_dim in hidden_layers:
-            layers.append(nn.Linear(current_dim, h_dim))
+            layers.append(nn.Linear(current_dim, h_dim, bias=False))
             layers.append(nn.ReLU())
             current_dim = h_dim
 
-        # Final classification head
-        layers.append(nn.Linear(current_dim, num_classes))
+        # Final classification head WITHOUT bias
+        layers.append(nn.Linear(current_dim, num_classes, bias=False))
         self.net = nn.Sequential(*layers)
 
         for m in self.net.modules():
@@ -184,6 +184,7 @@ def generate_dispersion_gmm(
 
             # Extract predictions directly into the pre-allocated numpy array
             y[i:end_idx] = torch.argmax(logits, dim=1).numpy()
+    return X_concat, y, family_assignments
 
 
 if __name__ == "__main__":
