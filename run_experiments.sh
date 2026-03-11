@@ -1,3 +1,4 @@
+cat << 'EOF' > run_experiments.sh
 #!/bin/bash
 #SBATCH --job-name=nf_master
 #SBATCH --partition=batch
@@ -6,12 +7,13 @@
 #SBATCH --time=48:00:00
 #SBATCH --output=nextflow_master_%j.log
 
-# Load necessary modules on Sapelo2 (adjust module names as needed)
-module load Anaconda3/2023.09-0
-module load Nextflow/23.10.0
+# Load necessary Sapelo2 modules
+module load Miniforge3
+module load Nextflow
 
-# Activate your environment
-source activate your_pytorch_env
+# Activate your custom environment
+source activate /work/ah2lab/LiamK/conda_envs/plm_dynamics
 
-# Kick off the pipeline using the sapelo2 profile and your YAML config
-nextflow run main.nf -profile sapelo2 -params-file sweep_1M.yaml -resume
+# Kick off the Nextflow pipeline using your sweep config
+nextflow run main.nf -profile sapelo2 -params-file master_sweep.yaml -resume
+EOF

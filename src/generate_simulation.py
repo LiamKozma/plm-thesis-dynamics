@@ -1,7 +1,10 @@
+import argparse
+
 import numpy as np
 import torch
 import torch.nn as nn
-import argparse
+from tqdm import tqdm
+
 
 class RandomOracleNN(nn.Module):
     """
@@ -68,7 +71,7 @@ def calculate_diagnostics(family_assignments, y, n_families, n_classes):
     print(f"Class coverage:       {coverage:.1f} fams/class \t(Target: ~10)")
     print(f"-----------------------------\n")
 
-def generate_dispersion_gmm(n_samples, dim, n_families, n_classes, hidden_layers, shift_k, seed, is_target=False):
+def generate_dispersion_gmm(n_samples, dim, n_families, n_classes, hidden_layers, shift_k, seed, is_target=False, centroid_spread=10.0, base_sigma=2.0):
     """
     Generates synthetic protein embeddings using Biased Sampling Covariate Shift
     and a Zipf (Power-Law) distribution for biological family sizes.
@@ -82,11 +85,9 @@ def generate_dispersion_gmm(n_samples, dim, n_families, n_classes, hidden_layers
 
     # 2. Universe Topology 
     rng_structure = np.random.RandomState(42) 
-    centroid_spread = 10.0 
     family_centroids = rng_structure.randn(n_families, dim) * centroid_spread
     
     # 3. Dispersion Logic (The Shift Mechanism)
-    base_sigma = 2.0 
     if not is_target:
         current_sigma = base_sigma / max(1.0, shift_k) 
     else:
@@ -104,10 +105,13 @@ def generate_dispersion_gmm(n_samples, dim, n_families, n_classes, hidden_layers
     # Allocate the exact n_samples across families based on Zipf probabilities
     family_counts = np.random.multinomial(n_samples, zipf_probs)
     
-    for k in range(n_families):
+    print(f"Sampling {n_samples:,} embeddings from {n_families} GMM components...")
+    
+    # Wrap the loop with tqdm using a 10-second refresh interval
+    # This prevents the .log file from growing to several hundred MBs
+    for k in tqdm(range(n_families), desc="Generating Families", mininterval=10.0):
         n_k = family_counts[k]
         
-        # The "Long Tail": If a family gets 0 samples, skip it
         if n_k == 0: 
             continue 
         
@@ -117,9 +121,6 @@ def generate_dispersion_gmm(n_samples, dim, n_families, n_classes, hidden_layers
         
         X.append(family_samples)
         family_assignments.extend([k] * n_k)
-        
-    X = np.vstack(X).astype(np.float32)
-    family_assignments = np.array(family_assignments)
     
     # 5. Label Assignment via Frozen NN
     with torch.no_grad():
@@ -135,7 +136,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--mode", type=str, choices=['source', 'target'], required=True)
-    parser.add_argument("--shift", type=float, default=1.0, help="Shift k multiplier (k=1 is no shift, k>1 increases target dispersion relative to source)")
+    parser.add_argument("--shift", type=float, default=1.0, help="Shift k multiplier")
     
     parser.add_argument("--n_train", type=int, default=1000)
     parser.add_argument("--n_pool", type=int, default=2000)
@@ -146,6 +147,10 @@ if __name__ == "__main__":
     parser.add_argument("--n_classes", type=int, default=100) 
     parser.add_argument("--oracle_layers", type=str, default="256,128", help="Comma-separated hidden layer sizes")
     
+    # ---> 1. ADD THE ARGUMENTS TO THE PARSER HERE <---
+    parser.add_argument("--centroid_spread", type=float, default=10.0, help="Distance between family centers")
+    parser.add_argument("--base_sigma", type=float, default=2.0, help="Variance/spread within a family")
+    
     args = parser.parse_args()
     hidden_layer_sizes = [int(x) for x in args.oracle_layers.split(',')] if args.oracle_layers else []
 
@@ -153,7 +158,8 @@ if __name__ == "__main__":
         print(f"Generating [SOURCE] data | Shift k: {args.shift} | Families: {args.n_families} | Classes: {args.n_classes} | Seed: {args.seed}")
         X, y, fams = generate_dispersion_gmm(
             n_samples=args.n_train, dim=args.dim, n_families=args.n_families, 
-            n_classes=args.n_classes, hidden_layers=hidden_layer_sizes, shift_k=args.shift, seed=args.seed, is_target=False
+            n_classes=args.n_classes, hidden_layers=hidden_layer_sizes, shift_k=args.shift, seed=args.seed, is_target=False,
+            centroid_spread=args.centroid_spread, base_sigma=args.base_sigma # ---> 2. PASS TO SOURCE CALL HERE <---
         )
         
         # Run Diagnostics on the Source generation
@@ -168,7 +174,8 @@ if __name__ == "__main__":
         
         X, y, fams = generate_dispersion_gmm(
             n_samples=total_target_samples, dim=args.dim, n_families=args.n_families, 
-            n_classes=args.n_classes, hidden_layers=hidden_layer_sizes, shift_k=args.shift, seed=args.seed, is_target=True
+            n_classes=args.n_classes, hidden_layers=hidden_layer_sizes, shift_k=args.shift, seed=args.seed, is_target=True,
+            centroid_spread=args.centroid_spread, base_sigma=args.base_sigma # ---> 3. PASS TO TARGET CALL HERE <---
         )
         
         X_pool, y_pool = X[:args.n_pool], y[:args.n_pool]
