@@ -18,19 +18,31 @@ class RandomOracleNN(nn.Module):
         layers = []
         current_dim = input_dim
 
-        # Dynamically build the hidden layers WITHOUT biases
+        # Keep LayerNorm + Kaiming to prevent dimensional collapse
         for h_dim in hidden_layers:
-            layers.append(nn.Linear(current_dim, h_dim, bias=False))
+            linear = nn.Linear(current_dim, h_dim, bias=True)
+            nn.init.kaiming_normal_(
+                linear.weight, mode="fan_in", nonlinearity="relu"
+            )
+            nn.init.zeros_(linear.bias)
+            layers.append(linear)
+            layers.append(nn.LayerNorm(h_dim))
             layers.append(nn.ReLU())
             current_dim = h_dim
 
-        # Final classification head WITHOUT bias
-        layers.append(nn.Linear(current_dim, num_classes, bias=False))
-        self.net = nn.Sequential(*layers)
+        # Final classification head
+        final_layer = nn.Linear(current_dim, num_classes, bias=False)
 
-        for m in self.net.modules():
-            if isinstance(m, nn.Linear):
-                nn.init.xavier_uniform_(m.weight)
+        # THE MAGIC FIX: Normalize the 1000 class vectors so no class is "louder"
+        with torch.no_grad():
+            nn.init.normal_(final_layer.weight)
+            # Force all vectors to exactly 1.0 length (pure cosine similarity)
+            final_layer.weight.copy_(
+                torch.nn.functional.normalize(final_layer.weight, p=2, dim=1)
+            )
+
+        layers.append(final_layer)
+        self.net = nn.Sequential(*layers)
 
     def forward(self, x):
         return self.net(x)
@@ -53,22 +65,20 @@ def calculate_diagnostics(family_assignments, y, n_families, n_classes):
         majority_fraction = counts.max() / len(labels)
         purities.append(majority_fraction)
 
-        # c) Family promiscuity (fraction spanning 2+ classes)
+        # b) Family promiscuity (fraction spanning 2+ classes)
         if len(unique_labels) > 1:
             promiscuous_count += 1
 
-        # b) Class coverage
-        for label in unique_labels:
-            class_to_families[label].add(k)
+        # c) Class coverage (Assign family ONLY to its primary/majority class)
+        majority_label = unique_labels[np.argmax(counts)]
+        class_to_families[majority_label].add(k)
 
     avg_purity = np.mean(purities) * 100
     promiscuity = (promiscuous_count / n_families) * 100
 
-    # Filter out unused classes for the coverage average
-    active_classes = [
-        len(fams) for fams in class_to_families.values() if len(fams) > 0
-    ]
-    coverage = np.mean(active_classes) if active_classes else 0
+    # Calculate coverage across ALL 1000 target classes
+    all_classes = [len(fams) for fams in class_to_families.values()]
+    coverage = np.mean(all_classes) if all_classes else 0
 
     print(f"\n--- Landscape Diagnostics ---")
     print(f"Within-family purity: {avg_purity:.1f}% \t(Target: 50-70%)")
@@ -142,7 +152,9 @@ def generate_dispersion_gmm(
     ranks = np.arange(1, n_families + 1)
     zipf_probs = 1.0 / (ranks**1.5)
     zipf_probs /= zipf_probs.sum()
-    family_counts = np.random.multinomial(n_samples, zipf_probs)
+
+    family_counts = np.ones(n_families, dtype=int)
+    family_counts += np.random.multinomial(n_samples - n_families, zipf_probs)
 
     # Pre-build a flat array of all family assignments (e.g., [0, 0, ..., 1, 1, ..., 9999])
     family_assignments = np.repeat(np.arange(n_families), family_counts).astype(
