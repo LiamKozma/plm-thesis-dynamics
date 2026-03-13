@@ -30,13 +30,15 @@ class RandomOracleNN(nn.Module):
             layers.append(nn.ReLU())
             current_dim = h_dim
 
+        # THE FIX: Re-center the positive-only ReLU outputs to the origin
+        layers.append(nn.LayerNorm(current_dim))
+
         # Final classification head
         final_layer = nn.Linear(current_dim, num_classes, bias=False)
 
-        # THE MAGIC FIX: Normalize the 1000 class vectors so no class is "louder"
+        # Normalize the 1000 class vectors so no class is "louder"
         with torch.no_grad():
             nn.init.normal_(final_layer.weight)
-            # Force all vectors to exactly 1.0 length (pure cosine similarity)
             final_layer.weight.copy_(
                 torch.nn.functional.normalize(final_layer.weight, p=2, dim=1)
             )
