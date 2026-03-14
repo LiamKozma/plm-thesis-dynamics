@@ -1,0 +1,433 @@
+[33mNextflow 25.10.4 is available - Please consider updating your version to it[0m
+
+ N E X T F L O W   ~  version 25.10.3
+
+Launching `main.nf` [scruffy_spence] DSL2 - revision: 2f5dab9a83
+
+[-        ] GEN_SOURCE   -
+[-        ] TRAIN_SOURCE -
+[-        ] GEN_TARGET   -
+
+[-        ] GEN_SOURCE      -
+[-        ] TRAIN_SOURCE    -
+[-        ] GEN_TARGET      -
+[-        ] TEST_ADAPTATION -
+
+[-        ] GEN_SOURCE      | 0 of 3
+[-        ] TRAIN_SOURCE    -
+[-        ] GEN_TARGET      | 0 of 2
+[-        ] TEST_ADAPTATION -
+
+executor >  slurm (1)
+[14/9b347c] GEN_SOURCE (Src S:42 Shf:2.0) | 0 of 3
+[-        ] TRAIN_SOURCE                  -
+[-        ] GEN_TARGET                    | 0 of 2
+[-        ] TEST_ADAPTATION               -
+
+executor >  slurm (3)
+[2d/a362b3] GEN_SOURCE (Src S:42 Shf:1.0)  | 0 of 3
+[-        ] TRAIN_SOURCE                   -
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 0 of 2
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (5)
+[2d/a362b3] GEN_SOURCE (Src S:42 Shf:1.0)  | 0 of 3
+[-        ] TRAIN_SOURCE                   -
+[87/d21385] GEN_TARGET (Tgt S:42 P:100000) | 0 of 2
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (5)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 0 of 3
+[-        ] TRAIN_SOURCE                   -
+[87/d21385] GEN_TARGET (Tgt S:42 P:100000) | 0 of 2
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (5)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 0 of 3
+[-        ] TRAIN_SOURCE                   -
+[87/d21385] GEN_TARGET (Tgt S:42 P:100000) | 0 of 2
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (5)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 0 of 3
+[-        ] TRAIN_SOURCE                   -
+[87/d21385] GEN_TARGET (Tgt S:42 P:100000) | 1 of 2
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (5)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 0 of 3
+[-        ] TRAIN_SOURCE                   -
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (5)
+[2d/a362b3] GEN_SOURCE (Src S:42 Shf:1.0)  | 2 of 3 ✔
+[-        ] TRAIN_SOURCE                   -
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (5)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[-        ] TRAIN_SOURCE                   | 0 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (6)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[60/317cfa] TRA…n S:42 N:1000000 Batch:64) | 0 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (7)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[3e/ba7951] TRA…n S:42 N:1000000 Batch:64) | 0 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (8)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[79/eb2e4d] TRA… S:42 N:1000000 Batch:256) | 0 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (9)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[57/c0276d] TRA…n S:42 N:1000000 Batch:64) | 0 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (11)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[f5/20c576] TRA… S:42 N:1000000 Batch:256) | 0 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (12)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[97/144fa1] TRA…n S:42 N:1000000 Batch:64) | 0 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (13)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[68/884690] TRA… S:42 N:1000000 Batch:256) | 0 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (14)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[71/5691cd] TRA…n S:42 N:1000000 Batch:64) | 0 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (15)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[71/f06692] TRA… S:42 N:1000000 Batch:256) | 0 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (16)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[db/0aad85] TRA…n S:42 N:1000000 Batch:64) | 0 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (17)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 0 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (17)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 0 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (17)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 0 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (17)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 0 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (17)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 0 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (17)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[79/eb2e4d] TRA… S:42 N:1000000 Batch:256) | 1 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[-        ] TEST_ADAPTATION                | 0 of 2
+
+executor >  slurm (19)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[79/eb2e4d] TRA… S:42 N:1000000 Batch:256) | 1 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[2b/981788] TES…:42 NP:100000 B:256 H:512) | 0 of 2
+
+executor >  slurm (19)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[79/eb2e4d] TRA… S:42 N:1000000 Batch:256) | 1 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[2b/981788] TES…:42 NP:100000 B:256 H:512) | 0 of 2
+
+executor >  slurm (19)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[68/884690] TRA… S:42 N:1000000 Batch:256) | 2 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[2b/981788] TES…:42 NP:100000 B:256 H:512) | 0 of 2
+
+executor >  slurm (20)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[68/884690] TRA… S:42 N:1000000 Batch:256) | 2 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[19/6e33d6] TES…42 NP:100000 B:256 H:1024) | 0 of 4
+
+executor >  slurm (21)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[68/884690] TRA… S:42 N:1000000 Batch:256) | 2 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[36/e51010] TES…42 NP:500000 B:256 H:1024) | 0 of 4
+
+executor >  slurm (21)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[68/884690] TRA… S:42 N:1000000 Batch:256) | 2 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[36/e51010] TES…42 NP:500000 B:256 H:1024) | 0 of 4
+
+executor >  slurm (21)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[70/a4f8af] TRA… S:42 N:1000000 Batch:256) | 3 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[36/e51010] TES…42 NP:500000 B:256 H:1024) | 0 of 6
+
+executor >  slurm (23)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[70/a4f8af] TRA… S:42 N:1000000 Batch:256) | 3 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[1d/9dc7d3] TES…42 NP:100000 B:256 H:1024) | 0 of 6
+
+executor >  slurm (23)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[f5/20c576] TRA… S:42 N:1000000 Batch:256) | 4 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[1d/9dc7d3] TES…42 NP:100000 B:256 H:1024) | 0 of 8
+
+executor >  slurm (24)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[f5/20c576] TRA… S:42 N:1000000 Batch:256) | 4 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[af/734889] TES…:42 NP:100000 B:256 H:512) | 0 of 8
+
+executor >  slurm (25)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[f5/20c576] TRA… S:42 N:1000000 Batch:256) | 4 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[65/a2f05c] TES…:42 NP:500000 B:256 H:512) | 0 of 8
+
+executor >  slurm (25)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[f5/20c576] TRA… S:42 N:1000000 Batch:256) | 4 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[65/a2f05c] TES…:42 NP:500000 B:256 H:512) | 0 of 8
+
+executor >  slurm (25)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[60/317cfa] TRA…n S:42 N:1000000 Batch:64) | 5 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[65/a2f05c] TES…:42 NP:500000 B:256 H:512) | 0 of 9
+
+executor >  slurm (26)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[60/317cfa] TRA…n S:42 N:1000000 Batch:64) | 5 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[c9/209154] TES…:42 NP:500000 B:64 H:1024) | 0 of 10
+
+executor >  slurm (27)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[60/317cfa] TRA…n S:42 N:1000000 Batch:64) | 5 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[8f/1e3699] TES…:42 NP:100000 B:64 H:1024) | 0 of 10
+
+executor >  slurm (28)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[3e/ba7951] TRA…n S:42 N:1000000 Batch:64) | 6 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[73/7e4b0f] TES…S:42 NP:100000 B:64 H:512) | 0 of 12
+
+executor >  slurm (29)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[3e/ba7951] TRA…n S:42 N:1000000 Batch:64) | 6 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[81/f12103] TES…S:42 NP:500000 B:64 H:512) | 0 of 12
+
+executor >  slurm (29)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[3e/ba7951] TRA…n S:42 N:1000000 Batch:64) | 6 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[81/f12103] TES…S:42 NP:500000 B:64 H:512) | 0 of 12
+
+executor >  slurm (29)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[97/144fa1] TRA…n S:42 N:1000000 Batch:64) | 7 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[81/f12103] TES…S:42 NP:500000 B:64 H:512) | 0 of 14
+
+executor >  slurm (31)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[97/144fa1] TRA…n S:42 N:1000000 Batch:64) | 7 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[f0/ee29f5] TES…:42 NP:100000 B:64 H:1024) | 0 of 14
+
+executor >  slurm (31)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[97/144fa1] TRA…n S:42 N:1000000 Batch:64) | 7 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[2b/981788] TES…:42 NP:100000 B:256 H:512) | 1 of 14
+
+executor >  slurm (31)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[57/c0276d] TRA…n S:42 N:1000000 Batch:64) | 8 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[2b/981788] TES…:42 NP:100000 B:256 H:512) | 1 of 14
+
+executor >  slurm (31)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[57/c0276d] TRA…n S:42 N:1000000 Batch:64) | 8 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[2b/981788] TES…:42 NP:100000 B:256 H:512) | 1 of 16
+
+executor >  slurm (33)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[57/c0276d] TRA…n S:42 N:1000000 Batch:64) | 8 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[34/48d5b5] TES…S:42 NP:500000 B:64 H:512) | 1 of 16
+
+executor >  slurm (33)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 9 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[34/48d5b5] TES…S:42 NP:500000 B:64 H:512) | 1 of 16
+
+executor >  slurm (34)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 9 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[06/5d694f] TES…42 NP:100000 B:256 H:1024) | 1 of 18
+
+executor >  slurm (35)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 9 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[0e/013779] TES…42 NP:500000 B:256 H:1024) | 1 of 18
+
+executor >  slurm (35)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 9 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[0e/013779] TES…42 NP:500000 B:256 H:1024) | 1 of 18
+
+executor >  slurm (36)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[71/f06692] TRA… S:42 N:1000000 Batch:256) | 10 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[6a/976b89] TES…:42 NP:500000 B:256 H:512) | 1 of 20
+
+executor >  slurm (36)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[71/f06692] TRA… S:42 N:1000000 Batch:256) | 10 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[6a/976b89] TES…:42 NP:500000 B:256 H:512) | 1 of 20
+ERROR ~ Error executing process > 'TEST_ADAPTATION (Adapt S:42 NP:100000 B:256 H:512)'
+
+Caused by:
+  Failed to submit process to grid scheduler for execution
+
+
+Command executed:
+
+  sbatch .command.run
+
+Command exit status:
+  1
+
+Command output:
+  sbatch: error: QOSMaxSubmitJobPerUserLimit
+  sbatch: error: Batch job submission failed: Job violates accounting/QOS policy (job submit limit, user's size and/or time limits)
+
+Work dir:
+  /work/ah2lab/LiamK/plm-thesis-dynamics/work/2a/c7dd753ae7915a13a94b5fff69b440
+
+Tip: you can try to figure out what's wrong by changing to the process work dir and showing the script file named `.command.sh`
+
+ -- Check '.nextflow.log' file for details
+
+executor >  slurm (36)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[db/0aad85] TRA…n S:42 N:1000000 Batch:64) | 10 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[6a/976b89] TES…:42 NP:500000 B:256 H:512) | 1 of 20
+WARN: Killing running tasks (20)
+ERROR ~ Error executing process > 'TEST_ADAPTATION (Adapt S:42 NP:100000 B:256 H:512)'
+
+Caused by:
+  Failed to submit process to grid scheduler for execution
+
+
+Command executed:
+
+  sbatch .command.run
+
+Command exit status:
+  1
+
+Command output:
+  sbatch: error: QOSMaxSubmitJobPerUserLimit
+  sbatch: error: Batch job submission failed: Job violates accounting/QOS policy (job submit limit, user's size and/or time limits)
+
+Work dir:
+  /work/ah2lab/LiamK/plm-thesis-dynamics/work/2a/c7dd753ae7915a13a94b5fff69b440
+
+Tip: you can try to figure out what's wrong by changing to the process work dir and showing the script file named `.command.sh`
+
+ -- Check '.nextflow.log' file for details
+
+executor >  slurm (36)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3 ✔
+[db/0aad85] TRA…n S:42 N:1000000 Batch:64) | 10 of 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 2 of 2 ✔
+[6a/976b89] TES…:42 NP:500000 B:256 H:512) | 1 of 20
+WARN: Killing running tasks (20)
+ERROR ~ Error executing process > 'TEST_ADAPTATION (Adapt S:42 NP:100000 B:256 H:512)'
+
+Caused by:
+  Failed to submit process to grid scheduler for execution
+
+
+Command executed:
+
+  sbatch .command.run
+
+Command exit status:
+  1
+
+Command output:
+  sbatch: error: QOSMaxSubmitJobPerUserLimit
+  sbatch: error: Batch job submission failed: Job violates accounting/QOS policy (job submit limit, user's size and/or time limits)
+
+Work dir:
+  /work/ah2lab/LiamK/plm-thesis-dynamics/work/2a/c7dd753ae7915a13a94b5fff69b440
+
+Tip: you can try to figure out what's wrong by changing to the process work dir and showing the script file named `.command.sh`
+
+ -- Check '.nextflow.log' file for details
+

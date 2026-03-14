@@ -2,20 +2,25 @@
 
 // 1. Setup Channels from config.yaml arrays
 seeds_ch = Channel.fromList((0..<params.num_seeds).collect { it + params.starting_seed })
+oracles_ch = Channel.fromList(params.oracle_architectures)
+sigmas_ch = Channel.fromList(params.base_sigmas)
 n_trains_ch = Channel.fromList(params.n_trains)
 n_pools_ch = Channel.fromList(params.n_pools)
 shifts_ch = Channel.fromList(params.shifts)
+batch_sizes_ch = Channel.fromList(params.batch_sizes)
+hidden_dims_ch = Channel.fromList(params.hidden_dims)
 
 // 2. Processes
 process GEN_SOURCE {
-    tag "Src N:${n_train} Shf:${shift_val} S:${seed}"
-    publishDir "${params.outdir}/${params.dataset}/data/source", mode: 'copy'
+    tag "Src S:${seed} Shf:${shift_val}"
+    // Route heavy data to /scratch
+    publishDir "${params.data_dir}/${params.dataset}/data/source", mode: 'copy'
     
     input:
-    tuple val(seed), val(n_train), val(shift_val)
+    tuple val(seed), val(oracle), val(sigma), val(n_train), val(shift_val)
 
     output:
-    tuple val(seed), val(n_train), val(shift_val), path("source_X_${n_train}_shf${shift_val}_s${seed}.npy"), path("source_y_${n_train}_shf${shift_val}_s${seed}.npy")
+    tuple val(seed), val(oracle), val(sigma), val(n_train), val(shift_val), path("source_X.npy"), path("source_y.npy")
 
     script:
     """
@@ -26,23 +31,25 @@ process GEN_SOURCE {
         --dim ${params.dim} \
         --n_families ${params.n_families} \
         --n_classes ${params.n_classes} \
-        --oracle_layers ${params.oracle_layers.join(',')} \
+        --oracle_layers ${oracle} \
+        --base_sigma ${sigma} \
         --seed ${seed}
     
-    mv source_train_X.npy source_X_${n_train}_shf${shift_val}_s${seed}.npy
-    mv source_train_y.npy source_y_${n_train}_shf${shift_val}_s${seed}.npy
+    mv source_train_X.npy source_X.npy
+    mv source_train_y.npy source_y.npy
     """
 }
 
 process TRAIN_SOURCE {
-    tag "Train N:${n_train} Shf:${shift_val} S:${seed}"
-    publishDir "${params.outdir}/${params.dataset}/models", mode: 'copy'
+    tag "Train S:${seed} N:${n_train} Batch:${batch}"
+    // Route metrics and models to /work
+    publishDir "${params.metrics_dir}/${params.dataset}/models", mode: 'copy'
 
     input:
-    tuple val(seed), val(n_train), val(shift_val), path(x_file), path(y_file)
+    tuple val(seed), val(oracle), val(sigma), val(n_train), val(shift_val), path(x_file), path(y_file), val(batch), val(h_dim)
     
     output:
-    tuple val(seed), val(n_train), val(shift_val), path(x_file), path("model_N${n_train}_shf${shift_val}_s${seed}.pt")
+    tuple val(seed), val(oracle), val(sigma), val(n_train), val(shift_val), path(x_file), path("model_S${seed}.pt"), val(batch), val(h_dim)
     
     script:
     """
@@ -51,24 +58,25 @@ process TRAIN_SOURCE {
         --source_y ${y_file} \
         --ref_x ${x_file} \
         --epochs ${params.base_epochs} \
-        --batch_size ${params.batch_size} \
+        --batch_size ${batch} \
         --lr ${params.learning_rate} \
-        --hidden_dim ${params.hidden_dim} \
+        --hidden_dim ${h_dim} \
         --dropout ${params.dropout} \
         --num_classes ${params.n_classes} \
-        --output_model model_N${n_train}_shf${shift_val}_s${seed}.pt
+        --output_model model_S${seed}.pt
     """
 }
 
 process GEN_TARGET {
-    tag "Tgt P:${n_pool} S:${seed}"
-    publishDir "${params.outdir}/${params.dataset}/data/target", mode: 'copy'
+    tag "Tgt S:${seed} P:${n_pool}"
+    // Route heavy data to /scratch
+    publishDir "${params.data_dir}/${params.dataset}/data/target", mode: 'copy'
 
     input:
-    tuple val(seed), val(n_pool)
+    tuple val(seed), val(oracle), val(sigma), val(n_pool)
     
     output:
-    tuple val(seed), val(n_pool), path("tgt_pool_X_${n_pool}_s${seed}.npy"), path("tgt_pool_y_${n_pool}_s${seed}.npy"), path("tgt_test_X_${n_pool}_s${seed}.npy"), path("tgt_test_y_${n_pool}_s${seed}.npy")
+    tuple val(seed), val(oracle), val(sigma), val(n_pool), path("pool_X.npy"), path("pool_y.npy"), path("test_X.npy"), path("test_y.npy")
     
     script:
     """
@@ -79,27 +87,27 @@ process GEN_TARGET {
         --dim ${params.dim} \
         --n_families ${params.n_families} \
         --n_classes ${params.n_classes} \
-        --oracle_layers ${params.oracle_layers.join(',')} \
+        --oracle_layers ${oracle} \
+        --base_sigma ${sigma} \
         --seed ${seed}
 
-    mv target_pool_X.npy tgt_pool_X_${n_pool}_s${seed}.npy
-    mv target_pool_y.npy tgt_pool_y_${n_pool}_s${seed}.npy
-    mv target_test_X.npy tgt_test_X_${n_pool}_s${seed}.npy
-    mv target_test_y.npy tgt_test_y_${n_pool}_s${seed}.npy
+    mv target_pool_X.npy pool_X.npy
+    mv target_pool_y.npy pool_y.npy
+    mv target_test_X.npy test_X.npy
+    mv target_test_y.npy test_y.npy
     """
 }
 
 process TEST_ADAPTATION {
-    tag "Adapt S:${seed} NTr:${n_train} NP:${n_pool} Shf:${shift_val}"
-    publishDir "${params.outdir}/${params.dataset}/experiments/adapt", mode: 'copy'
-
+    tag "Adapt S:${seed} NP:${n_pool} B:${batch} H:${h_dim}"
+    // Route metrics and models to /work
+    publishDir "${params.metrics_dir}/${params.dataset}/experiments/adapt", mode: 'copy'
 
     input:
-    // Updated tuple order based on the new 'by: 0' combine logic
-    tuple val(seed), val(n_train), val(shift_val), path(ref_x), path(source_model), val(n_pool), path(pool_x), path(pool_y), path(test_x), path(test_y)
+    tuple val(seed), val(oracle), val(sigma), val(n_train), val(shift_val), path(ref_x), path(source_model), val(batch), val(h_dim), val(n_pool), path(pool_x), path(pool_y), path(test_x), path(test_y)
 
     output:
-    path "adapt_NTr${n_train}_NP${n_pool}_Shf${shift_val}_s${seed}.log"
+    path "adapt_log_S${seed}_NP${n_pool}_Shf${shift_val}_B${batch}_H${h_dim}.log"
     path "*_batch_log.csv", optional: true
     
     script:
@@ -111,60 +119,37 @@ process TEST_ADAPTATION {
         --test_x ${test_x} \
         --test_y ${test_y} \
         --ref_x ${ref_x} \
-        --batch_size ${params.batch_size} \
+        --batch_size ${batch} \
         --lr ${params.learning_rate} \
-        --hidden_dim ${params.hidden_dim} \
+        --hidden_dim ${h_dim} \
         --dropout ${params.dropout} \
         --num_classes ${params.n_classes} \
-        --output_model adapted_model_NTr${n_train}_NP${n_pool}_Shf${shift_val}_s${seed}.pt \
-        > adapt_NTr${n_train}_NP${n_pool}_Shf${shift_val}_s${seed}.log
-    """
-}
-
-process TEST_GENERALIZATION {
-    tag "Eval S:${seed} NTr:${n_train} NP:${n_pool} Shf:${shift_val}"
-    publishDir "${params.outdir}/${params.dataset}/experiments/eval", mode: 'copy'
-
-
-    input:
-    tuple val(seed), val(n_train), val(shift_val), path(ref_x), path(source_model), val(n_pool), path(pool_x), path(pool_y), path(test_x), path(test_y)
-
-    output:
-    path "eval_NTr${n_train}_NP${n_pool}_Shf${shift_val}_s${seed}.log"
-
-    script:
-    """
-    python ${projectDir}/src/eval.py \
-        --model_path ${source_model} \
-        --ref_x ${ref_x} \
-        --target_x ${test_x} \
-        --target_y ${test_y} \
-        --hidden_dim ${params.hidden_dim} \
-        --dropout ${params.dropout} \
-        --num_classes ${params.n_classes} \
-        --batch_size ${params.batch_size} > eval_NTr${n_train}_NP${n_pool}_Shf${shift_val}_s${seed}.log
+        --output_model adapted_model_S${seed}_NP${n_pool}_Shf${shift_val}_B${batch}_H${h_dim}.pt \
+        > adapt_log_S${seed}_NP${n_pool}_Shf${shift_val}_B${batch}_H${h_dim}.log
     """
 }
 
 workflow {
-    // Phase 1: Pre-training (Source gets the Shift parameter!)
-    source_params = seeds_ch.combine(n_trains_ch).combine(shifts_ch)
+    // Phase 1: Pre-training (Combines data params)
+    source_params = seeds_ch.combine(oracles_ch).combine(sigmas_ch).combine(n_trains_ch).combine(shifts_ch)
     sources = GEN_SOURCE(source_params) 
-    source_models = TRAIN_SOURCE(sources)
+    
+    // Add Neural Network sweeping params to the training phase
+    train_params = sources.combine(batch_sizes_ch).combine(hidden_dims_ch)
+    source_models = TRAIN_SOURCE(train_params)
 
-    // Phase 2: Target Data Generation (Target is constant, no Shift parameter needed)
-    target_params = seeds_ch.combine(n_pools_ch)
+    // Phase 2: Target Data Generation
+    target_params = seeds_ch.combine(oracles_ch).combine(sigmas_ch).combine(n_pools_ch)
     targets = GEN_TARGET(target_params)
 
     // Phase 3: The Cross-Product Engine
-    experiments = source_models.combine(targets, by: 0)
+    // Join on Seed (0), Oracle (1), and Sigma (2) so source and target environments match
+    experiments = source_models.combine(targets, by: [0, 1, 2])
 
-    // Phase 4: Execution Routing
+    // Phase 4: Execution
     if (params.mode == 'adapt') {
         TEST_ADAPTATION(experiments)
-    } else if (params.mode == 'eval') {
-        TEST_GENERALIZATION(experiments)
     } else {
-        error "Invalid mode specified in YAML. Choose 'adapt' or 'eval'."
+        error "Invalid mode specified in YAML. Choose 'adapt'."
     }
 }

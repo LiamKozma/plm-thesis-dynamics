@@ -1,0 +1,75 @@
+[33mNextflow 25.10.4 is available - Please consider updating your version to it[0m
+
+ N E X T F L O W   ~  version 25.10.3
+
+WARN: It appears you have never run this project before -- Option `-resume` is ignored
+Launching `main.nf` [kickass_salas] DSL2 - revision: 2f5dab9a83
+
+[-        ] GEN_SOURCE -
+
+[-        ] GEN_SOURCE      -
+[-        ] TRAIN_SOURCE    -
+[-        ] GEN_TARGET      -
+[-        ] TEST_ADAPTATION -
+
+[-        ] GEN_SOURCE      | 0 of 3
+[-        ] TRAIN_SOURCE    -
+[-        ] GEN_TARGET      | 0 of 2
+[-        ] TEST_ADAPTATION -
+
+[-        ] GEN_SOURCE      | 0 of 3
+[-        ] TRAIN_SOURCE    -
+[-        ] GEN_TARGET      | 0 of 2
+[-        ] TEST_ADAPTATION -
+ERROR ~ Error executing process > 'GEN_TARGET (Tgt S:42 P:100000)'
+
+Caused by:
+  Failed to submit process to grid scheduler for execution
+
+
+Command executed:
+
+  sbatch .command.run
+
+Command exit status:
+  1
+
+Command output:
+  sbatch: error: You must specify a number of tasks.
+  sbatch: error: Batch job submission failed: Job size specification needs to be provided
+
+Work dir:
+  /work/ah2lab/LiamK/plm-thesis-dynamics/work/5f/15d8051e7682ff42324cfecb1d43d2
+
+Tip: you can replicate the issue by changing to the process work dir and entering the command `bash .command.run`
+
+ -- Check '.nextflow.log' file for details
+
+[-        ] GEN_SOURCE      | 0 of 3
+[-        ] TRAIN_SOURCE    -
+[-        ] GEN_TARGET      | 0 of 2
+[-        ] TEST_ADAPTATION -
+ERROR ~ Error executing process > 'GEN_TARGET (Tgt S:42 P:100000)'
+
+Caused by:
+  Failed to submit process to grid scheduler for execution
+
+
+Command executed:
+
+  sbatch .command.run
+
+Command exit status:
+  1
+
+Command output:
+  sbatch: error: You must specify a number of tasks.
+  sbatch: error: Batch job submission failed: Job size specification needs to be provided
+
+Work dir:
+  /work/ah2lab/LiamK/plm-thesis-dynamics/work/5f/15d8051e7682ff42324cfecb1d43d2
+
+Tip: you can replicate the issue by changing to the process work dir and entering the command `bash .command.run`
+
+ -- Check '.nextflow.log' file for details
+

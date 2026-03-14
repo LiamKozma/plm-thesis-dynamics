@@ -1,0 +1,124 @@
+[33mNextflow 25.10.4 is available - Please consider updating your version to it[0m
+
+ N E X T F L O W   ~  version 25.10.3
+
+Launching `main.nf` [distraught_koch] DSL2 - revision: 2f5dab9a83
+
+[-        ] GEN_SOURCE      -
+[-        ] TRAIN_SOURCE    -
+[-        ] GEN_TARGET      -
+[-        ] TEST_ADAPTATION -
+
+[-        ] GEN_SOURCE      | 0 of 3
+[-        ] TRAIN_SOURCE    -
+[-        ] GEN_TARGET      | 0 of 2
+[-        ] TEST_ADAPTATION -
+
+executor >  slurm (1)
+[56/3bbe46] GEN_SOURCE (Src S:42 Shf:1.0) | 0 of 3
+[-        ] TRAIN_SOURCE                  -
+[-        ] GEN_TARGET                    | 0 of 2
+[-        ] TEST_ADAPTATION               -
+
+executor >  slurm (3)
+[56/3bbe46] GEN_SOURCE (Src S:42 Shf:1.0)  | 0 of 3
+[-        ] TRAIN_SOURCE                   -
+[12/a28f62] GEN_TARGET (Tgt S:42 P:100000) | 0 of 2
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (5)
+[79/c58570] GEN_SOURCE (Src S:42 Shf:5.0)  | 0 of 3
+[-        ] TRAIN_SOURCE                   -
+[12/a28f62] GEN_TARGET (Tgt S:42 P:100000) | 0 of 2
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (5)
+[79/c58570] GEN_SOURCE (Src S:42 Shf:5.0)  | 0 of 3
+[-        ] TRAIN_SOURCE                   -
+[12/a28f62] GEN_TARGET (Tgt S:42 P:100000) | 0 of 2
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (5)
+[79/c58570] GEN_SOURCE (Src S:42 Shf:5.0)  | 0 of 3 ✘
+[-        ] TRAIN_SOURCE                   -
+[12/a28f62] GEN_TARGET (Tgt S:42 P:100000) | 0 of 2
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (5)
+[79/c58570] GEN_SOURCE (Src S:42 Shf:5.0)  | 0 of 3 ✘
+[-        ] TRAIN_SOURCE                   -
+[12/a28f62] GEN_TARGET (Tgt S:42 P:100000) | 0 of 2
+[-        ] TEST_ADAPTATION                -
+ERROR ~ Error executing process > 'GEN_TARGET (Tgt S:42 P:500000)'
+
+Caused by:
+  Process `GEN_TARGET (Tgt S:42 P:500000)` terminated with an error exit status (1)
+
+
+Command executed:
+
+  python /work/ah2lab/LiamK/plm-thesis-dynamics/src/generate_simulation.py         --mode target         --n_pool 500000         --n_test 50000         --dim 1280         --n_families 1000         --n_classes 100         --oracle_layers 1024,1024,512         --base_sigma 0.5         --seed 42
+  
+  mv target_pool_X.npy pool_X.npy
+  mv target_pool_y.npy pool_y.npy
+  mv target_test_X.npy test_X.npy
+  mv target_test_y.npy test_y.npy
+
+Command exit status:
+  1
+
+Command output:
+  (empty)
+
+Command error:
+  Traceback (most recent call last):
+    File "/work/ah2lab/LiamK/plm-thesis-dynamics/src/generate_simulation.py", line 4, in <module>
+      import torch
+  ModuleNotFoundError: No module named 'torch'
+
+Work dir:
+  /work/ah2lab/LiamK/plm-thesis-dynamics/work/9c/c01675ee39fab50af9d730cbf4769a
+
+Tip: when you have fixed the problem you can continue the execution adding the option `-resume` to the run command line
+
+ -- Check '.nextflow.log' file for details
+
+executor >  slurm (5)
+[79/c58570] GEN_SOURCE (Src S:42 Shf:5.0)  | 0 of 3 ✘
+[-        ] TRAIN_SOURCE                   -
+[9c/c01675] GEN_TARGET (Tgt S:42 P:500000) | 0 of 2 ✘
+[-        ] TEST_ADAPTATION                -
+ERROR ~ Error executing process > 'GEN_TARGET (Tgt S:42 P:500000)'
+
+Caused by:
+  Process `GEN_TARGET (Tgt S:42 P:500000)` terminated with an error exit status (1)
+
+
+Command executed:
+
+  python /work/ah2lab/LiamK/plm-thesis-dynamics/src/generate_simulation.py         --mode target         --n_pool 500000         --n_test 50000         --dim 1280         --n_families 1000         --n_classes 100         --oracle_layers 1024,1024,512         --base_sigma 0.5         --seed 42
+  
+  mv target_pool_X.npy pool_X.npy
+  mv target_pool_y.npy pool_y.npy
+  mv target_test_X.npy test_X.npy
+  mv target_test_y.npy test_y.npy
+
+Command exit status:
+  1
+
+Command output:
+  (empty)
+
+Command error:
+  Traceback (most recent call last):
+    File "/work/ah2lab/LiamK/plm-thesis-dynamics/src/generate_simulation.py", line 4, in <module>
+      import torch
+  ModuleNotFoundError: No module named 'torch'
+
+Work dir:
+  /work/ah2lab/LiamK/plm-thesis-dynamics/work/9c/c01675ee39fab50af9d730cbf4769a
+
+Tip: when you have fixed the problem you can continue the execution adding the option `-resume` to the run command line
+
+ -- Check '.nextflow.log' file for details
+

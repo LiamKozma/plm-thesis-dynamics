@@ -1,0 +1,47 @@
+# ==============================================================================
+# MASTER CONFIGURATION: PLM RECOVERY THRESHOLD EXPERIMENTS
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Pipeline Routing & Data Organization
+# ------------------------------------------------------------------------------
+mode: 'adapt'                 
+dataset: 'phylogenetic_gmm'   
+
+# Split Storage Locations
+data_dir: '/scratch/lmk04992/plm_data'
+metrics_dir: '/work/ah2lab/LiamK/plm-thesis-dynamics/results'
+
+# ------------------------------------------------------------------------------
+# 2. Biological Landscape & Frozen Oracle Setup
+# ------------------------------------------------------------------------------
+n_families: 1000              
+n_classes: 100                
+dim: 1280                     
+
+# SWEEP: Oracle Configurations
+oracle_architectures: ["1024,1024,512"]  # Add more strings here to sweep
+base_sigmas: [0.5]                       # Sweet spot sigma
+
+# ------------------------------------------------------------------------------
+# 3. The Cross-Product Engine (Sweep Variables)
+# ------------------------------------------------------------------------------
+starting_seed: 42             
+num_seeds: 3                  
+
+# SWEEP: Data and Distribution Shift
+n_trains: [1000000]           
+n_pools: [100000, 500000]     
+shifts: [1.0, 2.0, 5.0]       
+n_test: 50000                 
+
+# ------------------------------------------------------------------------------
+# 4. Neural Network Hyperparameters
+# ------------------------------------------------------------------------------
+base_epochs: 20               
+learning_rate: 0.001          
+dropout: 0.1                  
+
+# SWEEP: MLP & Training params
+batch_sizes: [64, 256]
+hidden_dims: [512, 1024]

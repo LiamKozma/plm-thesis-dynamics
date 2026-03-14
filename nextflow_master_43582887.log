@@ -1,0 +1,94 @@
+[33mNextflow 25.10.4 is available - Please consider updating your version to it[0m
+
+ N E X T F L O W   ~  version 25.10.3
+
+Launching `main.nf` [small_torricelli] DSL2 - revision: 2f5dab9a83
+
+[-        ] GEN_SOURCE   -
+[-        ] TRAIN_SOURCE -
+[-        ] GEN_TARGET   -
+
+[-        ] GEN_SOURCE      -
+[-        ] TRAIN_SOURCE    -
+[-        ] GEN_TARGET      -
+[-        ] TEST_ADAPTATION -
+
+[2d/a362b3] GEN_SOURCE (Src S:42 Shf:1.0)  | 2 of 2, cached: 2
+[-        ] TRAIN_SOURCE                   -
+[87/d21385] GEN_TARGET (Tgt S:42 P:100000) | 2 of 2, cached: 2
+[-        ] TEST_ADAPTATION                -
+
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3, cached: 3
+[60/317cfa] TRA…n S:42 N:1000000 Batch:64) | 2 of 2, cached: 2
+[87/d21385] GEN_TARGET (Tgt S:42 P:100000) | 2 of 2, cached: 2
+[-        ] TEST_ADAPTATION                -
+
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3, cached: 3 ✔
+[79/eb2e4d] TRA… S:42 N:1000000 Batch:256) | 3 of 3, cached: 3
+[87/d21385] GEN_TARGET (Tgt S:42 P:100000) | 2 of 2, cached: 2
+[-        ] TEST_ADAPTATION                -
+
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3, cached: 3 ✔
+[68/884690] TRA… S:42 N:1000000 Batch:256) | 8 of 9, cached: 8
+[87/d21385] GEN_TARGET (Tgt S:42 P:100000) | 2 of 2, cached: 2 ✔
+[-        ] TEST_ADAPTATION                | 0 of 2
+
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3, cached: 3 ✔
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 10 of 12, cached: 10
+[87/d21385] GEN_TARGET (Tgt S:42 P:100000) | 2 of 2, cached: 2 ✔
+[-        ] TEST_ADAPTATION                | 0 of 6
+
+executor >  slurm (1)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3, cached: 3 ✔
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 10 of 12, cached: 10
+[87/d21385] GEN_TARGET (Tgt S:42 P:100000) | 2 of 2, cached: 2 ✔
+[c5/5ec283] TES…S:42 NP:100000 B:64 H:512) | 1 of 13, cached: 1
+
+executor >  slurm (2)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3, cached: 3 ✔
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 10 of 12, cached: 10
+[87/d21385] GEN_TARGET (Tgt S:42 P:100000) | 2 of 2, cached: 2 ✔
+[37/9fecd0] TES…S:42 NP:500000 B:64 H:512) | 1 of 20, cached: 1
+
+executor >  slurm (4)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3, cached: 3 ✔
+[30/4183bc] TRA…n S:42 N:1000000 Batch:64) | 10 of 12, cached: 10
+[87/d21385] GEN_TARGET (Tgt S:42 P:100000) | 2 of 2, cached: 2 ✔
+[37/9fecd0] TES…S:42 NP:500000 B:64 H:512) | 1 of 20, cached: 1
+
+executor >  slurm (4)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3, cached: 3 ✔
+[30/4183bc] TRA…n S:42 N:1000000 Batch:64) | 10 of 12, cached: 10
+[87/d21385] GEN_TARGET (Tgt S:42 P:100000) | 2 of 2, cached: 2 ✔
+[37/9fecd0] TES…S:42 NP:500000 B:64 H:512) | 1 of 20, cached: 1
+
+executor >  slurm (4)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3, cached: 3 ✔
+[30/4183bc] TRA…n S:42 N:1000000 Batch:64) | 12 of 12, cached: 10 ✔
+[87/d21385] GEN_TARGET (Tgt S:42 P:100000) | 2 of 2, cached: 2 ✔
+[37/9fecd0] TES…S:42 NP:500000 B:64 H:512) | 1 of 20, cached: 1
+
+executor >  slurm (4)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3, cached: 3 ✔
+[30/4183bc] TRA…n S:42 N:1000000 Batch:64) | 12 of 12, cached: 10 ✔
+[87/d21385] GEN_TARGET (Tgt S:42 P:100000) | 2 of 2, cached: 2 ✔
+[37/9fecd0] TES…S:42 NP:500000 B:64 H:512) | 1 of 24, cached: 1
+
+executor >  slurm (5)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3, cached: 3 ✔
+[30/4183bc] TRA…n S:42 N:1000000 Batch:64) | 12 of 12, cached: 10 ✔
+[87/d21385] GEN_TARGET (Tgt S:42 P:100000) | 2 of 2, cached: 2 ✔
+[ee/315fdd] TES…:42 NP:500000 B:64 H:1024) | 1 of 24, cached: 1
+
+executor >  slurm (5)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3, cached: 3 ✔
+[30/4183bc] TRA…n S:42 N:1000000 Batch:64) | 12 of 12, cached: 10 ✔
+[87/d21385] GEN_TARGET (Tgt S:42 P:100000) | 2 of 2, cached: 2 ✔
+[37/9fecd0] TES…S:42 NP:500000 B:64 H:512) | 2 of 24, cached: 1
+
+executor >  slurm (5)
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 3, cached: 3 ✔
+[30/4183bc] TRA…n S:42 N:1000000 Batch:64) | 12 of 12, cached: 10 ✔
+[87/d21385] GEN_TARGET (Tgt S:42 P:100000) | 2 of 2, cached: 2 ✔
+[37/9fecd0] TES…S:42 NP:500000 B:64 H:512) | 2 of 24, cached: 1
+slurmstepd: error: *** JOB 43582887 ON c5-18 CANCELLED AT 2026-03-13T16:27:50 ***

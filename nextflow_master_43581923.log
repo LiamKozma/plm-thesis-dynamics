@@ -1,0 +1,7 @@
+[33mNextflow 25.10.4 is available - Please consider updating your version to it[0m
+
+ N E X T F L O W   ~  version 25.10.3
+
+ERROR ~ Unknown config attribute `withName:GEN_SOURCE` -- check config file: /work/ah2lab/LiamK/plm-thesis-dynamics/nextflow.config
+
+ -- Check '.nextflow.log' file for details

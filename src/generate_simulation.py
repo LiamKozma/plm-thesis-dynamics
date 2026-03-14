@@ -54,7 +54,7 @@ def calculate_diagnostics(family_assignments, y, n_families, n_classes):
     """Calculates Professor's target metrics for the biological landscape."""
     purities = []
     promiscuous_count = 0
-    class_to_families = {c: set() for c in range(n_classes)}
+    total_class_instances = 0
 
     for k in range(n_families):
         idx = family_assignments == k
@@ -71,22 +71,21 @@ def calculate_diagnostics(family_assignments, y, n_families, n_classes):
         if len(unique_labels) > 1:
             promiscuous_count += 1
 
-        # c) Class coverage (Assign family ONLY to its primary/majority class)
-        majority_label = unique_labels[np.argmax(counts)]
-        class_to_families[majority_label].add(k)
+        # c) Class coverage (Count all unique classes present in this family)
+        total_class_instances += len(unique_labels)
 
-    avg_purity = np.mean(purities) * 100
+    avg_purity = np.mean(purities) * 100 if purities else 0
     promiscuity = (promiscuous_count / n_families) * 100
 
-    # Calculate coverage across ALL 1000 target classes
-    all_classes = [len(fams) for fams in class_to_families.values()]
-    coverage = np.mean(all_classes) if all_classes else 0
+    # Calculate coverage: Total class occurrences across all families / n_classes
+    coverage = total_class_instances / n_classes
 
     print(f"\n--- Landscape Diagnostics ---")
     print(f"Within-family purity: {avg_purity:.1f}% \t(Target: 50-70%)")
     print(f"Family promiscuity:   {promiscuity:.1f}% \t(Target: 40-60%)")
     print(f"Class coverage:       {coverage:.1f} fams/class \t(Target: ~10)")
     print(f"-----------------------------\n")
+
 
 
 def generate_dispersion_gmm(

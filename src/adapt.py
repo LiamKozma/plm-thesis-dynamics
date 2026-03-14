@@ -108,6 +108,7 @@ if __name__ == "__main__":
     # 6. The Active Learning Loop
     global_batch = 0
     samples_seen = 0
+    eval_every = 500  # <--- Evaluates every 500 batches instead of every 1 batch
 
     for batch_X, batch_y in pool_loader:
         global_batch += 1
@@ -123,12 +124,13 @@ if __name__ == "__main__":
         train_loss.backward()
         optimizer.step()
         
-        # B. Immediately evaluate on the entire Test set
-        test_ce, test_f1 = evaluate_model(model, test_loader, criterion)
-        
-        # C. Log the metrics to CSV
-        with open(batch_log_file, 'a') as f:
-            f.write(f"{global_batch},{samples_seen},{train_loss.item():.6f},{test_ce:.6f},{test_f1:.6f}\n")
+        # B & C. Evaluate and log ONLY every 500 batches or on the final batch
+        if global_batch % eval_every == 0 or global_batch == len(pool_loader):
+            test_ce, test_f1 = evaluate_model(model, test_loader, criterion)
+            
+            with open(batch_log_file, 'a') as f:
+                f.write(f"{global_batch},{samples_seen},{train_loss.item():.6f},{test_ce:.6f},{test_f1:.6f}\n")
+            print(f"Batch {global_batch} | Test CE: {test_ce:.4f} | Test F1: {test_f1:.4f}")
 
     # 7. Save the final adapted model
     torch.save(model.state_dict(), args.output_model)

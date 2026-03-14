@@ -1,0 +1,199 @@
+[33mNextflow 25.10.4 is available - Please consider updating your version to it[0m
+
+ N E X T F L O W   ~  version 25.10.3
+
+Launching `main.nf` [ecstatic_bernard] DSL2 - revision: 2f5dab9a83
+
+[-        ] GEN_SOURCE   -
+[-        ] TRAIN_SOURCE -
+
+[-        ] GEN_SOURCE      -
+[-        ] TRAIN_SOURCE    -
+[-        ] GEN_TARGET      -
+[-        ] TEST_ADAPTATION -
+
+[2d/a362b3] GEN_SOURCE (Src S:42 Shf:1.0)  | 1 of 1, cached: 1
+[-        ] TRAIN_SOURCE                   -
+[88/dd8c81] GEN_TARGET (Tgt S:43 P:100000) | 2 of 2, cached: 2
+[-        ] TEST_ADAPTATION                -
+
+[2d/a362b3] GEN_SOURCE (Src S:42 Shf:1.0)  | 1 of 2, cached: 1
+[-        ] TRAIN_SOURCE                   -
+[88/dd8c81] GEN_TARGET (Tgt S:43 P:100000) | 2 of 2, cached: 2
+[-        ] TEST_ADAPTATION                -
+
+[2d/a362b3] GEN_SOURCE (Src S:42 Shf:1.0)  | 1 of 3, cached: 1
+[-        ] TRAIN_SOURCE                   -
+[a9/4c20e6] GEN_TARGET (Tgt S:44 P:100000) | 3 of 3, cached: 3
+[-        ] TEST_ADAPTATION                -
+
+[94/811b4b] GEN_SOURCE (Src S:42 Shf:5.0)  | 3 of 8, cached: 3
+[68/884690] TRA… S:42 N:1000000 Batch:256) | 4 of 4, cached: 4
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 4 of 6, cached: 4
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (1)
+[62/6cbe8e] GEN_SOURCE (Src S:43 Shf:1.0)  | 3 of 9, cached: 3
+[79/eb2e4d] TRA… S:42 N:1000000 Batch:256) | 7 of 7, cached: 7
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 4 of 6, cached: 4
+[-        ] TEST_ADAPTATION                | 0 of 2
+
+executor >  slurm (1)
+[62/6cbe8e] GEN_SOURCE (Src S:43 Shf:1.0)  | 3 of 9, cached: 3
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 12 of 12, cached: 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 4 of 6, cached: 4
+[-        ] TEST_ADAPTATION                | 0 of 6
+
+executor >  slurm (2)
+[e3/ddc80c] GEN_SOURCE (Src S:44 Shf:1.0)  | 3 of 9, cached: 3
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 12 of 12, cached: 12
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 4 of 6, cached: 4
+[2b/981788] TES…:42 NP:100000 B:256 H:512) | 2 of 13, cached: 2
+
+executor >  slurm (3)
+[e3/ddc80c] GEN_SOURCE (Src S:44 Shf:1.0)  | 3 of 9, cached: 3
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 12 of 12, cached: 12
+[27/64e8f9] GEN_TARGET (Tgt S:43 P:500000) | 4 of 6, cached: 4
+[2b/981788] TES…:42 NP:100000 B:256 H:512) | 2 of 20, cached: 2
+
+executor >  slurm (5)
+[56/a5615a] GEN_SOURCE (Src S:43 Shf:2.0)  | 3 of 9, cached: 3
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 12 of 12, cached: 12
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 4 of 6, cached: 4
+[2b/981788] TES…:42 NP:100000 B:256 H:512) | 2 of 24, cached: 2
+
+executor >  slurm (8)
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 3 of 9, cached: 3
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 12 of 12, cached: 12
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 4 of 6, cached: 4
+[2b/981788] TES…:42 NP:100000 B:256 H:512) | 2 of 24, cached: 2
+
+executor >  slurm (9)
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 3 of 9, cached: 3
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 12 of 12, cached: 12
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 4 of 6, cached: 4
+[5d/23a2b7] TES…S:42 NP:100000 B:64 H:512) | 2 of 24, cached: 2
+
+executor >  slurm (10)
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 3 of 9, cached: 3
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 12 of 12, cached: 12
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 4 of 6, cached: 4
+[df/5dbe15] TES…:42 NP:100000 B:64 H:1024) | 2 of 24, cached: 2
+
+executor >  slurm (10)
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 3 of 9, cached: 3
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 12 of 12, cached: 12
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 4 of 6, cached: 4
+[df/5dbe15] TES…:42 NP:100000 B:64 H:1024) | 2 of 24, cached: 2
+
+executor >  slurm (10)
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 3 of 9, cached: 3
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 12 of 12, cached: 12
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 4 of 6, cached: 4
+[df/5dbe15] TES…:42 NP:100000 B:64 H:1024) | 2 of 24, cached: 2
+
+executor >  slurm (10)
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 3 of 9, cached: 3
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 12 of 12, cached: 12
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 4 ✔
+[df/5dbe15] TES…:42 NP:100000 B:64 H:1024) | 2 of 24, cached: 2
+
+executor >  slurm (10)
+[56/a5615a] GEN_SOURCE (Src S:43 Shf:2.0)  | 4 of 9, cached: 3
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 12 of 12, cached: 12
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 4 ✔
+[df/5dbe15] TES…:42 NP:100000 B:64 H:1024) | 2 of 24, cached: 2
+
+executor >  slurm (10)
+[62/6cbe8e] GEN_SOURCE (Src S:43 Shf:1.0)  | 7 of 9, cached: 3
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 12 of 17, cached: 12
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 4 ✔
+[df/5dbe15] TES…:42 NP:100000 B:64 H:1024) | 2 of 24, cached: 2
+
+executor >  slurm (10)
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 9 of 9, cached: 3 ✔
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 12 of 22, cached: 12
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 4 ✔
+[df/5dbe15] TES…:42 NP:100000 B:64 H:1024) | 2 of 24, cached: 2
+
+executor >  slurm (10)
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 9 of 9, cached: 3 ✔
+[a0/d5403b] TRA… S:42 N:1000000 Batch:256) | 12 of 27, cached: 12
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 4 ✔
+[df/5dbe15] TES…:42 NP:100000 B:64 H:1024) | 2 of 24, cached: 2
+
+executor >  slurm (11)
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 9 of 9, cached: 3 ✔
+[43/c038bf] TRA…n S:43 N:1000000 Batch:64) | 12 of 34, cached: 12
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 4 ✔
+[df/5dbe15] TES…:42 NP:100000 B:64 H:1024) | 2 of 24, cached: 2
+
+executor >  slurm (11)
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 9 of 9, cached: 3 ✔
+[43/c038bf] TRA…n S:43 N:1000000 Batch:64) | 12 of 36, cached: 12
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 4 ✔
+[df/5dbe15] TES…:42 NP:100000 B:64 H:1024) | 2 of 24, cached: 2
+
+executor >  slurm (12)
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 9 of 9, cached: 3 ✔
+[59/e5e7d5] TRA… S:43 N:1000000 Batch:256) | 12 of 36, cached: 12
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 4 ✔
+[df/5dbe15] TES…:42 NP:100000 B:64 H:1024) | 2 of 24, cached: 2
+
+executor >  slurm (13)
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 9 of 9, cached: 3 ✔
+[59/e5e7d5] TRA… S:43 N:1000000 Batch:256) | 12 of 36, cached: 12
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 4 ✔
+[16/b9e813] TES…:42 NP:100000 B:256 H:512) | 2 of 24, cached: 2
+ERROR ~ Error executing process > 'TEST_ADAPTATION (Adapt S:42 NP:100000 B:64 H:512)'
+
+Caused by:
+  Process `TEST_ADAPTATION (Adapt S:42 NP:100000 B:64 H:512)` terminated with an error exit status (140)
+
+
+Command executed:
+
+  python /work/ah2lab/LiamK/plm-thesis-dynamics/src/adapt.py         --base_model model_S42.pt         --pool_x pool_X.npy         --pool_y pool_y.npy         --test_x test_X.npy         --test_y test_y.npy         --ref_x source_X.npy         --batch_size 64         --lr 0.001         --hidden_dim 512         --dropout 0.1         --num_classes 100         --output_model adapted_model_S42_NP100000_Shf1.0_B64_H512.pt         > adapt_log_S42_NP100000_Shf1.0_B64_H512.log
+
+Command exit status:
+  140
+
+Command output:
+  (empty)
+
+Work dir:
+  /work/ah2lab/LiamK/plm-thesis-dynamics/work/5d/23a2b79b8f621fda88914cd163d968
+
+Tip: when you have fixed the problem you can continue the execution adding the option `-resume` to the run command line
+
+ -- Check '.nextflow.log' file for details
+
+executor >  slurm (13)
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 9 of 9, cached: 3 ✔
+[59/e5e7d5] TRA… S:43 N:1000000 Batch:256) | 12 of 36, cached: 12
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 4 ✔
+[16/b9e813] TES…:42 NP:100000 B:256 H:512) | 2 of 24, cached: 2
+WARN: Killing running tasks (4)
+ERROR ~ Error executing process > 'TEST_ADAPTATION (Adapt S:42 NP:100000 B:64 H:512)'
+
+Caused by:
+  Process `TEST_ADAPTATION (Adapt S:42 NP:100000 B:64 H:512)` terminated with an error exit status (140)
+
+
+Command executed:
+
+  python /work/ah2lab/LiamK/plm-thesis-dynamics/src/adapt.py         --base_model model_S42.pt         --pool_x pool_X.npy         --pool_y pool_y.npy         --test_x test_X.npy         --test_y test_y.npy         --ref_x source_X.npy         --batch_size 64         --lr 0.001         --hidden_dim 512         --dropout 0.1         --num_classes 100         --output_model adapted_model_S42_NP100000_Shf1.0_B64_H512.pt         > adapt_log_S42_NP100000_Shf1.0_B64_H512.log
+
+Command exit status:
+  140
+
+Command output:
+  (empty)
+
+Work dir:
+  /work/ah2lab/LiamK/plm-thesis-dynamics/work/5d/23a2b79b8f621fda88914cd163d968
+
+Tip: when you have fixed the problem you can continue the execution adding the option `-resume` to the run command line
+
+ -- Check '.nextflow.log' file for details
+
