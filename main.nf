@@ -120,7 +120,7 @@ process TEST_ADAPTATION {
         --test_y ${test_y} \
         --ref_x ${ref_x} \
         --batch_size ${batch} \
-        --lr ${params.learning_rate} \
+        --lr ${params.adapt_lr} \
         --hidden_dim ${h_dim} \
         --dropout ${params.dropout} \
         --num_classes ${params.n_classes} \

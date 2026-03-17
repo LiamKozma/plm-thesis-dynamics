@@ -14,4 +14,4 @@ module load Nextflow
 source activate /work/ah2lab/LiamK/conda_envs/plm_dynamics
 
 # Kick off the Nextflow pipeline using your sweep config
-nextflow run main.nf -profile sapelo2 -params-file configs/experiment1.yaml -resume
+nextflow run main.nf -profile sapelo2 -params-file configs/experiment2.yaml -resume

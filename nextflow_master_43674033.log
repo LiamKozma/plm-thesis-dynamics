@@ -1,0 +1,92 @@
+[33mNextflow 25.10.4 is available - Please consider updating your version to it[0m
+
+ N E X T F L O W   ~  version 25.10.3
+
+Launching `main.nf` [curious_hoover] DSL2 - revision: 4143498357
+
+[-        ] GEN_SOURCE      -
+[-        ] TRAIN_SOURCE    -
+[-        ] GEN_TARGET      -
+[-        ] TEST_ADAPTATION -
+
+[2d/a362b3] GEN_SOURCE (Src S:42 Shf:1.0)  | 2 of 2, cached: 2
+[-        ] TRAIN_SOURCE                   -
+[88/dd8c81] GEN_TARGET (Tgt S:43 P:100000) | 2 of 2, cached: 2
+[-        ] TEST_ADAPTATION                -
+
+[e3/ddc80c] GEN_SOURCE (Src S:44 Shf:1.0)  | 3 of 3, cached: 3
+[-        ] TRAIN_SOURCE                   -
+[88/dd8c81] GEN_TARGET (Tgt S:43 P:100000) | 2 of 2, cached: 2
+[-        ] TEST_ADAPTATION                -
+
+[14/9b347c] GEN_SOURCE (Src S:42 Shf:2.0)  | 4 of 4, cached: 4
+[-        ] TRAIN_SOURCE                   -
+[af/bcd38c] GEN_TARGET (Tgt S:42 P:500000) | 4 of 4, cached: 4
+[-        ] TEST_ADAPTATION                -
+
+[2c/08631c] GEN_SOURCE (Src S:44 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[-        ] TRAIN_SOURCE                   -
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[-        ] TEST_ADAPTATION                -
+
+[2c/08631c] GEN_SOURCE (Src S:44 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[2a/e07e4a] TRA… S:43 N:1000000 Batch:256) | 4 of 4, cached: 4
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[-        ] TEST_ADAPTATION                -
+
+[2c/08631c] GEN_SOURCE (Src S:44 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[1c/206851] TRA…n S:44 N:1000000 Batch:64) | 10 of 10, cached: 10
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[-        ] TEST_ADAPTATION                | 0 of 5
+
+[2c/08631c] GEN_SOURCE (Src S:44 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[3e/ba7951] TRA…n S:42 N:1000000 Batch:64) | 13 of 13, cached: 13
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[-        ] TEST_ADAPTATION                | 0 of 7
+
+[2c/08631c] GEN_SOURCE (Src S:44 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[3e/ba7951] TRA…n S:42 N:1000000 Batch:64) | 13 of 13, cached: 13
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[-        ] TEST_ADAPTATION                | 0 of 9
+
+executor >  slurm (1)
+[2c/08631c] GEN_SOURCE (Src S:44 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[70/a4f8af] TRA… S:42 N:1000000 Batch:256) | 17 of 17, cached: 17
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[d5/bc5b57] TES…S:43 NP:500000 B:64 H:512) | 0 of 14
+
+executor >  slurm (1)
+[2c/08631c] GEN_SOURCE (Src S:44 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[71/f06692] TRA… S:42 N:1000000 Batch:256) | 24 of 24, cached: 24
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[d5/bc5b57] TES…S:43 NP:500000 B:64 H:512) | 0 of 21
+
+executor >  slurm (2)
+[2c/08631c] GEN_SOURCE (Src S:44 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[b1/818a74] TRA…n S:44 N:1000000 Batch:64) | 30 of 30, cached: 30
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[f5/5fb086] TES…S:43 NP:100000 B:64 H:512) | 0 of 30
+
+executor >  slurm (3)
+[2c/08631c] GEN_SOURCE (Src S:44 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[18/984a89] TRA… S:44 N:1000000 Batch:256) | 36 of 36, cached: 36 ✔
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[14/d82f9e] TES…:43 NP:500000 B:64 H:1024) | 0 of 34
+
+executor >  slurm (4)
+[2c/08631c] GEN_SOURCE (Src S:44 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[18/984a89] TRA… S:44 N:1000000 Batch:256) | 36 of 36, cached: 36 ✔
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[5d/6bc68b] TES…:43 NP:100000 B:64 H:1024) | 0 of 51
+
+executor >  slurm (4)
+[2c/08631c] GEN_SOURCE (Src S:44 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[18/984a89] TRA… S:44 N:1000000 Batch:256) | 36 of 36, cached: 36 ✔
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[5d/6bc68b] TES…:43 NP:100000 B:64 H:1024) | 0 of 71
+
+executor >  slurm (4)
+[2c/08631c] GEN_SOURCE (Src S:44 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[18/984a89] TRA… S:44 N:1000000 Batch:256) | 36 of 36, cached: 36 ✔
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[5d/6bc68b] TES…:43 NP:100000 B:64 H:1024) | 0 of 72
