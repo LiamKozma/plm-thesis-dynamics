@@ -15,13 +15,13 @@ metrics_dir: '/work/ah2lab/LiamK/plm-thesis-dynamics/results'
 # ------------------------------------------------------------------------------
 # 2. Biological Landscape & Frozen Oracle Setup
 # ------------------------------------------------------------------------------
-n_families: 1000              <- NGL, I forgot to change this value.......... 
-n_classes: 100                  <- ^^^^^^^^^^^^^^^^^^^^
+n_families: 1000              
+n_classes: 100                
 dim: 1280                     
 
 # SWEEP: Oracle Configurations
-oracle_architectures: ["1024,1024,512"]  
-base_sigmas: [0.5]                       
+oracle_architectures: ["1024,1024,512"]  # Add more strings here to sweep
+base_sigmas: [0.5]                       # Sweet spot sigma
 
 # ------------------------------------------------------------------------------
 # 3. The Cross-Product Engine (Sweep Variables)
@@ -41,6 +41,11 @@ n_test: 50000
 base_epochs: 20               
 learning_rate: 0.001          
 dropout: 0.1                  
+
+# Adaptation-Specific Hyperparameters
+adapt_lr: 0.00005
+weight_decay: 0.01
+warmup_ratio: 0.1
 
 # SWEEP: MLP & Training params
 batch_sizes: [64, 256]
