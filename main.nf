@@ -112,6 +112,10 @@ process TEST_ADAPTATION {
     
     script:
     """
+    # FORCING CACHE INVALIDATION: EXPERIMENT 3 (PURE ADAM ABLATION)
+    python ${projectDir}/src/adapt.py \
+        --base_model ${source_model} \
+        --pool_x ${pool_x} \
     python ${projectDir}/src/adapt.py \
         --base_model ${source_model} \
         --pool_x ${pool_x} \

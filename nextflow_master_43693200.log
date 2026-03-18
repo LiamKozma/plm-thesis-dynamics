@@ -1,0 +1,184 @@
+[33mNextflow 25.10.4 is available - Please consider updating your version to it[0m
+
+ N E X T F L O W   ~  version 25.10.3
+
+Launching `main.nf` [astonishing_mendel] DSL2 - revision: ea83ae7306
+
+[-        ] GEN_SOURCE   -
+[-        ] TRAIN_SOURCE -
+[-        ] GEN_TARGET   -
+
+[-        ] GEN_SOURCE      -
+[-        ] TRAIN_SOURCE    -
+[-        ] GEN_TARGET      -
+[-        ] TEST_ADAPTATION -
+
+[2d/a362b3] GEN_SOURCE (Src S:42 Shf:1.0)  | 2 of 2, cached: 2
+[-        ] TRAIN_SOURCE                   -
+[87/d21385] GEN_TARGET (Tgt S:42 P:100000) | 2 of 2, cached: 2
+[-        ] TEST_ADAPTATION                -
+
+[2d/a362b3] GEN_SOURCE (Src S:42 Shf:1.0)  | 2 of 2, cached: 2
+[-        ] TRAIN_SOURCE                   -
+[a9/4c20e6] GEN_TARGET (Tgt S:44 P:100000) | 3 of 3, cached: 3
+[-        ] TEST_ADAPTATION                -
+
+[14/9b347c] GEN_SOURCE (Src S:42 Shf:2.0)  | 4 of 4, cached: 4
+[-        ] TRAIN_SOURCE                   -
+[27/64e8f9] GEN_TARGET (Tgt S:43 P:500000) | 5 of 5, cached: 5
+[-        ] TEST_ADAPTATION                -
+
+[14/9b347c] GEN_SOURCE (Src S:42 Shf:2.0)  | 4 of 4, cached: 4
+[97/144fa1] TRA…n S:42 N:1000000 Batch:64) | 5 of 5, cached: 5
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[-        ] TEST_ADAPTATION                -
+
+[2c/08631c] GEN_SOURCE (Src S:44 Shf:5.0)  | 8 of 8, cached: 8
+[42/43acce] TRA…n S:44 N:1000000 Batch:64) | 9 of 9, cached: 9
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[-        ] TEST_ADAPTATION                | 0 of 2
+
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[1c/206851] TRA…n S:44 N:1000000 Batch:64) | 11 of 11, cached: 11
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[-        ] TEST_ADAPTATION                | 0 of 3
+
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[b1/818a74] TRA…n S:44 N:1000000 Batch:64) | 17 of 17, cached: 17
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[-        ] TEST_ADAPTATION                | 0 of 7
+
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[e0/717498] TRA… S:43 N:1000000 Batch:256) | 23 of 23, cached: 23
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[-        ] TEST_ADAPTATION                | 0 of 12
+
+executor >  slurm (1)
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[30/28c6ea] TRA…n S:44 N:1000000 Batch:64) | 30 of 30, cached: 30
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[81/e8738f] TES…S:43 NP:100000 B:64 H:512) | 0 of 15
+
+executor >  slurm (1)
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[48/2897c2] TRA… S:43 N:1000000 Batch:256) | 36 of 36, cached: 36 ✔
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[81/e8738f] TES…S:43 NP:100000 B:64 H:512) | 0 of 23
+
+executor >  slurm (2)
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[48/2897c2] TRA… S:43 N:1000000 Batch:256) | 36 of 36, cached: 36 ✔
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[e6/3d9a0d] TES…S:43 NP:500000 B:64 H:512) | 0 of 35
+
+executor >  slurm (3)
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[48/2897c2] TRA… S:43 N:1000000 Batch:256) | 36 of 36, cached: 36 ✔
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[ad/e410ba] TES…:43 NP:500000 B:64 H:1024) | 0 of 45
+
+executor >  slurm (4)
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[48/2897c2] TRA… S:43 N:1000000 Batch:256) | 36 of 36, cached: 36 ✔
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[1e/bc57c8] TES…:43 NP:100000 B:64 H:1024) | 0 of 55
+
+executor >  slurm (4)
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[48/2897c2] TRA… S:43 N:1000000 Batch:256) | 36 of 36, cached: 36 ✔
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[1e/bc57c8] TES…:43 NP:100000 B:64 H:1024) | 0 of 67
+
+executor >  slurm (4)
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[48/2897c2] TRA… S:43 N:1000000 Batch:256) | 36 of 36, cached: 36 ✔
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[1e/bc57c8] TES…:43 NP:100000 B:64 H:1024) | 0 of 72
+
+executor >  slurm (4)
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[48/2897c2] TRA… S:43 N:1000000 Batch:256) | 36 of 36, cached: 36 ✔
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[1e/bc57c8] TES…:43 NP:100000 B:64 H:1024) | 0 of 72
+
+executor >  slurm (4)
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[48/2897c2] TRA… S:43 N:1000000 Batch:256) | 36 of 36, cached: 36 ✔
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[1e/bc57c8] TES…:43 NP:100000 B:64 H:1024) | 0 of 72
+
+executor >  slurm (5)
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[48/2897c2] TRA… S:43 N:1000000 Batch:256) | 36 of 36, cached: 36 ✔
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[a1/6ed2bc] TES…43 NP:100000 B:256 H:1024) | 0 of 72
+ERROR ~ Error executing process > 'TEST_ADAPTATION (Adapt S:43 NP:100000 B:64 H:512)'
+
+Caused by:
+  Process `TEST_ADAPTATION (Adapt S:43 NP:100000 B:64 H:512)` terminated with an error exit status (2)
+
+
+Command executed:
+
+  # FORCING CACHE INVALIDATION: EXPERIMENT 3 (PURE ADAM ABLATION)
+  python /work/ah2lab/LiamK/plm-thesis-dynamics/src/adapt.py         --base_model model_S43.pt         --pool_x pool_X.npy     python /work/ah2lab/LiamK/plm-thesis-dynamics/src/adapt.py         --base_model model_S43.pt         --pool_x pool_X.npy         --pool_y pool_y.npy         --test_x test_X.npy         --test_y test_y.npy         --ref_x source_X.npy         --batch_size 64         --lr 5.0E-5         --hidden_dim 512         --dropout 0.1         --num_classes 100         --output_model adapted_model_S43_NP100000_Shf1.0_B64_H512.pt         > adapt_log_S43_NP100000_Shf1.0_B64_H512.log
+
+Command exit status:
+  2
+
+Command output:
+  (empty)
+
+Command error:
+  usage: adapt.py [-h] --base_model BASE_MODEL --pool_x POOL_X --pool_y POOL_Y
+                  --test_x TEST_X --test_y TEST_Y --ref_x REF_X --output_model
+                  OUTPUT_MODEL [--batch_size BATCH_SIZE] [--lr LR]
+                  [--hidden_dim HIDDEN_DIM] [--dropout DROPOUT]
+                  [--num_classes NUM_CLASSES]
+  adapt.py: error: unrecognized arguments: python /work/ah2lab/LiamK/plm-thesis-dynamics/src/adapt.py
+
+Work dir:
+  /work/ah2lab/LiamK/plm-thesis-dynamics/work/81/e8738f955093a15b56eebdecfb0984
+
+Tip: you can replicate the issue by changing to the process work dir and entering the command `bash .command.run`
+
+ -- Check '.nextflow.log' file for details
+
+executor >  slurm (5)
+[4a/f32e14] GEN_SOURCE (Src S:43 Shf:5.0)  | 9 of 9, cached: 9 ✔
+[48/2897c2] TRA… S:43 N:1000000 Batch:256) | 36 of 36, cached: 36 ✔
+[c3/3c242f] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[a1/6ed2bc] TES…43 NP:100000 B:256 H:1024) | 0 of 72
+WARN: Killing running tasks (4)
+ERROR ~ Error executing process > 'TEST_ADAPTATION (Adapt S:43 NP:100000 B:64 H:512)'
+
+Caused by:
+  Process `TEST_ADAPTATION (Adapt S:43 NP:100000 B:64 H:512)` terminated with an error exit status (2)
+
+
+Command executed:
+
+  # FORCING CACHE INVALIDATION: EXPERIMENT 3 (PURE ADAM ABLATION)
+  python /work/ah2lab/LiamK/plm-thesis-dynamics/src/adapt.py         --base_model model_S43.pt         --pool_x pool_X.npy     python /work/ah2lab/LiamK/plm-thesis-dynamics/src/adapt.py         --base_model model_S43.pt         --pool_x pool_X.npy         --pool_y pool_y.npy         --test_x test_X.npy         --test_y test_y.npy         --ref_x source_X.npy         --batch_size 64         --lr 5.0E-5         --hidden_dim 512         --dropout 0.1         --num_classes 100         --output_model adapted_model_S43_NP100000_Shf1.0_B64_H512.pt         > adapt_log_S43_NP100000_Shf1.0_B64_H512.log
+
+Command exit status:
+  2
+
+Command output:
+  (empty)
+
+Command error:
+  usage: adapt.py [-h] --base_model BASE_MODEL --pool_x POOL_X --pool_y POOL_Y
+                  --test_x TEST_X --test_y TEST_Y --ref_x REF_X --output_model
+                  OUTPUT_MODEL [--batch_size BATCH_SIZE] [--lr LR]
+                  [--hidden_dim HIDDEN_DIM] [--dropout DROPOUT]
+                  [--num_classes NUM_CLASSES]
+  adapt.py: error: unrecognized arguments: python /work/ah2lab/LiamK/plm-thesis-dynamics/src/adapt.py
+
+Work dir:
+  /work/ah2lab/LiamK/plm-thesis-dynamics/work/81/e8738f955093a15b56eebdecfb0984
+
+Tip: you can replicate the issue by changing to the process work dir and entering the command `bash .command.run`
+
+ -- Check '.nextflow.log' file for details
+

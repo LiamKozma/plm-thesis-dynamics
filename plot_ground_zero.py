@@ -61,8 +61,6 @@ def plot_true_recovery_dynamics(df, output_dir):
     # Format X-axis in thousands (k)
     ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, pos: f'{int(x/1000)}k' if x > 0 else '0'))
     
-    # Set y-axis limits to focus on the recovery zone
-    plt.ylim(0.45, 0.80)
 
     # Legend formatting
     plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', title="Dataset Shift Severity")
