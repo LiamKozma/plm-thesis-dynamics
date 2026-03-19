@@ -100,7 +100,6 @@ process GEN_TARGET {
 
 process TEST_ADAPTATION {
     tag "Adapt S:${seed} NP:${n_pool} B:${batch} H:${h_dim}"
-    // Route metrics and models to /work
     publishDir "${params.metrics_dir}/${params.dataset}/experiments/adapt", mode: 'copy'
 
     input:
@@ -112,11 +111,7 @@ process TEST_ADAPTATION {
     
     script:
     """
-    # FORCING CACHE INVALIDATION: EXPERIMENT 3 (PURE ADAM ABLATION)
-    python ${projectDir}/src/adapt.py \
-        --base_model ${source_model} \
-        --pool_x ${pool_x} \
-    python ${projectDir}/src/adapt.py \
+    python ${projectDir}/src/${params.adapt_script} \
         --base_model ${source_model} \
         --pool_x ${pool_x} \
         --pool_y ${pool_y} \

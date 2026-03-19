@@ -1,0 +1,1885 @@
+[33mNextflow 25.10.4 is available - Please consider updating your version to it[0m
+
+ N E X T F L O W   ~  version 25.10.3
+
+Launching `main.nf` [jovial_elion] DSL2 - revision: 80453bc261
+
+[-        ] GEN_SOURCE -
+
+[-        ] GEN_SOURCE      -
+[-        ] TRAIN_SOURCE    -
+[-        ] GEN_TARGET      -
+[-        ] TEST_ADAPTATION -
+
+[d0/7e82ca] GEN_SOURCE (Src S:42 Shf:1.0)  | 2 of 2, cached: 2
+[-        ] TRAIN_SOURCE                   -
+[03/fd76d6] GEN_TARGET (Tgt S:43 P:100000) | 2 of 2, cached: 2
+[-        ] TEST_ADAPTATION                -
+
+[d0/7e82ca] GEN_SOURCE (Src S:42 Shf:1.0)  | 2 of 2, cached: 2
+[-        ] TRAIN_SOURCE                   | 0 of 2
+[03/fd76d6] GEN_TARGET (Tgt S:43 P:100000) | 2 of 2, cached: 2
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (1)
+[d0/7e82ca] GEN_SOURCE (Src S:42 Shf:1.0)  | 2 of 2, cached: 2
+[99/e24b97] TRA…n S:43 N:1000000 Batch:64) | 0 of 2
+[03/fd76d6] GEN_TARGET (Tgt S:43 P:100000) | 2 of 2, cached: 2
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (2)
+[ec/e4b078] GEN_SOURCE (Src S:44 Shf:1.0)  | 3 of 3, cached: 3
+[43/bdaf5d] TRA…n S:43 N:1000000 Batch:64) | 0 of 3
+[03/fd76d6] GEN_TARGET (Tgt S:43 P:100000) | 2 of 2, cached: 2
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (2)
+[ec/e4b078] GEN_SOURCE (Src S:44 Shf:1.0)  | 3 of 3, cached: 3
+[43/bdaf5d] TRA…n S:43 N:1000000 Batch:64) | 0 of 7
+[9c/ef753f] GEN_TARGET (Tgt S:42 P:500000) | 4 of 4, cached: 4
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (2)
+[00/fd70fb] GEN_SOURCE (Src S:43 Shf:2.0)  | 5 of 5, cached: 5
+[43/bdaf5d] TRA…n S:43 N:1000000 Batch:64) | 0 of 11
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (3)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[2b/db28da] TRA… S:43 N:1000000 Batch:256) | 0 of 13
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (4)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[17/4b1741] TRA… S:43 N:1000000 Batch:256) | 0 of 17
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (4)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[17/4b1741] TRA… S:43 N:1000000 Batch:256) | 0 of 21
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (4)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[17/4b1741] TRA… S:43 N:1000000 Batch:256) | 0 of 28
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (4)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[17/4b1741] TRA… S:43 N:1000000 Batch:256) | 0 of 32
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (4)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[17/4b1741] TRA… S:43 N:1000000 Batch:256) | 0 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (4)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[17/4b1741] TRA… S:43 N:1000000 Batch:256) | 0 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (5)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[16/661a11] TRA…n S:42 N:1000000 Batch:64) | 0 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[-        ] TEST_ADAPTATION                -
+
+executor >  slurm (5)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[17/4b1741] TRA… S:43 N:1000000 Batch:256) | 1 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[-        ] TEST_ADAPTATION                | 0 of 2
+
+executor >  slurm (6)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[17/4b1741] TRA… S:43 N:1000000 Batch:256) | 1 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[4e/22d022] TES…43 NP:500000 B:256 H:1024) | 0 of 2
+
+executor >  slurm (7)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[17/4b1741] TRA… S:43 N:1000000 Batch:256) | 1 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[0c/20c300] TES…43 NP:100000 B:256 H:1024) | 0 of 2
+
+executor >  slurm (8)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[da/5ea613] TRA…n S:42 N:1000000 Batch:64) | 2 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[0c/20c300] TES…43 NP:100000 B:256 H:1024) | 0 of 2
+
+executor >  slurm (8)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[da/5ea613] TRA…n S:42 N:1000000 Batch:64) | 2 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[0c/20c300] TES…43 NP:100000 B:256 H:1024) | 0 of 4
+
+executor >  slurm (10)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[da/5ea613] TRA…n S:42 N:1000000 Batch:64) | 2 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[31/e962c1] TES…:43 NP:500000 B:256 H:512) | 0 of 4
+
+executor >  slurm (10)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[da/5ea613] TRA…n S:42 N:1000000 Batch:64) | 2 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[31/e962c1] TES…:43 NP:500000 B:256 H:512) | 0 of 4
+
+executor >  slurm (10)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[da/5ea613] TRA…n S:42 N:1000000 Batch:64) | 2 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[31/e962c1] TES…:43 NP:500000 B:256 H:512) | 0 of 4
+
+executor >  slurm (10)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[da/5ea613] TRA…n S:42 N:1000000 Batch:64) | 2 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[31/e962c1] TES…:43 NP:500000 B:256 H:512) | 0 of 4
+
+executor >  slurm (10)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[da/5ea613] TRA…n S:42 N:1000000 Batch:64) | 2 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[31/e962c1] TES…:43 NP:500000 B:256 H:512) | 0 of 4
+
+executor >  slurm (10)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[da/5ea613] TRA…n S:42 N:1000000 Batch:64) | 2 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[31/e962c1] TES…:43 NP:500000 B:256 H:512) | 0 of 4
+
+executor >  slurm (10)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[da/5ea613] TRA…n S:42 N:1000000 Batch:64) | 2 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[0c/20c300] TES…43 NP:100000 B:256 H:1024) | 1 of 4
+
+executor >  slurm (10)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[da/5ea613] TRA…n S:42 N:1000000 Batch:64) | 2 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[4e/22d022] TES…43 NP:500000 B:256 H:1024) | 2 of 4
+
+executor >  slurm (10)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[da/5ea613] TRA…n S:42 N:1000000 Batch:64) | 2 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[4e/22d022] TES…43 NP:500000 B:256 H:1024) | 2 of 4
+
+executor >  slurm (10)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[da/5ea613] TRA…n S:42 N:1000000 Batch:64) | 2 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[60/402015] TES…:43 NP:100000 B:256 H:512) | 3 of 4
+
+executor >  slurm (10)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[16/661a11] TRA…n S:42 N:1000000 Batch:64) | 3 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[60/402015] TES…:43 NP:100000 B:256 H:512) | 3 of 4
+
+executor >  slurm (11)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[17/5a4d85] TRA… S:42 N:1000000 Batch:256) | 3 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[60/402015] TES…:43 NP:100000 B:256 H:512) | 3 of 4
+
+executor >  slurm (11)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[17/5a4d85] TRA… S:42 N:1000000 Batch:256) | 3 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[60/402015] TES…:43 NP:100000 B:256 H:512) | 3 of 6
+
+executor >  slurm (12)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[17/5a4d85] TRA… S:42 N:1000000 Batch:256) | 3 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[1f/5f52f0] TES…S:42 NP:100000 B:64 H:512) | 3 of 6
+
+executor >  slurm (13)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[17/5a4d85] TRA… S:42 N:1000000 Batch:256) | 3 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[5c/c519c3] TES…S:42 NP:500000 B:64 H:512) | 3 of 6
+
+executor >  slurm (13)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[17/5a4d85] TRA… S:42 N:1000000 Batch:256) | 3 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[31/e962c1] TES…:43 NP:500000 B:256 H:512) | 4 of 6
+
+executor >  slurm (13)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[da/5ea613] TRA…n S:42 N:1000000 Batch:64) | 4 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[31/e962c1] TES…:43 NP:500000 B:256 H:512) | 4 of 6
+
+executor >  slurm (14)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[89/72776c] TRA… S:42 N:1000000 Batch:256) | 4 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[31/e962c1] TES…:43 NP:500000 B:256 H:512) | 4 of 6
+
+executor >  slurm (14)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[89/72776c] TRA… S:42 N:1000000 Batch:256) | 4 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[31/e962c1] TES…:43 NP:500000 B:256 H:512) | 4 of 8
+
+executor >  slurm (15)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[89/72776c] TRA… S:42 N:1000000 Batch:256) | 4 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[e2/4ef7f0] TES…:42 NP:100000 B:64 H:1024) | 4 of 8
+
+executor >  slurm (16)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[89/72776c] TRA… S:42 N:1000000 Batch:256) | 4 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[b4/ec23dd] TES…:42 NP:500000 B:64 H:1024) | 4 of 8
+
+executor >  slurm (16)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[89/72776c] TRA… S:42 N:1000000 Batch:256) | 4 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[b4/ec23dd] TES…:42 NP:500000 B:64 H:1024) | 4 of 8
+
+executor >  slurm (16)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[89/72776c] TRA… S:42 N:1000000 Batch:256) | 4 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[b4/ec23dd] TES…:42 NP:500000 B:64 H:1024) | 4 of 8
+
+executor >  slurm (16)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[89/72776c] TRA… S:42 N:1000000 Batch:256) | 4 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[1f/5f52f0] TES…S:42 NP:100000 B:64 H:512) | 5 of 8
+
+executor >  slurm (16)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[89/72776c] TRA… S:42 N:1000000 Batch:256) | 4 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[1f/5f52f0] TES…S:42 NP:100000 B:64 H:512) | 5 of 8
+
+executor >  slurm (16)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[89/72776c] TRA… S:42 N:1000000 Batch:256) | 4 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[1f/5f52f0] TES…S:42 NP:100000 B:64 H:512) | 5 of 8
+
+executor >  slurm (16)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[89/72776c] TRA… S:42 N:1000000 Batch:256) | 4 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[5c/c519c3] TES…S:42 NP:500000 B:64 H:512) | 6 of 8
+
+executor >  slurm (16)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[89/72776c] TRA… S:42 N:1000000 Batch:256) | 4 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[5c/c519c3] TES…S:42 NP:500000 B:64 H:512) | 6 of 8
+
+executor >  slurm (16)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[89/72776c] TRA… S:42 N:1000000 Batch:256) | 4 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[e2/4ef7f0] TES…:42 NP:100000 B:64 H:1024) | 7 of 8
+
+executor >  slurm (16)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[17/5a4d85] TRA… S:42 N:1000000 Batch:256) | 5 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[e2/4ef7f0] TES…:42 NP:100000 B:64 H:1024) | 7 of 8
+
+executor >  slurm (18)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[3d/7aa173] TRA…n S:44 N:1000000 Batch:64) | 5 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[02/4abd5d] TES…:42 NP:500000 B:256 H:512) | 7 of 9
+
+executor >  slurm (18)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[3d/7aa173] TRA…n S:44 N:1000000 Batch:64) | 5 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[02/4abd5d] TES…:42 NP:500000 B:256 H:512) | 7 of 10
+
+executor >  slurm (19)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[3d/7aa173] TRA…n S:44 N:1000000 Batch:64) | 5 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[2e/de76bc] TES…:42 NP:100000 B:256 H:512) | 7 of 10
+
+executor >  slurm (19)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[3d/7aa173] TRA…n S:44 N:1000000 Batch:64) | 5 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[b4/ec23dd] TES…:42 NP:500000 B:64 H:1024) | 8 of 10
+
+executor >  slurm (19)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[89/72776c] TRA… S:42 N:1000000 Batch:256) | 6 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[b4/ec23dd] TES…:42 NP:500000 B:64 H:1024) | 8 of 10
+
+executor >  slurm (20)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[fa/883539] TRA…n S:44 N:1000000 Batch:64) | 6 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[b4/ec23dd] TES…:42 NP:500000 B:64 H:1024) | 8 of 10
+
+executor >  slurm (20)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[fa/883539] TRA…n S:44 N:1000000 Batch:64) | 6 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[b4/ec23dd] TES…:42 NP:500000 B:64 H:1024) | 8 of 11
+
+executor >  slurm (20)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[fa/883539] TRA…n S:44 N:1000000 Batch:64) | 6 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[b4/ec23dd] TES…:42 NP:500000 B:64 H:1024) | 8 of 12
+
+executor >  slurm (21)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[fa/883539] TRA…n S:44 N:1000000 Batch:64) | 6 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[c3/b761e0] TES…42 NP:100000 B:256 H:1024) | 8 of 12
+
+executor >  slurm (22)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[fa/883539] TRA…n S:44 N:1000000 Batch:64) | 6 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[f4/e74bce] TES…42 NP:500000 B:256 H:1024) | 8 of 12
+
+executor >  slurm (22)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[fa/883539] TRA…n S:44 N:1000000 Batch:64) | 6 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[f4/e74bce] TES…42 NP:500000 B:256 H:1024) | 8 of 12
+
+executor >  slurm (22)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[fa/883539] TRA…n S:44 N:1000000 Batch:64) | 6 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[f4/e74bce] TES…42 NP:500000 B:256 H:1024) | 8 of 12
+
+executor >  slurm (22)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[fa/883539] TRA…n S:44 N:1000000 Batch:64) | 6 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[f4/e74bce] TES…42 NP:500000 B:256 H:1024) | 8 of 12
+
+executor >  slurm (22)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[fa/883539] TRA…n S:44 N:1000000 Batch:64) | 6 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[2e/de76bc] TES…:42 NP:100000 B:256 H:512) | 9 of 12
+
+executor >  slurm (22)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[fa/883539] TRA…n S:44 N:1000000 Batch:64) | 6 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[2e/de76bc] TES…:42 NP:100000 B:256 H:512) | 9 of 12
+
+executor >  slurm (22)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[fa/883539] TRA…n S:44 N:1000000 Batch:64) | 6 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[02/4abd5d] TES…:42 NP:500000 B:256 H:512) | 10 of 12
+
+executor >  slurm (22)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[fa/883539] TRA…n S:44 N:1000000 Batch:64) | 6 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[02/4abd5d] TES…:42 NP:500000 B:256 H:512) | 10 of 12
+
+executor >  slurm (22)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[fa/883539] TRA…n S:44 N:1000000 Batch:64) | 6 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[c3/b761e0] TES…42 NP:100000 B:256 H:1024) | 11 of 12
+
+executor >  slurm (22)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[fa/883539] TRA…n S:44 N:1000000 Batch:64) | 6 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[c3/b761e0] TES…42 NP:100000 B:256 H:1024) | 11 of 12
+
+executor >  slurm (22)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[3d/7aa173] TRA…n S:44 N:1000000 Batch:64) | 7 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[c3/b761e0] TES…42 NP:100000 B:256 H:1024) | 11 of 12
+
+executor >  slurm (23)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[42/1ea7f7] TRA… S:44 N:1000000 Batch:256) | 7 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[c3/b761e0] TES…42 NP:100000 B:256 H:1024) | 11 of 13
+
+executor >  slurm (24)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[42/1ea7f7] TRA… S:44 N:1000000 Batch:256) | 7 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[9a/ae2873] TES…S:44 NP:100000 B:64 H:512) | 11 of 13
+
+executor >  slurm (24)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[42/1ea7f7] TRA… S:44 N:1000000 Batch:256) | 7 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[9a/ae2873] TES…S:44 NP:100000 B:64 H:512) | 11 of 14
+
+executor >  slurm (25)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[42/1ea7f7] TRA… S:44 N:1000000 Batch:256) | 7 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[79/8eaad5] TES…S:44 NP:500000 B:64 H:512) | 11 of 14
+
+executor >  slurm (25)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[42/1ea7f7] TRA… S:44 N:1000000 Batch:256) | 7 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[f4/e74bce] TES…42 NP:500000 B:256 H:1024) | 12 of 14
+
+executor >  slurm (25)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[42/1ea7f7] TRA… S:44 N:1000000 Batch:256) | 7 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[f4/e74bce] TES…42 NP:500000 B:256 H:1024) | 12 of 14
+
+executor >  slurm (25)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[42/1ea7f7] TRA… S:44 N:1000000 Batch:256) | 7 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[f4/e74bce] TES…42 NP:500000 B:256 H:1024) | 12 of 14
+
+executor >  slurm (25)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[fa/883539] TRA…n S:44 N:1000000 Batch:64) | 8 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[f4/e74bce] TES…42 NP:500000 B:256 H:1024) | 12 of 14
+
+executor >  slurm (27)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[3d/3c0015] TRA… S:44 N:1000000 Batch:256) | 8 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[2a/784432] TES…:44 NP:100000 B:64 H:1024) | 12 of 16
+
+executor >  slurm (28)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[3d/3c0015] TRA… S:44 N:1000000 Batch:256) | 8 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[8f/1e4c9e] TES…:44 NP:500000 B:64 H:1024) | 12 of 16
+
+executor >  slurm (28)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[3d/3c0015] TRA… S:44 N:1000000 Batch:256) | 8 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[8f/1e4c9e] TES…:44 NP:500000 B:64 H:1024) | 12 of 16
+
+executor >  slurm (28)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[3d/3c0015] TRA… S:44 N:1000000 Batch:256) | 8 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[9a/ae2873] TES…S:44 NP:100000 B:64 H:512) | 13 of 16
+
+executor >  slurm (28)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[3d/3c0015] TRA… S:44 N:1000000 Batch:256) | 8 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[79/8eaad5] TES…S:44 NP:500000 B:64 H:512) | 14 of 16
+
+executor >  slurm (29)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[01/9c6db1] TRA…n S:42 N:1000000 Batch:64) | 9 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[79/8eaad5] TES…S:44 NP:500000 B:64 H:512) | 14 of 16
+
+executor >  slurm (29)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[01/9c6db1] TRA…n S:42 N:1000000 Batch:64) | 9 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[79/8eaad5] TES…S:44 NP:500000 B:64 H:512) | 14 of 18
+
+executor >  slurm (31)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[01/9c6db1] TRA…n S:42 N:1000000 Batch:64) | 9 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[00/616a93] TES…:44 NP:500000 B:256 H:512) | 14 of 18
+
+executor >  slurm (31)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[01/9c6db1] TRA…n S:42 N:1000000 Batch:64) | 9 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[00/616a93] TES…:44 NP:500000 B:256 H:512) | 14 of 18
+
+executor >  slurm (31)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[01/9c6db1] TRA…n S:42 N:1000000 Batch:64) | 9 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[00/616a93] TES…:44 NP:500000 B:256 H:512) | 14 of 18
+
+executor >  slurm (31)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[01/9c6db1] TRA…n S:42 N:1000000 Batch:64) | 9 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[00/616a93] TES…:44 NP:500000 B:256 H:512) | 14 of 18
+
+executor >  slurm (31)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[01/9c6db1] TRA…n S:42 N:1000000 Batch:64) | 9 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[2a/784432] TES…:44 NP:100000 B:64 H:1024) | 15 of 18
+
+executor >  slurm (31)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[01/9c6db1] TRA…n S:42 N:1000000 Batch:64) | 9 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[2a/784432] TES…:44 NP:100000 B:64 H:1024) | 15 of 18
+
+executor >  slurm (31)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[01/9c6db1] TRA…n S:42 N:1000000 Batch:64) | 9 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[2a/784432] TES…:44 NP:100000 B:64 H:1024) | 15 of 18
+
+executor >  slurm (31)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[01/9c6db1] TRA…n S:42 N:1000000 Batch:64) | 9 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[8f/1e4c9e] TES…:44 NP:500000 B:64 H:1024) | 16 of 18
+
+executor >  slurm (31)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[3d/3c0015] TRA… S:44 N:1000000 Batch:256) | 10 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[8f/1e4c9e] TES…:44 NP:500000 B:64 H:1024) | 16 of 18
+
+executor >  slurm (32)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[c2/bc998c] TRA… S:42 N:1000000 Batch:256) | 10 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[8f/1e4c9e] TES…:44 NP:500000 B:64 H:1024) | 16 of 20
+
+executor >  slurm (34)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[c2/bc998c] TRA… S:42 N:1000000 Batch:256) | 10 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[af/2d5d48] TES…44 NP:500000 B:256 H:1024) | 16 of 20
+
+executor >  slurm (34)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[c2/bc998c] TRA… S:42 N:1000000 Batch:256) | 10 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[28/e8f23e] TES…:44 NP:100000 B:256 H:512) | 17 of 20
+
+executor >  slurm (34)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[c2/bc998c] TRA… S:42 N:1000000 Batch:256) | 10 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[00/616a93] TES…:44 NP:500000 B:256 H:512) | 18 of 20
+
+executor >  slurm (34)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[c2/bc998c] TRA… S:42 N:1000000 Batch:256) | 10 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[00/616a93] TES…:44 NP:500000 B:256 H:512) | 18 of 20
+
+executor >  slurm (34)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[01/9c6db1] TRA…n S:42 N:1000000 Batch:64) | 11 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[00/616a93] TES…:44 NP:500000 B:256 H:512) | 18 of 20
+
+executor >  slurm (35)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[a1/b9bbd5] TRA…n S:42 N:1000000 Batch:64) | 11 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[00/616a93] TES…:44 NP:500000 B:256 H:512) | 18 of 20
+
+executor >  slurm (35)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[a1/b9bbd5] TRA…n S:42 N:1000000 Batch:64) | 11 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[00/616a93] TES…:44 NP:500000 B:256 H:512) | 18 of 22
+
+executor >  slurm (36)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[a1/b9bbd5] TRA…n S:42 N:1000000 Batch:64) | 11 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[e4/c13931] TES…S:42 NP:100000 B:64 H:512) | 18 of 22
+
+executor >  slurm (37)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[a1/b9bbd5] TRA…n S:42 N:1000000 Batch:64) | 11 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[05/60138f] TES…S:42 NP:500000 B:64 H:512) | 18 of 22
+
+executor >  slurm (37)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[a1/b9bbd5] TRA…n S:42 N:1000000 Batch:64) | 11 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[05/60138f] TES…S:42 NP:500000 B:64 H:512) | 18 of 22
+
+executor >  slurm (37)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[a1/b9bbd5] TRA…n S:42 N:1000000 Batch:64) | 11 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[05/60138f] TES…S:42 NP:500000 B:64 H:512) | 18 of 22
+
+executor >  slurm (37)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[a1/b9bbd5] TRA…n S:42 N:1000000 Batch:64) | 11 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[c7/bd6ae4] TES…44 NP:100000 B:256 H:1024) | 19 of 22
+
+executor >  slurm (37)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[a1/b9bbd5] TRA…n S:42 N:1000000 Batch:64) | 11 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[af/2d5d48] TES…44 NP:500000 B:256 H:1024) | 20 of 22
+
+executor >  slurm (37)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[a1/b9bbd5] TRA…n S:42 N:1000000 Batch:64) | 11 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[af/2d5d48] TES…44 NP:500000 B:256 H:1024) | 20 of 22
+
+executor >  slurm (37)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[a1/b9bbd5] TRA…n S:42 N:1000000 Batch:64) | 11 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[af/2d5d48] TES…44 NP:500000 B:256 H:1024) | 20 of 22
+
+executor >  slurm (37)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[c2/bc998c] TRA… S:42 N:1000000 Batch:256) | 12 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[af/2d5d48] TES…44 NP:500000 B:256 H:1024) | 20 of 22
+
+executor >  slurm (38)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[e1/11c25b] TRA… S:42 N:1000000 Batch:256) | 12 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[af/2d5d48] TES…44 NP:500000 B:256 H:1024) | 20 of 23
+
+executor >  slurm (39)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[e1/11c25b] TRA… S:42 N:1000000 Batch:256) | 12 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[4e/d36694] TES…:42 NP:100000 B:256 H:512) | 20 of 23
+
+executor >  slurm (39)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[e1/11c25b] TRA… S:42 N:1000000 Batch:256) | 12 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[4e/d36694] TES…:42 NP:100000 B:256 H:512) | 20 of 24
+
+executor >  slurm (40)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[e1/11c25b] TRA… S:42 N:1000000 Batch:256) | 12 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[7b/7cc683] TES…:42 NP:500000 B:256 H:512) | 20 of 24
+
+executor >  slurm (40)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[e1/11c25b] TRA… S:42 N:1000000 Batch:256) | 12 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[7b/7cc683] TES…:42 NP:500000 B:256 H:512) | 20 of 24
+
+executor >  slurm (40)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[e1/11c25b] TRA… S:42 N:1000000 Batch:256) | 12 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[e4/c13931] TES…S:42 NP:100000 B:64 H:512) | 21 of 24
+
+executor >  slurm (40)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[e1/11c25b] TRA… S:42 N:1000000 Batch:256) | 12 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[05/60138f] TES…S:42 NP:500000 B:64 H:512) | 22 of 24
+
+executor >  slurm (40)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[e1/11c25b] TRA… S:42 N:1000000 Batch:256) | 12 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[05/60138f] TES…S:42 NP:500000 B:64 H:512) | 22 of 24
+
+executor >  slurm (40)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[e1/11c25b] TRA… S:42 N:1000000 Batch:256) | 12 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[05/60138f] TES…S:42 NP:500000 B:64 H:512) | 22 of 24
+
+executor >  slurm (40)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[e1/11c25b] TRA… S:42 N:1000000 Batch:256) | 12 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[05/60138f] TES…S:42 NP:500000 B:64 H:512) | 22 of 24
+
+executor >  slurm (40)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[a1/b9bbd5] TRA…n S:42 N:1000000 Batch:64) | 13 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[05/60138f] TES…S:42 NP:500000 B:64 H:512) | 22 of 24
+
+executor >  slurm (41)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[e1/bac594] TRA…n S:43 N:1000000 Batch:64) | 13 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[05/60138f] TES…S:42 NP:500000 B:64 H:512) | 22 of 24
+
+executor >  slurm (41)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[e1/bac594] TRA…n S:43 N:1000000 Batch:64) | 13 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[05/60138f] TES…S:42 NP:500000 B:64 H:512) | 22 of 26
+
+executor >  slurm (42)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[e1/bac594] TRA…n S:43 N:1000000 Batch:64) | 13 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[e8/173d1d] TES…:42 NP:100000 B:64 H:1024) | 22 of 26
+
+executor >  slurm (43)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[e1/bac594] TRA…n S:43 N:1000000 Batch:64) | 13 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[be/a6dfb7] TES…:42 NP:500000 B:64 H:1024) | 22 of 26
+
+executor >  slurm (43)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[e1/bac594] TRA…n S:43 N:1000000 Batch:64) | 13 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[4e/d36694] TES…:42 NP:100000 B:256 H:512) | 23 of 26
+
+executor >  slurm (43)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[e1/bac594] TRA…n S:43 N:1000000 Batch:64) | 13 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[7b/7cc683] TES…:42 NP:500000 B:256 H:512) | 24 of 26
+
+executor >  slurm (43)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[e1/11c25b] TRA… S:42 N:1000000 Batch:256) | 14 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[7b/7cc683] TES…:42 NP:500000 B:256 H:512) | 24 of 26
+
+executor >  slurm (44)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[37/1f4a5d] TRA… S:43 N:1000000 Batch:256) | 14 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[7b/7cc683] TES…:42 NP:500000 B:256 H:512) | 24 of 26
+
+executor >  slurm (44)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[37/1f4a5d] TRA… S:43 N:1000000 Batch:256) | 14 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[7b/7cc683] TES…:42 NP:500000 B:256 H:512) | 24 of 28
+
+executor >  slurm (45)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[37/1f4a5d] TRA… S:43 N:1000000 Batch:256) | 14 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[26/e770c7] TES…42 NP:500000 B:256 H:1024) | 24 of 28
+
+executor >  slurm (46)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[37/1f4a5d] TRA… S:43 N:1000000 Batch:256) | 14 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[cc/f812bc] TES…42 NP:100000 B:256 H:1024) | 24 of 28
+
+executor >  slurm (46)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[37/1f4a5d] TRA… S:43 N:1000000 Batch:256) | 14 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[cc/f812bc] TES…42 NP:100000 B:256 H:1024) | 24 of 28
+
+executor >  slurm (46)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[37/1f4a5d] TRA… S:43 N:1000000 Batch:256) | 14 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[cc/f812bc] TES…42 NP:100000 B:256 H:1024) | 24 of 28
+
+executor >  slurm (46)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[37/1f4a5d] TRA… S:43 N:1000000 Batch:256) | 14 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[cc/f812bc] TES…42 NP:100000 B:256 H:1024) | 24 of 28
+
+executor >  slurm (46)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[37/1f4a5d] TRA… S:43 N:1000000 Batch:256) | 14 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[e8/173d1d] TES…:42 NP:100000 B:64 H:1024) | 25 of 28
+
+executor >  slurm (46)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[37/1f4a5d] TRA… S:43 N:1000000 Batch:256) | 14 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[e8/173d1d] TES…:42 NP:100000 B:64 H:1024) | 25 of 28
+
+executor >  slurm (46)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[37/1f4a5d] TRA… S:43 N:1000000 Batch:256) | 14 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[be/a6dfb7] TES…:42 NP:500000 B:64 H:1024) | 26 of 28
+
+executor >  slurm (46)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[37/1f4a5d] TRA… S:43 N:1000000 Batch:256) | 14 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[be/a6dfb7] TES…:42 NP:500000 B:64 H:1024) | 26 of 28
+
+executor >  slurm (46)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[37/1f4a5d] TRA… S:43 N:1000000 Batch:256) | 14 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[be/a6dfb7] TES…:42 NP:500000 B:64 H:1024) | 26 of 28
+
+executor >  slurm (46)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[e1/bac594] TRA…n S:43 N:1000000 Batch:64) | 15 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[be/a6dfb7] TES…:42 NP:500000 B:64 H:1024) | 26 of 28
+
+executor >  slurm (47)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[3c/2c2ad1] TRA… S:43 N:1000000 Batch:256) | 15 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[be/a6dfb7] TES…:42 NP:500000 B:64 H:1024) | 26 of 28
+
+executor >  slurm (47)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[3c/2c2ad1] TRA… S:43 N:1000000 Batch:256) | 15 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[be/a6dfb7] TES…:42 NP:500000 B:64 H:1024) | 26 of 29
+
+executor >  slurm (47)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[3c/2c2ad1] TRA… S:43 N:1000000 Batch:256) | 15 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[be/a6dfb7] TES…:42 NP:500000 B:64 H:1024) | 26 of 30
+
+executor >  slurm (48)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[3c/2c2ad1] TRA… S:43 N:1000000 Batch:256) | 15 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[30/ddf375] TES…S:43 NP:100000 B:64 H:512) | 26 of 30
+
+executor >  slurm (49)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[3c/2c2ad1] TRA… S:43 N:1000000 Batch:256) | 15 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[94/5a9d23] TES…S:43 NP:500000 B:64 H:512) | 26 of 30
+
+executor >  slurm (49)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[3c/2c2ad1] TRA… S:43 N:1000000 Batch:256) | 15 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[cc/f812bc] TES…42 NP:100000 B:256 H:1024) | 27 of 30
+
+executor >  slurm (49)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[3c/2c2ad1] TRA… S:43 N:1000000 Batch:256) | 15 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[26/e770c7] TES…42 NP:500000 B:256 H:1024) | 28 of 30
+
+executor >  slurm (49)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[37/1f4a5d] TRA… S:43 N:1000000 Batch:256) | 16 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[26/e770c7] TES…42 NP:500000 B:256 H:1024) | 28 of 31
+
+executor >  slurm (50)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[c7/4f6838] TRA…n S:43 N:1000000 Batch:64) | 16 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[26/e770c7] TES…42 NP:500000 B:256 H:1024) | 28 of 31
+
+executor >  slurm (51)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[c7/4f6838] TRA…n S:43 N:1000000 Batch:64) | 16 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[99/031b1d] TES…:43 NP:500000 B:256 H:512) | 28 of 32
+
+executor >  slurm (52)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[c7/4f6838] TRA…n S:43 N:1000000 Batch:64) | 16 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[c8/c59aea] TES…:43 NP:100000 B:256 H:512) | 28 of 32
+
+executor >  slurm (52)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[c7/4f6838] TRA…n S:43 N:1000000 Batch:64) | 16 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[c8/c59aea] TES…:43 NP:100000 B:256 H:512) | 28 of 32
+
+executor >  slurm (52)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[c7/4f6838] TRA…n S:43 N:1000000 Batch:64) | 16 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[c8/c59aea] TES…:43 NP:100000 B:256 H:512) | 28 of 32
+
+executor >  slurm (52)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[c7/4f6838] TRA…n S:43 N:1000000 Batch:64) | 16 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[c8/c59aea] TES…:43 NP:100000 B:256 H:512) | 28 of 32
+
+executor >  slurm (52)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[c7/4f6838] TRA…n S:43 N:1000000 Batch:64) | 16 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[30/ddf375] TES…S:43 NP:100000 B:64 H:512) | 29 of 32
+
+executor >  slurm (52)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[c7/4f6838] TRA…n S:43 N:1000000 Batch:64) | 16 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[30/ddf375] TES…S:43 NP:100000 B:64 H:512) | 29 of 32
+
+executor >  slurm (52)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[3c/2c2ad1] TRA… S:43 N:1000000 Batch:256) | 17 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[30/ddf375] TES…S:43 NP:100000 B:64 H:512) | 29 of 32
+
+executor >  slurm (53)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[01/ce9253] TRA…n S:42 N:1000000 Batch:64) | 17 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[30/ddf375] TES…S:43 NP:100000 B:64 H:512) | 29 of 32
+
+executor >  slurm (53)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[01/ce9253] TRA…n S:42 N:1000000 Batch:64) | 17 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[30/ddf375] TES…S:43 NP:100000 B:64 H:512) | 29 of 34
+
+executor >  slurm (54)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[01/ce9253] TRA…n S:42 N:1000000 Batch:64) | 17 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[b9/6d6336] TES…43 NP:100000 B:256 H:1024) | 29 of 34
+
+executor >  slurm (55)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[01/ce9253] TRA…n S:42 N:1000000 Batch:64) | 17 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[0a/148c53] TES…43 NP:500000 B:256 H:1024) | 29 of 34
+
+executor >  slurm (55)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[01/ce9253] TRA…n S:42 N:1000000 Batch:64) | 17 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[94/5a9d23] TES…S:43 NP:500000 B:64 H:512) | 30 of 34
+
+executor >  slurm (55)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[01/ce9253] TRA…n S:42 N:1000000 Batch:64) | 17 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[c8/c59aea] TES…:43 NP:100000 B:256 H:512) | 31 of 34
+
+executor >  slurm (55)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[01/ce9253] TRA…n S:42 N:1000000 Batch:64) | 17 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[99/031b1d] TES…:43 NP:500000 B:256 H:512) | 32 of 34
+
+executor >  slurm (55)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[01/ce9253] TRA…n S:42 N:1000000 Batch:64) | 17 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[99/031b1d] TES…:43 NP:500000 B:256 H:512) | 32 of 34
+
+executor >  slurm (55)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[01/ce9253] TRA…n S:42 N:1000000 Batch:64) | 17 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[99/031b1d] TES…:43 NP:500000 B:256 H:512) | 32 of 34
+
+executor >  slurm (56)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[7c/3079e5] TRA… S:42 N:1000000 Batch:256) | 18 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[99/031b1d] TES…:43 NP:500000 B:256 H:512) | 32 of 34
+
+executor >  slurm (56)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[7c/3079e5] TRA… S:42 N:1000000 Batch:256) | 18 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[99/031b1d] TES…:43 NP:500000 B:256 H:512) | 32 of 36
+
+executor >  slurm (58)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[7c/3079e5] TRA… S:42 N:1000000 Batch:256) | 18 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[45/8a6d76] TES…:43 NP:100000 B:64 H:1024) | 32 of 36
+
+executor >  slurm (58)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[7c/3079e5] TRA… S:42 N:1000000 Batch:256) | 18 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[b9/6d6336] TES…43 NP:100000 B:256 H:1024) | 33 of 36
+
+executor >  slurm (58)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[7c/3079e5] TRA… S:42 N:1000000 Batch:256) | 18 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[0a/148c53] TES…43 NP:500000 B:256 H:1024) | 34 of 36
+
+executor >  slurm (58)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[7c/3079e5] TRA… S:42 N:1000000 Batch:256) | 18 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[0a/148c53] TES…43 NP:500000 B:256 H:1024) | 34 of 36
+
+executor >  slurm (58)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[7c/3079e5] TRA… S:42 N:1000000 Batch:256) | 18 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[0a/148c53] TES…43 NP:500000 B:256 H:1024) | 34 of 36
+
+executor >  slurm (58)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[01/ce9253] TRA…n S:42 N:1000000 Batch:64) | 19 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[0a/148c53] TES…43 NP:500000 B:256 H:1024) | 34 of 36
+
+executor >  slurm (60)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[bd/5c386f] TRA…n S:42 N:1000000 Batch:64) | 19 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[74/b28a7c] TES…S:42 NP:100000 B:64 H:512) | 34 of 37
+
+executor >  slurm (60)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[bd/5c386f] TRA…n S:42 N:1000000 Batch:64) | 19 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[74/b28a7c] TES…S:42 NP:100000 B:64 H:512) | 34 of 38
+
+executor >  slurm (61)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[bd/5c386f] TRA…n S:42 N:1000000 Batch:64) | 19 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[52/8a5f51] TES…S:42 NP:500000 B:64 H:512) | 34 of 38
+
+executor >  slurm (61)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[bd/5c386f] TRA…n S:42 N:1000000 Batch:64) | 19 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[52/8a5f51] TES…S:42 NP:500000 B:64 H:512) | 34 of 38
+
+executor >  slurm (61)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[bd/5c386f] TRA…n S:42 N:1000000 Batch:64) | 19 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[45/8a6d76] TES…:43 NP:100000 B:64 H:1024) | 35 of 38
+
+executor >  slurm (61)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[bd/5c386f] TRA…n S:42 N:1000000 Batch:64) | 19 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[62/e31fd1] TES…:43 NP:500000 B:64 H:1024) | 36 of 38
+
+executor >  slurm (61)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[bd/5c386f] TRA…n S:42 N:1000000 Batch:64) | 19 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[62/e31fd1] TES…:43 NP:500000 B:64 H:1024) | 36 of 38
+
+executor >  slurm (61)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[bd/5c386f] TRA…n S:42 N:1000000 Batch:64) | 19 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[62/e31fd1] TES…:43 NP:500000 B:64 H:1024) | 36 of 38
+
+executor >  slurm (61)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[7c/3079e5] TRA… S:42 N:1000000 Batch:256) | 20 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[62/e31fd1] TES…:43 NP:500000 B:64 H:1024) | 36 of 38
+
+executor >  slurm (62)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[5a/f10788] TRA… S:42 N:1000000 Batch:256) | 20 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[62/e31fd1] TES…:43 NP:500000 B:64 H:1024) | 36 of 38
+
+executor >  slurm (62)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[5a/f10788] TRA… S:42 N:1000000 Batch:256) | 20 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[62/e31fd1] TES…:43 NP:500000 B:64 H:1024) | 36 of 40
+
+executor >  slurm (63)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[5a/f10788] TRA… S:42 N:1000000 Batch:256) | 20 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[91/3f2e02] TES…:42 NP:100000 B:256 H:512) | 36 of 40
+
+executor >  slurm (64)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[5a/f10788] TRA… S:42 N:1000000 Batch:256) | 20 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[cd/d3c21f] TES…:42 NP:500000 B:256 H:512) | 36 of 40
+
+executor >  slurm (64)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[5a/f10788] TRA… S:42 N:1000000 Batch:256) | 20 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[74/b28a7c] TES…S:42 NP:100000 B:64 H:512) | 37 of 40
+
+executor >  slurm (64)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[5a/f10788] TRA… S:42 N:1000000 Batch:256) | 20 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[74/b28a7c] TES…S:42 NP:100000 B:64 H:512) | 37 of 40
+
+executor >  slurm (64)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[5a/f10788] TRA… S:42 N:1000000 Batch:256) | 20 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[52/8a5f51] TES…S:42 NP:500000 B:64 H:512) | 38 of 40
+
+executor >  slurm (64)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[5a/f10788] TRA… S:42 N:1000000 Batch:256) | 20 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[52/8a5f51] TES…S:42 NP:500000 B:64 H:512) | 38 of 40
+
+executor >  slurm (64)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[5a/f10788] TRA… S:42 N:1000000 Batch:256) | 20 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[52/8a5f51] TES…S:42 NP:500000 B:64 H:512) | 38 of 40
+
+executor >  slurm (64)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[5a/f10788] TRA… S:42 N:1000000 Batch:256) | 20 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[91/3f2e02] TES…:42 NP:100000 B:256 H:512) | 39 of 40
+
+executor >  slurm (64)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[5a/f10788] TRA… S:42 N:1000000 Batch:256) | 20 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[cd/d3c21f] TES…:42 NP:500000 B:256 H:512) | 40 of 40
+
+executor >  slurm (64)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[bd/5c386f] TRA…n S:42 N:1000000 Batch:64) | 21 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[cd/d3c21f] TES…:42 NP:500000 B:256 H:512) | 40 of 41
+
+executor >  slurm (66)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[3f/88d9fc] TRA…n S:43 N:1000000 Batch:64) | 21 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[63/b1733d] TES…:42 NP:100000 B:64 H:1024) | 40 of 41
+
+executor >  slurm (66)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[3f/88d9fc] TRA…n S:43 N:1000000 Batch:64) | 21 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[63/b1733d] TES…:42 NP:100000 B:64 H:1024) | 40 of 42
+
+executor >  slurm (67)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[3f/88d9fc] TRA…n S:43 N:1000000 Batch:64) | 21 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[6e/7e8a5b] TES…:42 NP:500000 B:64 H:1024) | 40 of 42
+
+executor >  slurm (67)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[3f/88d9fc] TRA…n S:43 N:1000000 Batch:64) | 21 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[6e/7e8a5b] TES…:42 NP:500000 B:64 H:1024) | 40 of 42
+
+executor >  slurm (67)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[3f/88d9fc] TRA…n S:43 N:1000000 Batch:64) | 21 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[6e/7e8a5b] TES…:42 NP:500000 B:64 H:1024) | 40 of 42
+
+executor >  slurm (67)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[5a/f10788] TRA… S:42 N:1000000 Batch:256) | 22 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[6e/7e8a5b] TES…:42 NP:500000 B:64 H:1024) | 40 of 42
+
+executor >  slurm (68)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[56/d28c6c] TRA…n S:43 N:1000000 Batch:64) | 22 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[6e/7e8a5b] TES…:42 NP:500000 B:64 H:1024) | 40 of 42
+
+executor >  slurm (68)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[56/d28c6c] TRA…n S:43 N:1000000 Batch:64) | 22 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[6e/7e8a5b] TES…:42 NP:500000 B:64 H:1024) | 40 of 43
+
+executor >  slurm (68)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[56/d28c6c] TRA…n S:43 N:1000000 Batch:64) | 22 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[6e/7e8a5b] TES…:42 NP:500000 B:64 H:1024) | 40 of 44
+
+executor >  slurm (69)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[56/d28c6c] TRA…n S:43 N:1000000 Batch:64) | 22 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[ba/dbb370] TES…42 NP:100000 B:256 H:1024) | 40 of 44
+
+executor >  slurm (70)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[56/d28c6c] TRA…n S:43 N:1000000 Batch:64) | 22 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[77/ef0086] TES…42 NP:500000 B:256 H:1024) | 40 of 44
+
+executor >  slurm (70)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[56/d28c6c] TRA…n S:43 N:1000000 Batch:64) | 22 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[77/ef0086] TES…42 NP:500000 B:256 H:1024) | 40 of 44
+
+executor >  slurm (70)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[56/d28c6c] TRA…n S:43 N:1000000 Batch:64) | 22 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[63/b1733d] TES…:42 NP:100000 B:64 H:1024) | 41 of 44
+
+executor >  slurm (70)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[56/d28c6c] TRA…n S:43 N:1000000 Batch:64) | 22 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[63/b1733d] TES…:42 NP:100000 B:64 H:1024) | 41 of 44
+
+executor >  slurm (70)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[56/d28c6c] TRA…n S:43 N:1000000 Batch:64) | 22 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[6e/7e8a5b] TES…:42 NP:500000 B:64 H:1024) | 42 of 44
+
+executor >  slurm (70)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[56/d28c6c] TRA…n S:43 N:1000000 Batch:64) | 22 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[ba/dbb370] TES…42 NP:100000 B:256 H:1024) | 43 of 44
+
+executor >  slurm (70)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[56/d28c6c] TRA…n S:43 N:1000000 Batch:64) | 22 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[77/ef0086] TES…42 NP:500000 B:256 H:1024) | 44 of 44
+
+executor >  slurm (70)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[3f/88d9fc] TRA…n S:43 N:1000000 Batch:64) | 23 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[77/ef0086] TES…42 NP:500000 B:256 H:1024) | 44 of 44
+
+executor >  slurm (71)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[af/0b88d7] TRA… S:43 N:1000000 Batch:256) | 23 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[77/ef0086] TES…42 NP:500000 B:256 H:1024) | 44 of 45
+
+executor >  slurm (72)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[af/0b88d7] TRA… S:43 N:1000000 Batch:256) | 23 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[8f/e98441] TES…:43 NP:100000 B:64 H:1024) | 44 of 46
+
+executor >  slurm (73)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[af/0b88d7] TRA… S:43 N:1000000 Batch:256) | 23 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[51/b368ce] TES…:43 NP:500000 B:64 H:1024) | 44 of 46
+
+executor >  slurm (73)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[af/0b88d7] TRA… S:43 N:1000000 Batch:256) | 23 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[51/b368ce] TES…:43 NP:500000 B:64 H:1024) | 44 of 46
+
+executor >  slurm (73)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[af/0b88d7] TRA… S:43 N:1000000 Batch:256) | 23 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[51/b368ce] TES…:43 NP:500000 B:64 H:1024) | 44 of 46
+
+executor >  slurm (74)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[35/37f4d6] TRA… S:43 N:1000000 Batch:256) | 24 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[51/b368ce] TES…:43 NP:500000 B:64 H:1024) | 44 of 48
+
+executor >  slurm (76)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[35/37f4d6] TRA… S:43 N:1000000 Batch:256) | 24 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[92/0ea291] TES…S:43 NP:100000 B:64 H:512) | 44 of 48
+
+executor >  slurm (76)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[35/37f4d6] TRA… S:43 N:1000000 Batch:256) | 24 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[92/0ea291] TES…S:43 NP:100000 B:64 H:512) | 44 of 48
+
+executor >  slurm (76)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[35/37f4d6] TRA… S:43 N:1000000 Batch:256) | 24 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[8f/e98441] TES…:43 NP:100000 B:64 H:1024) | 45 of 48
+
+executor >  slurm (76)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[35/37f4d6] TRA… S:43 N:1000000 Batch:256) | 24 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[51/b368ce] TES…:43 NP:500000 B:64 H:1024) | 46 of 48
+
+executor >  slurm (76)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[35/37f4d6] TRA… S:43 N:1000000 Batch:256) | 24 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[51/b368ce] TES…:43 NP:500000 B:64 H:1024) | 46 of 48
+
+executor >  slurm (76)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[35/37f4d6] TRA… S:43 N:1000000 Batch:256) | 24 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[51/b368ce] TES…:43 NP:500000 B:64 H:1024) | 46 of 48
+
+executor >  slurm (76)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[af/0b88d7] TRA… S:43 N:1000000 Batch:256) | 25 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[51/b368ce] TES…:43 NP:500000 B:64 H:1024) | 46 of 48
+
+executor >  slurm (78)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[9b/d2c449] TRA…n S:44 N:1000000 Batch:64) | 25 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[1e/1aebfa] TES…:43 NP:100000 B:256 H:512) | 46 of 49
+
+executor >  slurm (78)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[9b/d2c449] TRA…n S:44 N:1000000 Batch:64) | 25 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[1e/1aebfa] TES…:43 NP:100000 B:256 H:512) | 46 of 50
+
+executor >  slurm (79)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[9b/d2c449] TRA…n S:44 N:1000000 Batch:64) | 25 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[39/5172a7] TES…:43 NP:500000 B:256 H:512) | 46 of 50
+
+executor >  slurm (79)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[9b/d2c449] TRA…n S:44 N:1000000 Batch:64) | 25 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[92/0ea291] TES…S:43 NP:100000 B:64 H:512) | 47 of 50
+
+executor >  slurm (79)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[9b/d2c449] TRA…n S:44 N:1000000 Batch:64) | 25 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[92/0ea291] TES…S:43 NP:100000 B:64 H:512) | 47 of 50
+
+executor >  slurm (79)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[9b/d2c449] TRA…n S:44 N:1000000 Batch:64) | 25 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[92/0ea291] TES…S:43 NP:100000 B:64 H:512) | 47 of 50
+
+executor >  slurm (79)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[9b/d2c449] TRA…n S:44 N:1000000 Batch:64) | 25 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[91/453c0e] TES…S:43 NP:500000 B:64 H:512) | 48 of 50
+
+executor >  slurm (79)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[35/37f4d6] TRA… S:43 N:1000000 Batch:256) | 26 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[91/453c0e] TES…S:43 NP:500000 B:64 H:512) | 48 of 50
+
+executor >  slurm (80)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[b5/1bec0c] TRA…n S:44 N:1000000 Batch:64) | 26 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[91/453c0e] TES…S:43 NP:500000 B:64 H:512) | 48 of 50
+
+executor >  slurm (80)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[b5/1bec0c] TRA…n S:44 N:1000000 Batch:64) | 26 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[91/453c0e] TES…S:43 NP:500000 B:64 H:512) | 48 of 52
+
+executor >  slurm (82)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[b5/1bec0c] TRA…n S:44 N:1000000 Batch:64) | 26 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[b2/15b5d7] TES…43 NP:500000 B:256 H:1024) | 48 of 52
+
+executor >  slurm (82)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[b5/1bec0c] TRA…n S:44 N:1000000 Batch:64) | 26 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[b2/15b5d7] TES…43 NP:500000 B:256 H:1024) | 48 of 52
+
+executor >  slurm (82)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[b5/1bec0c] TRA…n S:44 N:1000000 Batch:64) | 26 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[b2/15b5d7] TES…43 NP:500000 B:256 H:1024) | 48 of 52
+
+executor >  slurm (82)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[b5/1bec0c] TRA…n S:44 N:1000000 Batch:64) | 26 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[1e/1aebfa] TES…:43 NP:100000 B:256 H:512) | 49 of 52
+
+executor >  slurm (82)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[b5/1bec0c] TRA…n S:44 N:1000000 Batch:64) | 26 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[1e/1aebfa] TES…:43 NP:100000 B:256 H:512) | 49 of 52
+
+executor >  slurm (82)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[b5/1bec0c] TRA…n S:44 N:1000000 Batch:64) | 26 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[39/5172a7] TES…:43 NP:500000 B:256 H:512) | 50 of 52
+
+executor >  slurm (82)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[b5/1bec0c] TRA…n S:44 N:1000000 Batch:64) | 26 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[19/faaa46] TES…43 NP:100000 B:256 H:1024) | 51 of 52
+
+executor >  slurm (82)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[b5/1bec0c] TRA…n S:44 N:1000000 Batch:64) | 26 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[b2/15b5d7] TES…43 NP:500000 B:256 H:1024) | 52 of 52
+
+executor >  slurm (83)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[a1/3d01e0] TRA… S:44 N:1000000 Batch:256) | 27 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[b2/15b5d7] TES…43 NP:500000 B:256 H:1024) | 52 of 53
+
+executor >  slurm (84)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[a1/3d01e0] TRA… S:44 N:1000000 Batch:256) | 27 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[02/95f44d] TES…S:44 NP:100000 B:64 H:512) | 52 of 53
+
+executor >  slurm (84)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[a1/3d01e0] TRA… S:44 N:1000000 Batch:256) | 27 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[02/95f44d] TES…S:44 NP:100000 B:64 H:512) | 52 of 54
+
+executor >  slurm (85)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[a1/3d01e0] TRA… S:44 N:1000000 Batch:256) | 27 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[32/758e4e] TES…S:44 NP:500000 B:64 H:512) | 52 of 54
+
+executor >  slurm (85)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[a1/3d01e0] TRA… S:44 N:1000000 Batch:256) | 27 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[32/758e4e] TES…S:44 NP:500000 B:64 H:512) | 52 of 54
+
+executor >  slurm (85)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[a1/3d01e0] TRA… S:44 N:1000000 Batch:256) | 27 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[32/758e4e] TES…S:44 NP:500000 B:64 H:512) | 52 of 54
+
+executor >  slurm (85)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[b5/1bec0c] TRA…n S:44 N:1000000 Batch:64) | 28 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[32/758e4e] TES…S:44 NP:500000 B:64 H:512) | 52 of 54
+
+executor >  slurm (86)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[02/7c5d19] TRA…n S:44 N:1000000 Batch:64) | 28 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[32/758e4e] TES…S:44 NP:500000 B:64 H:512) | 52 of 54
+
+executor >  slurm (86)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[02/7c5d19] TRA…n S:44 N:1000000 Batch:64) | 28 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[32/758e4e] TES…S:44 NP:500000 B:64 H:512) | 52 of 56
+
+executor >  slurm (88)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[02/7c5d19] TRA…n S:44 N:1000000 Batch:64) | 28 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[a4/eb4d84] TES…:44 NP:100000 B:64 H:1024) | 52 of 56
+
+executor >  slurm (88)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[02/7c5d19] TRA…n S:44 N:1000000 Batch:64) | 28 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[a4/eb4d84] TES…:44 NP:100000 B:64 H:1024) | 52 of 56
+
+executor >  slurm (88)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[02/7c5d19] TRA…n S:44 N:1000000 Batch:64) | 28 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[a4/eb4d84] TES…:44 NP:100000 B:64 H:1024) | 52 of 56
+
+executor >  slurm (88)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[02/7c5d19] TRA…n S:44 N:1000000 Batch:64) | 28 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[02/95f44d] TES…S:44 NP:100000 B:64 H:512) | 53 of 56
+
+executor >  slurm (88)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[02/7c5d19] TRA…n S:44 N:1000000 Batch:64) | 28 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[32/758e4e] TES…S:44 NP:500000 B:64 H:512) | 54 of 56
+
+executor >  slurm (88)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[02/7c5d19] TRA…n S:44 N:1000000 Batch:64) | 28 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[a4/eb4d84] TES…:44 NP:100000 B:64 H:1024) | 55 of 56
+
+executor >  slurm (88)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[02/7c5d19] TRA…n S:44 N:1000000 Batch:64) | 28 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[28/148ba2] TES…:44 NP:500000 B:64 H:1024) | 56 of 56
+
+executor >  slurm (89)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[15/e629ec] TRA… S:44 N:1000000 Batch:256) | 29 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[28/148ba2] TES…:44 NP:500000 B:64 H:1024) | 56 of 57
+
+executor >  slurm (90)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[15/e629ec] TRA… S:44 N:1000000 Batch:256) | 29 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[60/04690d] TES…:44 NP:500000 B:256 H:512) | 56 of 57
+
+executor >  slurm (90)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[15/e629ec] TRA… S:44 N:1000000 Batch:256) | 29 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[60/04690d] TES…:44 NP:500000 B:256 H:512) | 56 of 58
+
+executor >  slurm (91)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[15/e629ec] TRA… S:44 N:1000000 Batch:256) | 29 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[66/489409] TES…:44 NP:100000 B:256 H:512) | 56 of 58
+
+executor >  slurm (91)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[15/e629ec] TRA… S:44 N:1000000 Batch:256) | 29 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[66/489409] TES…:44 NP:100000 B:256 H:512) | 56 of 58
+
+executor >  slurm (91)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[15/e629ec] TRA… S:44 N:1000000 Batch:256) | 29 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[66/489409] TES…:44 NP:100000 B:256 H:512) | 56 of 58
+
+executor >  slurm (91)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[15/e629ec] TRA… S:44 N:1000000 Batch:256) | 29 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[66/489409] TES…:44 NP:100000 B:256 H:512) | 56 of 58
+
+executor >  slurm (91)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[15/e629ec] TRA… S:44 N:1000000 Batch:256) | 29 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[66/489409] TES…:44 NP:100000 B:256 H:512) | 57 of 58
+
+executor >  slurm (91)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[02/7c5d19] TRA…n S:44 N:1000000 Batch:64) | 30 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[66/489409] TES…:44 NP:100000 B:256 H:512) | 57 of 58
+
+executor >  slurm (92)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[b6/95d875] TRA…n S:44 N:1000000 Batch:64) | 30 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[66/489409] TES…:44 NP:100000 B:256 H:512) | 57 of 58
+
+executor >  slurm (92)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[b6/95d875] TRA…n S:44 N:1000000 Batch:64) | 30 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[66/489409] TES…:44 NP:100000 B:256 H:512) | 57 of 60
+
+executor >  slurm (94)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[b6/95d875] TRA…n S:44 N:1000000 Batch:64) | 30 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[be/1de051] TES…S:44 NP:500000 B:64 H:512) | 57 of 60
+
+executor >  slurm (94)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[b6/95d875] TRA…n S:44 N:1000000 Batch:64) | 30 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[be/1de051] TES…S:44 NP:500000 B:64 H:512) | 57 of 60
+
+executor >  slurm (94)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[b6/95d875] TRA…n S:44 N:1000000 Batch:64) | 30 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[be/1de051] TES…S:44 NP:500000 B:64 H:512) | 57 of 60
+
+executor >  slurm (94)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[15/e629ec] TRA… S:44 N:1000000 Batch:256) | 31 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[be/1de051] TES…S:44 NP:500000 B:64 H:512) | 57 of 60
+
+executor >  slurm (95)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[ee/fd65b6] TRA… S:44 N:1000000 Batch:256) | 31 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[be/1de051] TES…S:44 NP:500000 B:64 H:512) | 57 of 62
+
+executor >  slurm (96)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[ee/fd65b6] TRA… S:44 N:1000000 Batch:256) | 31 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[56/460513] TES…44 NP:100000 B:256 H:1024) | 57 of 62
+
+executor >  slurm (96)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[ee/fd65b6] TRA… S:44 N:1000000 Batch:256) | 31 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[56/460513] TES…44 NP:100000 B:256 H:1024) | 57 of 62
+
+executor >  slurm (97)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[ee/fd65b6] TRA… S:44 N:1000000 Batch:256) | 31 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[c0/b3fcd4] TES…44 NP:500000 B:256 H:1024) | 58 of 62
+
+executor >  slurm (97)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[ee/fd65b6] TRA… S:44 N:1000000 Batch:256) | 31 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[c0/b3fcd4] TES…44 NP:500000 B:256 H:1024) | 58 of 62
+
+executor >  slurm (97)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[ee/fd65b6] TRA… S:44 N:1000000 Batch:256) | 31 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[be/1de051] TES…S:44 NP:500000 B:64 H:512) | 59 of 62
+
+executor >  slurm (97)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[ee/fd65b6] TRA… S:44 N:1000000 Batch:256) | 31 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[56/460513] TES…44 NP:100000 B:256 H:1024) | 60 of 62
+
+executor >  slurm (97)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[ee/fd65b6] TRA… S:44 N:1000000 Batch:256) | 31 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[c0/b3fcd4] TES…44 NP:500000 B:256 H:1024) | 61 of 62
+
+executor >  slurm (98)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[4f/bdd1a4] TRA… S:44 N:1000000 Batch:256) | 32 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[c0/b3fcd4] TES…44 NP:500000 B:256 H:1024) | 61 of 64
+
+executor >  slurm (100)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[4f/bdd1a4] TRA… S:44 N:1000000 Batch:256) | 32 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[28/bd4061] TES…:44 NP:500000 B:256 H:512) | 61 of 64
+
+executor >  slurm (100)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[4f/bdd1a4] TRA… S:44 N:1000000 Batch:256) | 32 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[28/bd4061] TES…:44 NP:500000 B:256 H:512) | 61 of 64
+
+executor >  slurm (100)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[4f/bdd1a4] TRA… S:44 N:1000000 Batch:256) | 32 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[28/bd4061] TES…:44 NP:500000 B:256 H:512) | 61 of 64
+
+executor >  slurm (100)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[b6/95d875] TRA…n S:44 N:1000000 Batch:64) | 33 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[28/bd4061] TES…:44 NP:500000 B:256 H:512) | 61 of 64
+
+executor >  slurm (101)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[b6/95d875] TRA…n S:44 N:1000000 Batch:64) | 33 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[cc/540f65] TES…:44 NP:100000 B:64 H:1024) | 61 of 65
+
+executor >  slurm (101)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[b6/95d875] TRA…n S:44 N:1000000 Batch:64) | 33 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[cc/540f65] TES…:44 NP:100000 B:64 H:1024) | 61 of 66
+
+executor >  slurm (101)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[b6/95d875] TRA…n S:44 N:1000000 Batch:64) | 33 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[cc/540f65] TES…:44 NP:100000 B:64 H:1024) | 61 of 66
+
+executor >  slurm (102)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[b6/95d875] TRA…n S:44 N:1000000 Batch:64) | 33 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[35/71624a] TES…:44 NP:100000 B:256 H:512) | 62 of 66
+
+executor >  slurm (102)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[b6/95d875] TRA…n S:44 N:1000000 Batch:64) | 33 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[35/71624a] TES…:44 NP:100000 B:256 H:512) | 62 of 66
+
+executor >  slurm (102)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[b6/95d875] TRA…n S:44 N:1000000 Batch:64) | 33 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[cc/540f65] TES…:44 NP:100000 B:64 H:1024) | 63 of 66
+
+executor >  slurm (102)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[b6/95d875] TRA…n S:44 N:1000000 Batch:64) | 33 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[28/bd4061] TES…:44 NP:500000 B:256 H:512) | 64 of 66
+
+executor >  slurm (102)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[4f/bdd1a4] TRA… S:44 N:1000000 Batch:256) | 34 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[28/bd4061] TES…:44 NP:500000 B:256 H:512) | 64 of 66
+
+executor >  slurm (104)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[4f/bdd1a4] TRA… S:44 N:1000000 Batch:256) | 34 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[d2/0b5872] TES…44 NP:500000 B:256 H:1024) | 64 of 68
+
+executor >  slurm (104)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[4f/bdd1a4] TRA… S:44 N:1000000 Batch:256) | 34 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[d2/0b5872] TES…44 NP:500000 B:256 H:1024) | 64 of 68
+
+executor >  slurm (104)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[4f/bdd1a4] TRA… S:44 N:1000000 Batch:256) | 34 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[20/c3e410] TES…:44 NP:500000 B:64 H:1024) | 65 of 68
+
+executor >  slurm (104)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[4f/bdd1a4] TRA… S:44 N:1000000 Batch:256) | 34 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[37/6bf4ff] TES…44 NP:100000 B:256 H:1024) | 66 of 68
+
+executor >  slurm (104)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[4f/bdd1a4] TRA… S:44 N:1000000 Batch:256) | 34 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[d2/0b5872] TES…44 NP:500000 B:256 H:1024) | 67 of 68
+
+executor >  slurm (104)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[4f/bdd1a4] TRA… S:44 N:1000000 Batch:256) | 34 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[60/04690d] TES…:44 NP:500000 B:256 H:512) | 68 of 68
+
+executor >  slurm (104)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[4f/bdd1a4] TRA… S:44 N:1000000 Batch:256) | 34 of 36
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[60/04690d] TES…:44 NP:500000 B:256 H:512) | 68 of 68
+ERROR ~ Error executing process > 'TRAIN_SOURCE (Train S:43 N:1000000 Batch:64)'
+
+Caused by:
+  Process `TRAIN_SOURCE (Train S:43 N:1000000 Batch:64)` terminated with an error exit status (140)
+
+
+Command executed:
+
+  python /work/ah2lab/LiamK/plm-thesis-dynamics/src/train.py         --source_x source_X.npy         --source_y source_y.npy         --ref_x source_X.npy         --epochs 20         --batch_size 64         --lr 0.001         --hidden_dim 1024         --dropout 0.1         --num_classes 1000         --output_model model_S43.pt
+
+Command exit status:
+  140
+
+Command output:
+  (empty)
+
+Work dir:
+  /work/ah2lab/LiamK/plm-thesis-dynamics/work_exp1/99/e24b97723ca315b4fef686dbe3678c
+
+Tip: view the complete command output by changing to the process work dir and entering the command `cat .command.out`
+
+ -- Check 'nextflow_exp1.log' file for details
+
+executor >  slurm (104)
+[73/9540ba] GEN_SOURCE (Src S:44 Shf:2.0)  | 9 of 9, cached: 9 ✔
+[99/e24b97] TRA…n S:43 N:1000000 Batch:64) | 34 of 36 ✘
+[5d/52a190] GEN_TARGET (Tgt S:44 P:500000) | 6 of 6, cached: 6 ✔
+[60/04690d] TES…:44 NP:500000 B:256 H:512) | 68 of 68 ✔
+ERROR ~ Error executing process > 'TRAIN_SOURCE (Train S:43 N:1000000 Batch:64)'
+
+Caused by:
+  Process `TRAIN_SOURCE (Train S:43 N:1000000 Batch:64)` terminated with an error exit status (140)
+
+
+Command executed:
+
+  python /work/ah2lab/LiamK/plm-thesis-dynamics/src/train.py         --source_x source_X.npy         --source_y source_y.npy         --ref_x source_X.npy         --epochs 20         --batch_size 64         --lr 0.001         --hidden_dim 1024         --dropout 0.1         --num_classes 1000         --output_model model_S43.pt
+
+Command exit status:
+  140
+
+Command output:
+  (empty)
+
+Work dir:
+  /work/ah2lab/LiamK/plm-thesis-dynamics/work_exp1/99/e24b97723ca315b4fef686dbe3678c
+
+Tip: view the complete command output by changing to the process work dir and entering the command `cat .command.out`
+
+ -- Check 'nextflow_exp1.log' file for details
+

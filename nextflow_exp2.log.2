@@ -1,0 +1,123 @@
+Mar-19 01:43:32.956 [main] DEBUG nextflow.cli.Launcher - $> nextflow -log nextflow_exp2.log run main.nf -profile sapelo2 -params-file configs/experiment2.yaml -work-dir work_exp2 -resume
+Mar-19 01:43:33.428 [main] DEBUG nextflow.cli.CmdRun - N E X T F L O W  ~  version 25.10.3
+Mar-19 01:43:33.529 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; embedded=false; plugins-dir=/home/lmk04992/.nextflow/plugins; core-plugins: nf-amazon@3.4.3,nf-azure@1.20.2,nf-cloudcache@0.5.0,nf-codecommit@0.5.0,nf-console@1.3.0,nf-google@1.23.4,nf-k8s@1.2.2,nf-tower@1.17.4,nf-wave@1.16.1
+Mar-19 01:43:33.605 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+Mar-19 01:43:33.607 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+Mar-19 01:43:33.611 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.12.0 in 'deployment' mode
+Mar-19 01:43:33.656 [main] DEBUG nextflow.util.RetryConfig - Missing nextflow session - using default retry config
+Mar-19 01:43:34.070 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+Mar-19 01:43:34.261 [main] DEBUG nextflow.config.ConfigBuilder - Found config local: /work/ah2lab/LiamK/plm-thesis-dynamics/nextflow.config
+Mar-19 01:43:34.263 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /work/ah2lab/LiamK/plm-thesis-dynamics/nextflow.config
+Mar-19 01:43:34.367 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `sapelo2`
+Mar-19 01:43:35.803 [main] DEBUG nextflow.config.ConfigBuilder - Available config profiles: [standard, sapelo2]
+Mar-19 01:43:35.889 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+Mar-19 01:43:35.889 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins resolved requirement=[]
+Mar-19 01:43:35.939 [main] DEBUG n.secret.LocalSecretsProvider - Secrets store: /home/lmk04992/.nextflow/secrets/store.json
+Mar-19 01:43:35.944 [main] DEBUG nextflow.secret.SecretsLoader - Discovered secrets providers: [nextflow.secret.LocalSecretsProvider@497b560e] - activable => nextflow.secret.LocalSecretsProvider@497b560e
+Mar-19 01:43:35.961 [main] DEBUG nextflow.cli.CmdRun - Applied DSL=2 by global default
+Mar-19 01:43:36.018 [main] DEBUG nextflow.cli.CmdRun - Launching `main.nf` [backstabbing_raman] DSL2 - revision: 80453bc261
+Mar-19 01:43:36.132 [main] DEBUG nextflow.Session - Session UUID: bb66ac1c-bfbe-487b-a354-e696fdca966a
+Mar-19 01:43:36.132 [main] DEBUG nextflow.Session - Run name: backstabbing_raman
+Mar-19 01:43:36.134 [main] DEBUG nextflow.Session - Executor pool size: 2
+Mar-19 01:43:36.162 [main] DEBUG nextflow.file.FilePorter - File porter settings maxRetries=3; maxTransfers=50; pollTimeout=null
+Mar-19 01:43:36.169 [main] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'FileTransfer' minSize=10; maxSize=10; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
+Mar-19 01:43:36.225 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 25.10.3 build 10983
+  Created: 22-01-2026 15:35 UTC (10:35 EDT)
+  System: Linux 5.14.0-503.31.1.el9_5.x86_64
+  Runtime: Groovy 4.0.28 on OpenJDK 64-Bit Server VM 25+36-LTS
+  Encoding: UTF-8 (UTF-8)
+  Process: 3840995@c5-6 [10.2.1.100]
+  CPUs: 1 - Mem: 187.5 GB (138.1 GB) - Swap: 0 (0)
+Mar-19 01:43:37.069 [main] DEBUG nextflow.Session - Work-dir: /work/ah2lab/LiamK/plm-thesis-dynamics/work_exp2 [lustre]
+Mar-19 01:43:37.070 [main] DEBUG nextflow.Session - Script base path does not exist or is not a directory: /work/ah2lab/LiamK/plm-thesis-dynamics/bin
+Mar-19 01:43:37.081 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+Mar-19 01:43:37.118 [main] DEBUG nextflow.Session - Observer factory (v2): LinObserverFactory
+Mar-19 01:43:37.122 [main] DEBUG nextflow.Session - Observer factory (v2): DefaultObserverFactory
+Mar-19 01:43:37.231 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
+Mar-19 01:43:37.283 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 2; maxThreads: 1000
+Mar-19 01:43:38.756 [main] DEBUG nextflow.Session - Session start
+Mar-19 01:43:40.553 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+Mar-19 01:43:41.168 [main] DEBUG n.script.dsl.ProcessConfigBuilder - Config settings `withName:GEN_SOURCE` matches process GEN_SOURCE
+Mar-19 01:43:41.173 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Mar-19 01:43:41.173 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Mar-19 01:43:41.204 [main] DEBUG nextflow.executor.Executor - [warm up] executor > slurm
+Mar-19 01:43:41.227 [main] DEBUG n.processor.TaskPollingMonitor - Creating task monitor for executor 'slurm' > capacity: 100; pollInterval: 5s; dumpInterval: 5m 
+Mar-19 01:43:41.231 [main] DEBUG n.processor.TaskPollingMonitor - >>> barrier register (monitor: slurm)
+Mar-19 01:43:41.261 [main] DEBUG n.executor.AbstractGridExecutor - Creating executor 'slurm' > queue-stat-interval: 1m
+Mar-19 01:43:41.462 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'GEN_SOURCE': maxForks=0; fair=false; array=0
+Mar-19 01:43:41.569 [main] DEBUG n.script.dsl.ProcessConfigBuilder - Config settings `withName:TRAIN_SOURCE|TEST_ADAPTATION` matches process TRAIN_SOURCE
+Mar-19 01:43:41.570 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Mar-19 01:43:41.570 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Mar-19 01:43:41.586 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'TRAIN_SOURCE': maxForks=4; fair=false; array=0
+Mar-19 01:43:41.631 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Mar-19 01:43:41.632 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Mar-19 01:43:41.636 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'GEN_TARGET': maxForks=0; fair=false; array=0
+Mar-19 01:43:41.671 [main] DEBUG n.script.dsl.ProcessConfigBuilder - Config settings `withName:TRAIN_SOURCE|TEST_ADAPTATION` matches process TEST_ADAPTATION
+Mar-19 01:43:41.678 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Mar-19 01:43:41.678 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Mar-19 01:43:41.679 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'TEST_ADAPTATION': maxForks=4; fair=false; array=0
+Mar-19 01:43:41.684 [main] DEBUG nextflow.Session - Workflow process names [dsl2]: TRAIN_SOURCE, GEN_SOURCE, GEN_TARGET, TEST_ADAPTATION
+Mar-19 01:43:41.698 [main] DEBUG nextflow.Session - Igniting dataflow network (12)
+Mar-19 01:43:41.710 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > GEN_SOURCE
+Mar-19 01:43:41.725 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > TRAIN_SOURCE
+Mar-19 01:43:41.732 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > GEN_TARGET
+Mar-19 01:43:41.734 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > TEST_ADAPTATION
+Mar-19 01:43:41.735 [main] DEBUG nextflow.script.ScriptRunner - Parsed script files:
+  Script_28efe45acd2bb253: /work/ah2lab/LiamK/plm-thesis-dynamics/main.nf
+Mar-19 01:43:41.735 [main] DEBUG nextflow.script.ScriptRunner - > Awaiting termination 
+Mar-19 01:43:41.735 [main] DEBUG nextflow.Session - Session await
+Mar-19 01:43:42.342 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process GEN_SOURCE (Src S:42 Shf:2.0) > jobId: 43709317; workDir: /work/ah2lab/LiamK/plm-thesis-dynamics/work_exp2/43/0055b41455cd3df59824966b0bc93d
+Mar-19 01:43:42.342 [Task submitter] INFO  nextflow.Session - [43/0055b4] Submitted process > GEN_SOURCE (Src S:42 Shf:2.0)
+Mar-19 01:43:42.479 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process GEN_TARGET (Tgt S:42 P:500) > jobId: 43709318; workDir: /work/ah2lab/LiamK/plm-thesis-dynamics/work_exp2/ae/f74112fbe413bbe06eb08c463c1f9e
+Mar-19 01:43:42.479 [Task submitter] INFO  nextflow.Session - [ae/f74112] Submitted process > GEN_TARGET (Tgt S:42 P:500)
+Mar-19 01:44:06.262 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 43709317; id: 1; name: GEN_SOURCE (Src S:42 Shf:2.0); status: COMPLETED; exit: 0; error: -; workDir: /work/ah2lab/LiamK/plm-thesis-dynamics/work_exp2/43/0055b41455cd3df59824966b0bc93d started: 1773899036259; exited: 2026-03-19T05:44:05Z; ]
+Mar-19 01:44:06.264 [Task monitor] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'TaskFinalizer' minSize=10; maxSize=10; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
+Mar-19 01:44:06.285 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 43709318; id: 2; name: GEN_TARGET (Tgt S:42 P:500); status: COMPLETED; exit: 0; error: -; workDir: /work/ah2lab/LiamK/plm-thesis-dynamics/work_exp2/ae/f74112fbe413bbe06eb08c463c1f9e started: 1773899036278; exited: 2026-03-19T05:44:05Z; ]
+Mar-19 01:44:06.428 [TaskFinalizer-2] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'PublishDir' minSize=10; maxSize=10; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
+Mar-19 01:44:06.902 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRAIN_SOURCE (Train S:42 N:10000 Batch:64) > jobId: 43709322; workDir: /work/ah2lab/LiamK/plm-thesis-dynamics/work_exp2/3b/2b615a001669dd69a13fdb48718bf1
+Mar-19 01:44:06.902 [Task submitter] INFO  nextflow.Session - [3b/2b615a] Submitted process > TRAIN_SOURCE (Train S:42 N:10000 Batch:64)
+Mar-19 01:45:01.267 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 43709322; id: 3; name: TRAIN_SOURCE (Train S:42 N:10000 Batch:64); status: COMPLETED; exit: 0; error: -; workDir: /work/ah2lab/LiamK/plm-thesis-dynamics/work_exp2/3b/2b615a001669dd69a13fdb48718bf1 started: 1773899071261; exited: 2026-03-19T05:44:56Z; ]
+Mar-19 01:45:01.298 [Actor Thread 5] WARN  nextflow.script.ScriptBinding - Access to undefined parameter `adapt_lr` -- Initialise it to a default value eg. `params.adapt_lr = some_value`
+Mar-19 01:45:01.574 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TEST_ADAPTATION (Adapt S:42 NP:500 B:64 H:512) > jobId: 43709325; workDir: /work/ah2lab/LiamK/plm-thesis-dynamics/work_exp2/30/0b7be770b3fa74451cbde39ccad651
+Mar-19 01:45:01.574 [Task submitter] INFO  nextflow.Session - [30/0b7be7] Submitted process > TEST_ADAPTATION (Adapt S:42 NP:500 B:64 H:512)
+Mar-19 01:45:36.265 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 43709325; id: 4; name: TEST_ADAPTATION (Adapt S:42 NP:500 B:64 H:512); status: COMPLETED; exit: 2; error: -; workDir: /work/ah2lab/LiamK/plm-thesis-dynamics/work_exp2/30/0b7be770b3fa74451cbde39ccad651 started: 1773899131262; exited: 2026-03-19T05:45:35Z; ]
+Mar-19 01:45:36.294 [TaskFinalizer-4] DEBUG nextflow.processor.TaskProcessor - Handling unexpected condition for
+  task: name=TEST_ADAPTATION (Adapt S:42 NP:500 B:64 H:512); work-dir=/work/ah2lab/LiamK/plm-thesis-dynamics/work_exp2/30/0b7be770b3fa74451cbde39ccad651
+  error [nextflow.exception.ProcessFailedException]: Process `TEST_ADAPTATION (Adapt S:42 NP:500 B:64 H:512)` terminated with an error exit status (2)
+Mar-19 01:45:36.394 [TaskFinalizer-4] ERROR nextflow.processor.TaskProcessor - Error executing process > 'TEST_ADAPTATION (Adapt S:42 NP:500 B:64 H:512)'
+
+Caused by:
+  Process `TEST_ADAPTATION (Adapt S:42 NP:500 B:64 H:512)` terminated with an error exit status (2)
+
+
+Command executed:
+
+  python /work/ah2lab/LiamK/plm-thesis-dynamics/src/adapt_adamw.py         --base_model model_S42.pt         --pool_x pool_X.npy         --pool_y pool_y.npy         --test_x test_X.npy         --test_y test_y.npy         --ref_x source_X.npy         --batch_size 64         --lr null         --hidden_dim 512         --dropout 0.1         --num_classes 10         --output_model adapted_model_S42_NP500_Shf2.0_B64_H512.pt         > adapt_log_S42_NP500_Shf2.0_B64_H512.log
+
+Command exit status:
+  2
+
+Command output:
+  (empty)
+
+Command error:
+  usage: adapt_adamw.py [-h] --base_model BASE_MODEL --pool_x POOL_X --pool_y
+                        POOL_Y --test_x TEST_X --test_y TEST_Y --ref_x REF_X
+                        --output_model OUTPUT_MODEL [--batch_size BATCH_SIZE]
+                        [--lr LR] [--hidden_dim HIDDEN_DIM] [--dropout DROPOUT]
+                        [--num_classes NUM_CLASSES]
+  adapt_adamw.py: error: argument --lr: invalid float value: 'null'
+
+Work dir:
+  /work/ah2lab/LiamK/plm-thesis-dynamics/work_exp2/30/0b7be770b3fa74451cbde39ccad651
+
+Tip: you can replicate the issue by changing to the process work dir and entering the command `bash .command.run`
+Mar-19 01:45:36.396 [main] DEBUG nextflow.Session - Session await > all processes finished
+Mar-19 01:45:36.409 [TaskFinalizer-4] DEBUG nextflow.Session - Session aborted -- Cause: Process `TEST_ADAPTATION (Adapt S:42 NP:500 B:64 H:512)` terminated with an error exit status (2)
+Mar-19 01:45:36.469 [TaskFinalizer-4] DEBUG n.trace.WorkflowStatsObserver - Workflow completed > WorkflowStats[succeededCount=3; failedCount=1; ignoredCount=0; cachedCount=0; pendingCount=0; submittedCount=0; runningCount=0; retriesCount=0; abortedCount=0; succeedDuration=3m 20s; failedDuration=20s; cachedDuration=0ms;loadCpus=0; loadMemory=0; peakRunning=2; peakCpus=8; peakMemory=48 GB; ]
+Mar-19 01:45:36.641 [Task monitor] DEBUG n.processor.TaskPollingMonitor - <<< barrier arrives (monitor: slurm) - terminating tasks monitor poll loop
+Mar-19 01:45:36.642 [main] DEBUG nextflow.Session - Session await > all barriers passed
+Mar-19 01:45:36.645 [main] DEBUG n.trace.WorkflowStatsObserver - Workflow completed > WorkflowStats[succeededCount=3; failedCount=1; ignoredCount=0; cachedCount=0; pendingCount=0; submittedCount=0; runningCount=0; retriesCount=0; abortedCount=0; succeedDuration=3m 20s; failedDuration=20s; cachedDuration=0ms;loadCpus=0; loadMemory=0; peakRunning=2; peakCpus=8; peakMemory=48 GB; ]
+Mar-19 01:45:36.670 [main] DEBUG nextflow.cache.CacheDB - Closing CacheDB done
+Mar-19 01:45:38.799 [main] DEBUG nextflow.script.ScriptRunner - > Execution complete -- Goodbye

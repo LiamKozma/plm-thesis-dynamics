@@ -6,7 +6,7 @@
 # 1. Pipeline Routing & Data Organization
 # ------------------------------------------------------------------------------
 mode: 'adapt'                 
-dataset: 'phylogenetic_gmm'   
+dataset: 'phylogenetic_gmm_exp2'   
 
 # Split Storage Locations
 data_dir: '/scratch/lmk04992/plm_data'
@@ -15,8 +15,8 @@ metrics_dir: '/work/ah2lab/LiamK/plm-thesis-dynamics/results'
 # ------------------------------------------------------------------------------
 # 2. Biological Landscape & Frozen Oracle Setup
 # ------------------------------------------------------------------------------
-n_families: 1000              
-n_classes: 100                
+n_families: 10000              
+n_classes: 1000                
 dim: 1280                     
 
 # SWEEP: Oracle Configurations
@@ -46,6 +46,8 @@ dropout: 0.1
 adapt_lr: 0.00005
 weight_decay: 0.01
 warmup_ratio: 0.1
+adapt_script: 'adapt_adamw.py'
+
 
 # SWEEP: MLP & Training params
 batch_sizes: [64, 256]

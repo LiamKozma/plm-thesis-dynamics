@@ -1,0 +1,16 @@
+[33mNextflow 25.10.4 is available - Please consider updating your version to it[0m
+
+ N E X T F L O W   ~  version 25.10.3
+
+Launching `main.nf` [gigantic_heyrovsky] DSL2 - revision: 90bd575948
+
+ERROR ~ Script compilation error
+- file : /work/ah2lab/LiamK/plm-thesis-dynamics/main.nf
+- cause: Unexpected character: '#' @ line 118, column 5.
+       # FORCING CACHE INVALIDATION: EXPERIMENT 3 (PURE ADAM ABLATION)
+       ^
+
+1 error
+
+
+ -- Check '.nextflow.log' file for details
