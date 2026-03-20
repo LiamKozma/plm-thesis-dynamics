@@ -1,0 +1,14 @@
+
+--- Starting Adaptation ---
+Pool size: 100000 | Test size: 50000 | Batch size: 64
+Initial State (0 Batches) -> Test CE: 1.8107 | Test Macro F1: 0.6575
+Batch 500 | Test CE: 1.4130 | Test F1: 0.6363
+Batch 1000 | Test CE: 1.1310 | Test F1: 0.5673
+Batch 1500 | Test CE: 1.0127 | Test F1: 0.4401
+Batch 1563 | Test CE: 1.0978 | Test F1: 0.3728
+--------------------------------------------------
+Adaptation Complete.
+Wasserstein     | 1.965134       
+Final Test CE   | 1.097776       
+Final Test F1   | 0.372790       
+--------------------------------------------------

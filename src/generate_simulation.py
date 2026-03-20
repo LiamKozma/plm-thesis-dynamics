@@ -30,7 +30,7 @@ class RandomOracleNN(nn.Module):
             layers.append(nn.ReLU())
             current_dim = h_dim
 
-        # THE FIX: Re-center the positive-only ReLU outputs to the origin
+        # Re-center the positive-only ReLU outputs to the origin
         layers.append(nn.LayerNorm(current_dim))
 
         # Final classification head
@@ -85,7 +85,6 @@ def calculate_diagnostics(family_assignments, y, n_families, n_classes):
     print(f"Family promiscuity:   {promiscuity:.1f}% \t(Target: 40-60%)")
     print(f"Class coverage:       {coverage:.1f} fams/class \t(Target: ~10)")
     print(f"-----------------------------\n")
-
 
 
 def generate_dispersion_gmm(
@@ -162,7 +161,7 @@ def generate_dispersion_gmm(
         np.int32
     )
 
-    # Optional: np.random.shuffle(family_assignments) # Uncomment if sequence order matters
+    np.random.shuffle(family_assignments)  # Uncomment if sequence order matters
 
     print(f"Sampling {n_samples:,} embeddings (Chunked & Vectorized)...")
 

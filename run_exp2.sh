@@ -11,4 +11,4 @@ module load Nextflow
 source activate /work/ah2lab/LiamK/conda_envs/plm_dynamics
 
 # Added custom work-dir and log file
-nextflow -log nextflow_exp2.log run main.nf -profile sapelo2 -params-file configs/experiment2.yaml -work-dir work_exp2 -resume
+nextflow -log nextflow_exp2.log run main.nf -profile sapelo2 -params-file configs/experiment2.yaml -work-dir work_exp2 

@@ -1,0 +1,9 @@
+PLM ADAPTATION EXPERIMENT SUMMARY
+Total Runs: 72
+Baseline F1: 0.7710
+Wasserstein Distances:
+      W-Dist Mean W-Dist Std
+shift                       
+1.0        1.4374   ± 1.0479
+2.0        1.4414   ± 1.0122
+5.0        1.4891   ± 0.9864
