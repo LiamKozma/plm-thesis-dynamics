@@ -6,6 +6,7 @@ trash/
 archive_old_logs/
 work_exp1/  
 work_exp2/  
+results_OLD/
 
 # --- Nextflow ---
 work/
