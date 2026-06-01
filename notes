@@ -1,0 +1,2 @@
+ml Miniforge3
+source activate /work/ah2lab/LiamK/conda_envs/plm_dynamics

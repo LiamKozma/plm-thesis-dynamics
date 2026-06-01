@@ -1,0 +1,51 @@
+# ==============================================================================
+# MASTER CONFIGURATION: EXP 5 (THE SCALING LAW / SNR SWEEP)
+# ==============================================================================
+# Hypothesis: Recovery threshold is not dictated by absolute shift, but by 
+# the ratio of Shift to Source Variance (Base Sigma). 
+# ==============================================================================
+mode: 'adapt'
+dataset: 'phylogenetic_gmm_exp5'
+
+data_dir: '/scratch/lmk04992/plm_data'
+metrics_dir: '/work/ah2lab/LiamK/plm-thesis-dynamics/results'
+
+# ------------------------------------------------------------------------------
+# Biological Landscape Setup
+# ------------------------------------------------------------------------------
+n_families: 10000
+n_classes: 1000
+dim: 1280
+
+oracle_architectures: ["1024,1024,512"]
+
+# THE NEW SWEEP: Source Variance (Tight vs. Wide distributions)
+base_sigmas: [0.1, 0.5, 1.0, 2.0]
+
+# ------------------------------------------------------------------------------
+# THE SHIFT SWEEP
+# ------------------------------------------------------------------------------
+starting_seed: 42
+num_seeds: 3              
+
+# Locked to prevent the Wasserstein Sample-Size Confounding
+n_trains: [500000]        
+n_pools: [1000000]     
+shifts: [1.0, 3.0, 5.0]  # Min, Mid, Max severity
+n_test: 50000
+
+# ------------------------------------------------------------------------------
+# Neural Network Hyperparameters (Locked to the Most Stable Setup)
+# ------------------------------------------------------------------------------
+base_epochs: 30  
+learning_rate: 0.001
+dropout: 0.1
+
+# We use AdamW because it proved most stable for extracting the actual threshold
+adapt_lr: 0.00005
+adapt_script: 'adapt_adamw.py'
+weight_decay: 0.01
+warmup_ratio: 0.1
+
+batch_sizes: [256]            
+hidden_dims: [512]  # The mathematically proven regularizing bottleneck

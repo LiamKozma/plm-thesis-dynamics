@@ -1,0 +1,44 @@
+# ==============================================================================
+# MASTER CONFIGURATION: EXP 3 (THE RESOLUTION SWEEP)
+# ==============================================================================
+mode: 'adapt'                 
+dataset: 'phylogenetic_gmm_exp3'   
+
+data_dir: '/scratch/lmk04992/plm_data'
+metrics_dir: '/work/ah2lab/LiamK/plm-thesis-dynamics/results'
+
+# ------------------------------------------------------------------------------
+# Biological Landscape Setup
+# ------------------------------------------------------------------------------
+n_families: 10000              
+n_classes: 1000                
+dim: 1280                     
+
+oracle_architectures: ["1024,1024,512"]  
+base_sigmas: [0.5]                       
+
+# ------------------------------------------------------------------------------
+# THE THRESHOLD SWEEP (The most important part of your thesis)
+# ------------------------------------------------------------------------------
+starting_seed: 42             
+num_seeds: 4                  # Increased seeds for statistical power at the boundary
+
+n_trains: [250000]           
+n_pools: [1000000]     # Eradicated the 100k starvation zone
+shifts: [2.0, 3.0, 4.0, 5.0, 6.0] # High resolution mapping of the Wasserstein threshold
+n_test: 50000                 
+
+# ------------------------------------------------------------------------------
+# Neural Network Hyperparameters (Fixed to optimal main effects)
+# ------------------------------------------------------------------------------
+base_epochs: 20               
+learning_rate: 0.001          
+dropout: 0.1                  
+
+# We proved standard Adam is superior for fast recovery. 
+adapt_lr: 0.001
+adapt_script: 'adapt_OGadam.py'
+
+# Locked into the mathematically superior configurations from the Cox Model
+batch_sizes: [256]            # Larger batches provide stable gradients
+hidden_dims: [1024]            # Nimbler network

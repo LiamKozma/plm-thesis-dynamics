@@ -1,0 +1,60 @@
+# ==============================================================================
+# .gitignore — PLM-GMM Thesis Pipeline
+# ==============================================================================
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.ipynb_checkpoints/
+venv/
+.venv/
+env/
+
+# --- macOS / System / Editor Junk ---
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# --- Nextflow Caches & Work Directories ---
+.nextflow/
+.nextflow*
+.nextflow.log*
+work/
+work_exp*/
+
+# --- Heavy Artifact Directories (Data, Models, Results) ---
+data/
+models/
+results/
+results_OLD/
+trash/
+archive_old_logs/
+
+# --- Large Data / Model / Log Artifacts (by extension) ---
+*.npy
+*.pt
+*.log
+*.csv
+
+# Export tarballs / archives
+*.tar.gz
+*.tar
+*.zip
+
+# ------------------------------------------------------------------------------
+# Exceptions: keep the Phase 1 oracle-search tuning CSVs under version control
+# ------------------------------------------------------------------------------
+!src/oracle_search/
+!src/oracle_search/**/*.csv

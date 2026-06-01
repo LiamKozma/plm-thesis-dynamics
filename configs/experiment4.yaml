@@ -1,0 +1,50 @@
+# ==============================================================================
+# MASTER CONFIGURATION: EXP 4 (THE DEFINITIVE PHASE-TRANSITION RUN)
+# ==============================================================================
+# Parameters updated via survival analysis of previous runs. 
+# Base epochs extended to map the data starvation boundary without right-censoring.
+# ==============================================================================
+mode: 'adapt'
+dataset: 'phylogenetic_gmm_exp4'
+
+data_dir: '/scratch/lmk04992/plm_data'
+metrics_dir: '/work/ah2lab/LiamK/plm-thesis-dynamics/results'
+
+# ------------------------------------------------------------------------------
+# Biological Landscape Setup
+# ------------------------------------------------------------------------------
+n_families: 10000
+n_classes: 1000
+dim: 1280
+
+oracle_architectures: ["1024,1024,512"]
+base_sigmas: [0.5]
+
+# ------------------------------------------------------------------------------
+# THE 2D SWEEP: Distribution Shift vs. Data Starvation
+# ------------------------------------------------------------------------------
+starting_seed: 42
+num_seeds: 4
+
+# Sweeping training sizes to map the starvation threshold directly against the Wasserstein grid
+n_trains: [50000, 100000, 200000, 500000] 
+n_pools: [1000000]     
+shifts: [2.0, 3.0, 4.0, 5.0, 6.0] 
+n_test: 50000
+
+# ------------------------------------------------------------------------------
+# Neural Network Hyperparameters (Data-Driven Winners)
+# ------------------------------------------------------------------------------
+base_epochs: 40  # Extended to avoid right-censoring during recovery
+learning_rate: 0.001
+dropout: 0.1
+
+# Survival analysis proved AdamW is superior for pulling models out of the shift
+adapt_lr: 0.00005
+adapt_script: 'adapt_adamw.py'
+weight_decay: 0.01
+warmup_ratio: 0.1
+
+# Locked into the mathematically optimal architecture for recovery
+batch_sizes: [256]            
+hidden_dims: [512]

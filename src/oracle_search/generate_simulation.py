@@ -1,0 +1,264 @@
+import argparse
+
+import matplotlib.pyplot as plt
+import numpy as np
+import torch
+import torch.nn as nn
+from scipy.spatial.distance import pdist
+from tqdm import tqdm
+
+
+class RandomOracleNN(nn.Module):
+    """
+    The Frozen Random Neural Network.
+    Acts as the ground-truth labeler to map 1280D space to n_classes.
+    """
+    def __init__(self, input_dim, num_classes, hidden_layers):
+        super().__init__()
+        layers = []
+        current_dim = input_dim
+
+        for h_dim in hidden_layers:
+            linear = nn.Linear(current_dim, h_dim, bias=True)
+            nn.init.kaiming_normal_(linear.weight, mode="fan_in", nonlinearity="relu")
+            nn.init.zeros_(linear.bias)
+            layers.append(linear)
+            layers.append(nn.LayerNorm(h_dim))
+            layers.append(nn.ReLU())
+            current_dim = h_dim
+
+        layers.append(nn.LayerNorm(current_dim))
+        final_layer = nn.Linear(current_dim, num_classes, bias=False)
+
+        with torch.no_grad():
+            nn.init.normal_(final_layer.weight)
+            final_layer.weight.copy_(
+                torch.nn.functional.normalize(final_layer.weight, p=2, dim=1)
+            )
+
+        layers.append(final_layer)
+        self.net = nn.Sequential(*layers)
+
+    def forward(self, x):
+        return self.net(x)
+
+def plot_distance_vs_shared_label(X, y, seed, max_samples=3000):
+    """
+    Generates a diagnostic plot showing the probability of two points sharing
+    the same functional label as a function of their embedding distance.
+    Saves directly to disk to avoid hanging headless environments.
+    """
+    # Subsample to prevent OOM errors on large pairwise distance calculations
+    if len(X) > max_samples:
+        idx = np.random.choice(len(X), max_samples, replace=False)
+        X_sub = X[idx]
+        y_sub = y[idx]
+    else:
+        X_sub = X
+        y_sub = y
+
+    print(f"\nGenerating Distance vs. Label diagnostic plot (using {len(X_sub)} samples)...")
+
+    # Calculate pairwise distances (1D condensed matrix)
+    dists = pdist(X_sub, metric='euclidean')
+
+    # Calculate shared label indicator matrix and extract upper triangle to match pdist
+    y_mat = y_sub[:, None] == y_sub[None, :]
+    shared_labels = y_mat[np.triu_indices(len(y_sub), k=1)].astype(float)
+
+    # Sort by distance
+    sort_idx = np.argsort(dists)
+    sorted_dists = dists[sort_idx]
+    sorted_shared = shared_labels[sort_idx]
+
+    # Calculate running average (window size: 2% of total pairs)
+    window = max(10, len(sorted_dists) // 50)
+    running_avg = np.convolve(sorted_shared, np.ones(window)/window, mode='valid')
+    valid_dists = sorted_dists[window-1:]
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(valid_dists, running_avg, color='blue', alpha=0.8, linewidth=2)
+    plt.title("Biological Landscape: P(Shared Label) vs. Embedding Distance")
+    plt.xlabel("Euclidean Distance in 1280D Space")
+    plt.ylabel("Probability of Shared Oracle Label")
+    plt.grid(True, alpha=0.3)
+    plt.ylim(-0.05, 1.05)
+
+    file_name = f"landscape_diagnostic_seed_{seed}.png"
+    plt.savefig(file_name, dpi=300, bbox_inches='tight')
+    plt.close()
+    print(f"Saved diagnostic plot to {file_name}\n")
+
+def calculate_diagnostics(family_assignments, y, n_families, n_classes):
+    """Calculates Professor's target metrics for the biological landscape."""
+    purities = []
+    promiscuous_count = 0
+    total_class_instances = 0
+
+    for k in range(n_families):
+        idx = family_assignments == k
+        if not np.any(idx):
+            continue
+        labels = y[idx]
+        unique_labels, counts = np.unique(labels, return_counts=True)
+
+        majority_fraction = counts.max() / len(labels)
+        purities.append(majority_fraction)
+
+        if len(unique_labels) > 1:
+            promiscuous_count += 1
+
+        total_class_instances += len(unique_labels)
+
+    avg_purity = np.mean(purities) * 100 if purities else 0
+    promiscuity = (promiscuous_count / n_families) * 100
+    coverage = total_class_instances / n_classes
+
+    print(f"\n--- Landscape Diagnostics ---")
+    print(f"Within-family purity: {avg_purity:.1f}% \t(Target: 50-70%)")
+    print(f"Family promiscuity:   {promiscuity:.1f}% \t(Target: 40-60%)")
+    print(f"Class coverage:       {coverage:.1f} fams/class \t(Target: ~10)")
+    print(f"-----------------------------\n")
+
+def generate_dispersion_gmm(
+    n_samples,
+    dim,
+    n_families,
+    n_classes,
+    hidden_layers,
+    shift_k,
+    seed,
+    is_target=False,
+    centroid_spread=10.0,
+    base_sigma=2.0,
+    topology="gaussian",
+):
+    """
+    Generates synthetic protein embeddings using Biased Sampling Covariate Shift.
+    """
+    # Phase 1: Build the Universe (Must be identical for Source and Target)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+
+    oracle = RandomOracleNN(dim, n_classes, hidden_layers)
+    oracle.eval()
+
+    print(f"Generating landscape using topology: {topology.upper()}")
+    if topology == "hypercube":
+        family_centroids = np.random.uniform(-1.0, 1.0, size=(n_families, dim)) * centroid_spread
+    elif topology == "hypersphere":
+        v = np.random.randn(n_families, dim)
+        v_norm = np.linalg.norm(v, axis=1, keepdims=True)
+        u = v / v_norm
+        r = np.random.uniform(0, 1, size=(n_families, 1)) ** (1.0 / dim)
+        family_centroids = r * u * centroid_spread
+    elif topology == "projection":
+        latent_dim = 20
+        latent_centroids = np.random.uniform(-1.0, 1.0, size=(n_families, latent_dim))
+        projection_matrix = np.random.randn(latent_dim, dim)
+        family_centroids = np.dot(latent_centroids, projection_matrix) * (centroid_spread / np.sqrt(latent_dim))
+    else:
+        family_centroids = np.random.randn(n_families, dim) * centroid_spread
+
+    # Set distribution dispersion based on shift parameter
+    if not is_target:
+        current_sigma = base_sigma / max(1.0, shift_k)
+    else:
+        current_sigma = base_sigma
+
+    # Phase 2: Sample the Data
+    # -------------------------------------------------------------------------
+    # CRITICAL FIX: Offset the PRNG so Target data draws completely new points
+    # from the exact same GMM universe established in Phase 1.
+    # -------------------------------------------------------------------------
+    if is_target:
+        np.random.seed(seed + 99999)
+
+    X_concat = np.zeros((n_samples, dim), dtype=np.float32)
+
+    ranks = np.arange(1, n_families + 1)
+    zipf_probs = 1.0 / (ranks**1.5)
+    zipf_probs /= zipf_probs.sum()
+
+    family_counts = np.ones(n_families, dtype=int)
+    family_counts += np.random.multinomial(n_samples - n_families, zipf_probs)
+
+    family_assignments = np.repeat(np.arange(n_families), family_counts).astype(np.int32)
+    np.random.shuffle(family_assignments)
+
+    print(f"Sampling {n_samples:,} embeddings (Chunked & Vectorized)...")
+    batch_size = 50000
+    for i in tqdm(range(0, n_samples, batch_size), desc="Generating Chunks"):
+        end_idx = min(i + batch_size, n_samples)
+        batch_assign = family_assignments[i:end_idx]
+        batch_centroids = family_centroids[batch_assign]
+
+        noise = np.random.normal(0, current_sigma, size=(len(batch_assign), dim)).astype(np.float32)
+        X_concat[i:end_idx] = batch_centroids + noise
+
+    print("Assigning labels via Oracle (Batched)...")
+    y = np.zeros(n_samples, dtype=np.int32)
+    batch_size = 10000
+
+    with torch.no_grad():
+        X_tensor = torch.from_numpy(X_concat)
+        for i in tqdm(range(0, n_samples, batch_size), desc="Labeling Batches"):
+            end_idx = min(i + batch_size, n_samples)
+            logits = oracle(X_tensor[i:end_idx])
+            y[i:end_idx] = torch.argmax(logits, dim=1).numpy()
+
+    return X_concat, y, family_assignments
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--mode", type=str, choices=["source", "target"], required=True)
+    parser.add_argument("--shift", type=float, default=1.0, help="Shift k multiplier")
+    parser.add_argument("--n_train", type=int, default=1000)
+    parser.add_argument("--n_pool", type=int, default=2000)
+    parser.add_argument("--n_test", type=int, default=1000)
+    parser.add_argument("--dim", type=int, default=1280)
+    parser.add_argument("--n_families", type=int, default=1000)
+    parser.add_argument("--n_classes", type=int, default=100)
+    parser.add_argument("--oracle_layers", type=str, default="256,128", help="Comma-separated hidden layer sizes")
+    parser.add_argument("--centroid_spread", type=float, default=10.0, help="Distance between family centers")
+    parser.add_argument("--base_sigma", type=float, default=2.0, help="Variance/spread within a family")
+    parser.add_argument("--topology", type=str, choices=["hypercube", "hypersphere", "projection", "gaussian"], default="gaussian")
+
+    args = parser.parse_args()
+    hidden_layer_sizes = ([int(x) for x in args.oracle_layers.split(",")] if args.oracle_layers else [])
+
+    if args.mode == "source":
+        print(f"Generating [SOURCE] data | Shift k: {args.shift} | Families: {args.n_families} | Classes: {args.n_classes} | Seed: {args.seed}")
+        X, y, fams = generate_dispersion_gmm(
+            n_samples=args.n_train, dim=args.dim, n_families=args.n_families,
+            n_classes=args.n_classes, hidden_layers=hidden_layer_sizes,
+            shift_k=args.shift, seed=args.seed, is_target=False,
+            centroid_spread=args.centroid_spread, base_sigma=args.base_sigma, topology=args.topology,
+        )
+
+        # Run Diagnostics & Plotting ONLY on Source generation to save compute
+        calculate_diagnostics(fams, y, args.n_families, args.n_classes)
+        plot_distance_vs_shared_label(X, y, args.seed)
+
+        np.save("source_X.npy", X)
+        np.save("source_y.npy", y)
+
+    elif args.mode == "target":
+        total_target_samples = args.n_pool + args.n_test
+        print(f"Generating [TARGET] data | Shift k: {args.shift} | Families: {args.n_families} | Classes: {args.n_classes} | Seed: {args.seed}")
+
+        X, y, fams = generate_dispersion_gmm(
+            n_samples=total_target_samples, dim=args.dim, n_families=args.n_families,
+            n_classes=args.n_classes, hidden_layers=hidden_layer_sizes,
+            shift_k=args.shift, seed=args.seed, is_target=True,
+            centroid_spread=args.centroid_spread, base_sigma=args.base_sigma, topology=args.topology
+        )
+
+        X_pool, y_pool = X[: args.n_pool], y[: args.n_pool]
+        X_test, y_test = X[args.n_pool :], y[args.n_pool :]
+
+        np.save("target_pool_X.npy", X_pool)
+        np.save("target_pool_y.npy", y_pool)
+        np.save("target_test_X.npy", X_test)
+        np.save("target_test_y.npy", y_test)
