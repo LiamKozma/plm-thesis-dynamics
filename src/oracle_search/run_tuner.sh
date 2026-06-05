@@ -6,7 +6,7 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=16G          # Safely handles the chunked 1M embeddings
 #SBATCH --time=02:00:00     # 2 hours is plenty with the new speed optimizations
-#SBATCH --output=tuner_%A_%a.log
+#SBATCH --output=logs/oracle_search/tuner_%A_%a.log
 
 module load Miniforge3
 eval "$(conda shell.bash hook)"

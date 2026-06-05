@@ -13,13 +13,14 @@ hidden_dims_ch = Channel.fromList(params.hidden_dims)
 // 2. Processes
 process GEN_SOURCE {
     tag "Src S:${seed} Shf:${shift_val}"
-    publishDir "${params.data_dir}/${params.dataset}/data/source", mode: 'copy'
+    publishDir "${params.data_dir}/${params.dataset}/raw_data/", mode: 'copy'
 
     input:
     tuple val(seed), val(oracle), val(sigma), val(n_train), val(shift_val)
 
     output:
-    tuple val(seed), val(oracle), val(sigma), val(n_train), val(shift_val), path("source_X_S${seed}_N${n_train}_Shf${shift_val}.npy"), path("source_y_S${seed}_N${n_train}_Shf${shift_val}.npy")
+    tuple val(seed), val(oracle), val(sigma), val(n_train), val(shift_val), path("source_X_S${seed}_N${n_train}_Shf${shift_val}.npy"), path("source_y_S${seed}_N${n_train}_Shf${shift_val}.npy"), emit: data
+    path "landscape_diagnostic_seed_${seed}.png", emit: diagnostics
 
     script:
     """
@@ -41,7 +42,7 @@ process GEN_SOURCE {
 
 process TRAIN_SOURCE {
     tag "Train S:${seed} N:${n_train} Batch:${batch}"
-    publishDir "${params.metrics_dir}/${params.dataset}/models", mode: 'copy'
+    publishDir "${params.metrics_dir}/${params.dataset}/experiments/adapt/", mode: 'copy'
 
     input:
     tuple val(seed), val(oracle), val(sigma), val(n_train), val(shift_val), path(x_file), path(y_file), val(batch), val(h_dim)
@@ -67,7 +68,7 @@ process TRAIN_SOURCE {
 
 process GEN_TARGET {
     tag "Tgt S:${seed} P:${n_pool}"
-    publishDir "${params.data_dir}/${params.dataset}/data/target", mode: 'copy'
+    publishDir "${params.data_dir}/${params.dataset}/raw_data/", mode: 'copy'
 
     input:
     tuple val(seed), val(oracle), val(sigma), val(n_pool)
@@ -97,7 +98,7 @@ process GEN_TARGET {
 
 process TEST_ADAPTATION {
     tag "Adapt S:${seed} NP:${n_pool} B:${batch} H:${h_dim}"
-    publishDir "${params.metrics_dir}/${params.dataset}/experiments/adapt", mode: 'copy'
+    publishDir "${params.metrics_dir}/${params.dataset}/experiments/adapt/", mode: 'copy'
 
     input:
     tuple val(seed), val(oracle), val(sigma), val(n_train), val(shift_val), path(ref_x), path(source_model), val(batch), val(h_dim), val(n_pool), path(pool_x), path(pool_y), path(test_x), path(test_y)
@@ -105,6 +106,7 @@ process TEST_ADAPTATION {
     output:
     path "adapt_log_S${seed}_N${n_train}_NP${n_pool}_Shf${shift_val}_B${batch}_H${h_dim}.log"
     path "*_batch_log.csv", optional: true
+    path "adapted_model_S${seed}_N${n_train}_NP${n_pool}_Shf${shift_val}_B${batch}_H${h_dim}.pt"
 
     script:
     """
@@ -128,7 +130,8 @@ process TEST_ADAPTATION {
 workflow {
     // Phase 1: Pre-training (Combines data params)
     source_params = seeds_ch.combine(oracles_ch).combine(sigmas_ch).combine(n_trains_ch).combine(shifts_ch)
-    sources = GEN_SOURCE(source_params)
+    GEN_SOURCE(source_params)
+    sources = GEN_SOURCE.out.data
 
     // Add Neural Network sweeping params to the training phase
     train_params = sources.combine(batch_sizes_ch).combine(hidden_dims_ch)

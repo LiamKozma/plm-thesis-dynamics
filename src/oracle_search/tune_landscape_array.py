@@ -3,6 +3,7 @@ import re
 import subprocess
 import sys
 import time
+from pathlib import Path
 
 import pandas as pd
 
@@ -93,8 +94,10 @@ def main():
     metrics = run_experiment(arch, sigma, seed=42)
 
     if metrics:
+        out_dir = Path("results/oracle_search/raw_csvs")
+        out_dir.mkdir(parents=True, exist_ok=True)
         df = pd.DataFrame([metrics])
-        df.to_csv(f"tuning_result_{task_id}.csv", index=False)
+        df.to_csv(out_dir / f"tuning_result_{task_id}.csv", index=False)
 
 
 if __name__ == "__main__":

@@ -1,42 +1,159 @@
 # ==============================================================================
-# MASTER CONFIGURATION: PLM RECOVERY THRESHOLD EXPERIMENTS
+# MASTER CONFIG TEMPLATE  —  PLM-GMM Recovery Threshold Pipeline (main.nf)
+# ==============================================================================
+# This file is a self-documenting TEMPLATE. To run your own experiment:
+#
+#   1. Copy it:        cp configs/master.yaml configs/my_experiment.yaml
+#   2. Edit the two    data_dir / metrics_dir   absolute paths (Section 1).
+#   3. Tune the sweep  arrays (Sections 3 & 4) to your hypothesis.
+#   4. Launch it:      point CONFIG in run_example_experiment.sh at your copy.
+#
+# ------------------------------------------------------------------------------
+# HOW THE SWEEP WORKS
+# ------------------------------------------------------------------------------
+# Nextflow builds the CARTESIAN PRODUCT of every ARRAY-valued field below.
+# A field written as  [a, b]  is SWEPT (one pipeline run per value); a field
+# written as a single scalar is FIXED for the whole experiment.
+#
+# Total number of adaptation runs =
+#     num_seeds
+#   * len(oracle_architectures)
+#   * len(base_sigmas)
+#   * len(n_trains)
+#   * len(n_pools)
+#   * len(shifts)
+#   * len(batch_sizes)
+#   * len(hidden_dims)
+#
+# >>> Start SMALL (1 seed, single-element arrays) to validate, THEN scale up. <<<
 # ==============================================================================
 
-# ------------------------------------------------------------------------------
-# 1. Pipeline Routing & Data Organization
-# ------------------------------------------------------------------------------
-# Defines the high-level execution path and naming conventions.
-mode: 'adapt'                 # The execution route: 'adapt' for active learning recovery, 'eval' for zero-shot generalization.
-dataset: 'phylogenetic_gmm'   # Root name for the output directories where data/models/plots will be saved.
 
 # ------------------------------------------------------------------------------
-# 2. Biological Landscape & Frozen Oracle Setup
+# 1. Pipeline Routing & Storage  (scalars)
 # ------------------------------------------------------------------------------
-# Parameters defining the synthetic protein universe and the ground-truth labeler.
-n_families: 1000              # Total number of biological families (clusters) generated via Zipf distribution.
-n_classes: 100                # Number of functional classes.
-dim: 1280                     # Dimensionality of the embeddings (e.g., 1280 for standard Protein Language Models like ESM-2).
-oracle_layers: [1024, 512]    # Hidden layer dimensions for the Frozen Random Neural Network mapping 1280D -> 100 classes.
+mode: 'adapt'
+# Execution route. The current main.nf ONLY supports 'adapt' (active-adaptation
+# recovery); any other value raises an error. Reserved for future modes.
+
+dataset: 'my_experiment'
+# Output namespace. All data/models/results for this run are written under a
+# directory named after this. Use a unique name per experiment to avoid clobber.
+
+data_dir: '/absolute/path/to/scratch/plm_data'
+# REQUIRED — EDIT ME. Where generated .npy embeddings (source + target) are
+# published. Put this on fast/scratch storage; these files are large.
+
+metrics_dir: '/absolute/path/to/work/results'
+# REQUIRED — EDIT ME. Where trained models (.pt) and adaptation logs/CSVs are
+# published. This is what you point the analysis scripts at afterwards.
+
 
 # ------------------------------------------------------------------------------
-# 3. The Cross-Product Engine (Sweep Variables)
+# 2. Biological Landscape & Frozen Oracle  (scalars)
 # ------------------------------------------------------------------------------
-# Nextflow will automatically create a combinatorial matrix of all array values here.
-starting_seed: 42             # The baseline random seed for reproducibility (e.g., 42).
-num_seeds: 3                  # How many distinct random initializations to run (e.g., runs seeds 42, 43, 44).
+# These define the synthetic protein universe. Hold them FIXED within a study so
+# results are comparable. The (oracle_architectures, base_sigmas) pair should be
+# the winner from your Phase 1 grid search (see run_example_grid_search.sh).
 
-n_trains: [1000000]           # Array of Source training dataset sizes (1 million PLM embeddings).
-n_pools: [100000, 500000]     # Array of Target pool sizes for the active learning adaptation phase.
-shifts: [1.0, 2.0, 5.0]       # Covariate shift multipliers (Dispersion scaling). 1.0 = no shift, >1.0 = increased evolutionary drift in target.
+n_families: 10000
+# Number of GMM cluster centroids ("protein families"). Membership is sampled
+# from a Zipf distribution, reproducing real-database family-size imbalance.
 
-n_test: 50000                 # Static size of the disjoint Target test set used for evaluating recovery thresholds.
+n_classes: 1000
+# Number of functional/taxonomic labels the frozen Oracle can assign.
+
+dim: 1280
+# Embedding dimensionality. 1280 matches ESM-2 PLM embeddings. Changing this
+# changes the entire geometry of the landscape.
+
+# --- Swept axes for landscape calibration (usually single-element here) ---
+oracle_architectures: ["1024,1024,512"]
+# ARRAY of strings. Each string = comma-separated hidden-layer widths of the
+# frozen RandomOracleNN labeler. Sweep this only when calibrating the landscape.
+# "1024,1024,512" is the calibrated default from the thesis Phase 1 search.
+
+base_sigmas: [0.5]
+# ARRAY of floats. Within-family dispersion (sigma) of the GMM. Drives the
+# signal-to-noise ratio of the landscape. Larger = fuzzier family boundaries.
+# 0.5 is the calibrated default. (Source data is sampled tighter than this; see
+# 'shifts' below for the exact relationship.)
+
+
+# ------------------------------------------------------------------------------
+# 3. The Cross-Product Engine — Data & Distribution Shift  (sweep variables)
+# ------------------------------------------------------------------------------
+starting_seed: 42
+# First RNG seed (scalar). Fixes reproducibility of the universe + sampling.
+
+num_seeds: 1
+# How many consecutive seeds to run (scalar). Runs seeds:
+#   starting_seed ... starting_seed + num_seeds - 1
+# Increase (e.g. 3-4) for statistical power once the experiment is validated.
+
+n_trains: [100000]
+# ARRAY. Source TRAINING set sizes (number of embeddings the baseline model
+# trains on). Sweep to map the "data starvation" axis. Thesis used up to 1e6.
+
+n_pools: [200000]
+# ARRAY. Target ADAPTATION-pool sizes — the unlabeled-budget the model fine-tunes
+# on during recovery. Larger pools give the model more chances to recover.
+
+shifts: [1.0, 2.0, 5.0]
+# ARRAY. Covariate-shift multipliers (shift_k) — THE primary independent variable.
+#   * SOURCE data is sampled tightly:  sigma_source = base_sigma / max(1, shift_k)
+#   * TARGET data is sampled broadly:  sigma_target = base_sigma
+# So shift_k = 1.0 means no shift; larger shift_k means a narrower/more-biased
+# source vs. the full-dispersion target -> more distribution shift to recover from.
+
+n_test: 50000
+# Size of the disjoint target TEST set (scalar). Held out from the adaptation
+# pool (strict array slicing) and used to evaluate recovery after each interval.
+
 
 # ------------------------------------------------------------------------------
 # 4. Neural Network Hyperparameters
 # ------------------------------------------------------------------------------
-# Architecture and training configurations for the predictive models.
-base_epochs: 20               # Number of epochs for training the initial Source baseline model.
-batch_size: 256               # Number of samples processed before updating model weights.
-learning_rate: 0.001          # Step size for the Adam optimizer during both training and adaptation.
-hidden_dim: 512               # Size of the hidden layers in the ProteinFamilyPredictor network.
-dropout: 0.1                  # Dropout probability to prevent overfitting on the source domain.
+# --- Source baseline training (TRAIN_SOURCE -> src/train.py) ---
+base_epochs: 20
+# Epochs for training the initial source baseline model (scalar).
+
+learning_rate: 0.001
+# Adam learning rate for SOURCE baseline training (scalar).
+
+dropout: 0.1
+# Dropout probability in the ProteinFamilyPredictor MLP (scalar). Applies to both
+# the baseline and the adapted model (architecture must match for weight loading).
+
+# --- Adaptation phase (TEST_ADAPTATION -> src/${adapt_script}) ---
+adapt_script: 'adapt_OGadam.py'
+# WHICH adaptation optimizer to use (scalar). Must be a filename in src/. Options:
+#   * 'adapt_OGadam.py'  -> vanilla Adam. Fast, aggressive recovery.
+#   * 'adapt_adamw.py'   -> AdamW + cosine LR schedule w/ 10% warmup. Gentler,
+#                           more stable. (NOTE: its weight_decay=0.01 and 10%
+#                           warmup are HARD-CODED inside the script — see below.)
+
+adapt_lr: 0.001
+# Learning rate for the ADAPTATION loop (scalar). Pair with adapt_script:
+#   * ~0.001    is typical for adapt_OGadam.py (Adam)
+#   * ~0.00005  is typical for adapt_adamw.py  (AdamW + warmup)
+
+# --- Swept network/training axes ---
+batch_sizes: [256]
+# ARRAY. Mini-batch size, swept. Used for BOTH source training and adaptation.
+
+hidden_dims: [512]
+# ARRAY. Width of the predictor MLP's first hidden layer, swept. The network is
+# input(dim) -> hidden_dim -> hidden_dim/2 -> n_classes.
+
+
+# ------------------------------------------------------------------------------
+# 5. Inert / Documentation-Only Keys  (NOT wired into the current pipeline)
+# ------------------------------------------------------------------------------
+# The following keys appeared in legacy thesis configs but are NOT forwarded by
+# main.nf and are NOT read by the adapt scripts. They are listed here only so you
+# know they exist. To actually change these you must edit src/adapt_adamw.py,
+# where they are currently hard-coded (weight_decay=0.01, warmup = 10% of steps).
+#
+# weight_decay: 0.01     # hard-coded in adapt_adamw.py (optim.AdamW)
+# warmup_ratio: 0.1      # hard-coded in adapt_adamw.py (warmup_steps = 10%)

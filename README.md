@@ -243,12 +243,22 @@ You should see the **Landscape Diagnostics** block (purity / promiscuity / cover
 
 ### Step 1 — Phase 1: Calibrate the Oracle
 
-**On SLURM** (runs all 24 grid cells as an array):
+**On SLURM** (runs all 24 grid cells as an array, then auto-merges):
 
 ```bash
-sbatch src/oracle_search/run_tuner.sh
-# → produces tuning_result_0.csv … tuning_result_23.csv
+# With an explicit run name — results land in full_grid_results_baseline.csv
+bash submit_oracle_search.sh baseline
+
+# Without a run name — a timestamp suffix is generated automatically
+bash submit_oracle_search.sh
+# → results/oracle_search/full_grid_results_20260604_143021.csv
 ```
+
+`submit_oracle_search.sh` creates the required output and log directories, submits the 24-task
+SLURM array, and chains a lightweight merge job that concatenates the per-cell CSVs into a single
+`results/oracle_search/full_grid_results_<suffix>.csv` once every array task succeeds. The raw
+per-cell CSVs are deleted automatically after the merge. Using a distinct run name (or the
+auto-generated timestamp) for each submission prevents results from being overwritten.
 
 **Locally** (run a single grid cell by its task index, 0–23):
 
@@ -256,9 +266,10 @@ sbatch src/oracle_search/run_tuner.sh
 python src/oracle_search/tune_landscape_array.py 14
 ```
 
-Concatenate the per-cell CSVs and pick the `(oracle, sigma)` whose diagnostics sit inside the
-target ranges. (The thesis selection — `"1024,1024,512"` @ `sigma=0.5` — is already baked into the
-Phase 2 configs, so you can skip straight to Step 2 to reproduce the published runs.)
+Inspect the per-cell CSVs in `results/oracle_search/raw_csvs/` and pick the `(oracle, sigma)`
+whose diagnostics sit inside the target ranges. (The thesis selection — `"1024,1024,512"` @
+`sigma=0.5` — is already baked into the Phase 2 configs, so you can skip straight to Step 2 to
+reproduce the published runs.)
 
 *Optional* large-scale Wasserstein characterization:
 
