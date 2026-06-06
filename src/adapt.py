@@ -6,11 +6,9 @@ import argparse
 import os
 from torch.utils.data import DataLoader, TensorDataset
 
-# Import your custom modules
 from model import get_model
 from metrics import calculate_macro_f1, calculate_feature_wasserstein
 
-# Hardware configuration
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def load_data(path_X, path_y):
@@ -38,17 +36,12 @@ def evaluate_model(model, test_loader, criterion):
             
             test_loss_accum += loss.item()
             
-            # --- THE CRITICAL CLASSIFICATION CHANGE ---
-            # Get the index of the max logit (the predicted class)
             preds_classes = torch.argmax(preds, dim=1)
-            
-            # Append the predicted classes, not the raw logits
             all_preds.append(preds_classes.cpu())
             all_targets.append(batch_y.cpu())
             
     avg_test_loss = test_loss_accum / len(test_loader)
     
-    # Calculate Macro F1 instead of rBME
     test_f1 = calculate_macro_f1(torch.cat(all_targets), torch.cat(all_preds))
     
     return avg_test_loss, test_f1
@@ -63,10 +56,10 @@ if __name__ == "__main__":
     parser.add_argument("--ref_x", type=str, required=True, help="Reference source data for Wasserstein")
     parser.add_argument("--output_model", type=str, required=True)
     parser.add_argument("--batch_size", type=int, default=64)
-    parser.add_argument("--lr", type=float, default=5e-5) # <--- SAFE DEFAULT: 0.00005
+    parser.add_argument("--lr", type=float, default=5e-5)
     parser.add_argument("--hidden_dim", type=int, default=512)
     parser.add_argument("--dropout", type=float, default=0.1)
-    parser.add_argument("--num_classes", type=int, default=100, help="Number of protein families") # <--- SAFE DEFAULT: 100
+    parser.add_argument("--num_classes", type=int, default=100, help="Number of protein families")
     args = parser.parse_args()
 
     # 1. Load Data
@@ -89,9 +82,9 @@ if __name__ == "__main__":
     model.load_state_dict(torch.load(args.base_model, map_location=DEVICE))
     
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=args.lr) # <--- BACK TO PURE ADAM
+    optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
-    # 4. Setup CSV Logging (Changed headers to test_ce and test_f1)
+    # 4. Setup CSV Logging
     batch_log_file = args.output_model.replace('.pt', '_batch_log.csv')
     with open(batch_log_file, 'w') as f:
         f.write("batch_number,samples_seen,train_loss,test_ce,test_f1\n")
@@ -108,7 +101,7 @@ if __name__ == "__main__":
     # 6. The Active Learning Loop
     global_batch = 0
     samples_seen = 0
-    eval_every = 1000  # <--- SPEED UP FIX: Evaluates every 1000 batches
+    eval_every = 1000
 
     for batch_X, batch_y in pool_loader:
         global_batch += 1

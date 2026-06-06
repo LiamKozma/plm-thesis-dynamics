@@ -14,10 +14,9 @@ from metrics import calculate_feature_wasserstein
 
 def process_seed_shift_combo(params):
     """
-    Worker function: Generates the 'Universe' once per (Seed, Shift, N_Pool, Sigma) combo,
+    Worker function: generates the universe once per (seed, shift, n_pool, sigma) combo,
     then iterates through ratios via true random subsampling.
     """
-    # Notice we unpack 'sigma' here now!
     seed, shift, n_pool_max, sigma, dim, n_families, n_classes, topology, ratios = params
 
     max_ratio = max(ratios)
@@ -26,13 +25,13 @@ def process_seed_shift_combo(params):
     # 1. Generate the MASSIVE Universes ONCE
     X_source_universe, _, _ = generate_dispersion_gmm(
         n_samples=n_train_max, dim=dim, n_families=n_families, n_classes=n_classes,
-        hidden_layers=[256, 128], shift_k=shift, seed=seed, is_target=False,
+        hidden_layers=[256, 128], shift_delta=shift, seed=seed, is_target=False,
         centroid_spread=10.0, base_sigma=sigma, topology=topology
     )
 
     X_target_universe, _, _ = generate_dispersion_gmm(
         n_samples=n_pool_max, dim=dim, n_families=n_families, n_classes=n_classes,
-        hidden_layers=[256, 128], shift_k=shift, seed=seed, is_target=True,
+        hidden_layers=[256, 128], shift_delta=shift, seed=seed, is_target=True,
         centroid_spread=10.0, base_sigma=sigma, topology=topology
     )
 
@@ -49,7 +48,6 @@ def process_seed_shift_combo(params):
 
         w_dist = calculate_feature_wasserstein(X_source_sub, X_target_sub)
 
-        # Added Base_Sigma to the output dictionary!
         results.append({
             'Seed': seed, 'Shift': shift, 'Base_Sigma': sigma, 'N_Train': n_train,
             'N_Pool': n_pool, 'Ratio': r, 'Log_Ratio': np.log(r),
@@ -76,7 +74,6 @@ if __name__ == "__main__":
     n_classes = 1000
     topology = "gaussian"
 
-    # FIXED: Added base_sigmas to the product loop!
     tasks = []
     for s, sh, npool, sig in product(seeds, shifts, n_pools, base_sigmas):
         tasks.append((s, sh, npool, sig, dim, n_families, n_classes, topology, ratios))
@@ -90,7 +87,6 @@ if __name__ == "__main__":
     start_time = time.time()
     csv_filename = "massive_wasserstein_grid.csv"
 
-    # FIXED: Added Base_Sigma to the fields list
     fields = ['Seed', 'Shift', 'Base_Sigma', 'N_Train', 'N_Pool', 'Ratio', 'Log_Ratio', 'Wasserstein_Distance']
 
     with open(csv_filename, 'w', newline='') as f:

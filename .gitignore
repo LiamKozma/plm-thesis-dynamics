@@ -54,6 +54,16 @@ archive_old_logs/
 *.zip
 
 # ------------------------------------------------------------------------------
+# Configuration Shield: keep personal, site-specific configs OUT of the repo.
+# Public users commit configs/template_master.yaml; private copies live as
+# configs/liam_*.yaml and never get tracked.
+# ------------------------------------------------------------------------------
+configs/liam_*.yaml
+
+# Personal remote-sync helper (contains private server addresses / usernames)
+sync_hpc.sh
+
+# ------------------------------------------------------------------------------
 # Exceptions: keep the Phase 1 oracle-search tuning CSVs under version control
 # ------------------------------------------------------------------------------
 !src/oracle_search/

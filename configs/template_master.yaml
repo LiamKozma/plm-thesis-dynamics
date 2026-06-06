@@ -1,12 +1,14 @@
 # ==============================================================================
-# MASTER CONFIG TEMPLATE  —  PLM-GMM Recovery Threshold Pipeline (main.nf)
+# MASTER CONFIG TEMPLATE - PLM-GMM Recovery Threshold Pipeline (main.nf)
 # ==============================================================================
-# This file is a self-documenting TEMPLATE. To run your own experiment:
+# This file is a self-documenting PUBLIC TEMPLATE. To run your own experiment:
 #
-#   1. Copy it:        cp configs/master.yaml configs/my_experiment.yaml
-#   2. Edit the two    data_dir / metrics_dir   absolute paths (Section 1).
+#   1. Copy it:        cp configs/template_master.yaml configs/my_experiment.yaml
+#   2. Edit the two    data_dir / metrics_dir   absolute paths (Section 1) to
+#                      point at YOUR cluster's storage (see notes there).
 #   3. Tune the sweep  arrays (Sections 3 & 4) to your hypothesis.
-#   4. Launch it:      point CONFIG in run_example_experiment.sh at your copy.
+#   4. Launch it:      ./run_example_experiment.sh --config configs/my_experiment.yaml
+#                      (or override paths on the CLI: --data_dir / --metrics_dir)
 #
 # ------------------------------------------------------------------------------
 # HOW THE SWEEP WORKS
@@ -40,13 +42,22 @@ dataset: 'my_experiment'
 # Output namespace. All data/models/results for this run are written under a
 # directory named after this. Use a unique name per experiment to avoid clobber.
 
-data_dir: '/absolute/path/to/scratch/plm_data'
-# REQUIRED — EDIT ME. Where generated .npy embeddings (source + target) are
-# published. Put this on fast/scratch storage; these files are large.
+# --- REQUIRED: edit both absolute paths below for YOUR cluster. ---------------
+# These MUST be absolute paths. Do NOT use relative paths like ./data — Nextflow
+# worker jobs run from isolated work dirs on other nodes and will not resolve them.
+# The run script (run_example_experiment.sh) ABORTS if these still contain the
+# '/path/to/...' placeholder, so either edit them here or pass --data_dir /
+# --metrics_dir on the command line.
 
-metrics_dir: '/absolute/path/to/work/results'
-# REQUIRED — EDIT ME. Where trained models (.pt) and adaptation logs/CSVs are
-# published. This is what you point the analysis scripts at afterwards.
+data_dir: '/path/to/scratch/data'
+# CHANGE ME: fast / high-throughput I/O partition (e.g. node-local scratch,
+# Lustre/BeeGFS scratch). Generated .npy embeddings (source + target) are published
+# here. These files are large and write-heavy — keep them on your fastest storage.
+
+metrics_dir: '/path/to/storage/results'
+# CHANGE ME: durable / backed-up storage partition (e.g. project or home storage).
+# Trained models (.pt) and adaptation logs/CSVs are published here. This is what
+# you point the analysis scripts at after the run completes.
 
 
 # ------------------------------------------------------------------------------
@@ -81,7 +92,7 @@ base_sigmas: [0.5]
 
 
 # ------------------------------------------------------------------------------
-# 3. The Cross-Product Engine — Data & Distribution Shift  (sweep variables)
+# 3. The Cross-Product Engine: Data & Distribution Shift  (sweep variables)
 # ------------------------------------------------------------------------------
 starting_seed: 42
 # First RNG seed (scalar). Fixes reproducibility of the universe + sampling.
@@ -96,14 +107,14 @@ n_trains: [100000]
 # trains on). Sweep to map the "data starvation" axis. Thesis used up to 1e6.
 
 n_pools: [200000]
-# ARRAY. Target ADAPTATION-pool sizes — the unlabeled-budget the model fine-tunes
+# ARRAY. Target ADAPTATION-pool sizes: the unlabeled budget the model fine-tunes
 # on during recovery. Larger pools give the model more chances to recover.
 
 shifts: [1.0, 2.0, 5.0]
-# ARRAY. Covariate-shift multipliers (shift_k) — THE primary independent variable.
-#   * SOURCE data is sampled tightly:  sigma_source = base_sigma / max(1, shift_k)
+# ARRAY. Covariate-shift multipliers (shift_delta) - the primary independent variable.
+#   * SOURCE data is sampled tightly:  sigma_source = base_sigma / max(1, shift_delta)
 #   * TARGET data is sampled broadly:  sigma_target = base_sigma
-# So shift_k = 1.0 means no shift; larger shift_k means a narrower/more-biased
+# shift_delta = 1.0 means no shift; larger shift_delta means a narrower/more-biased
 # source vs. the full-dispersion target -> more distribution shift to recover from.
 
 n_test: 50000
@@ -131,7 +142,7 @@ adapt_script: 'adapt_OGadam.py'
 #   * 'adapt_OGadam.py'  -> vanilla Adam. Fast, aggressive recovery.
 #   * 'adapt_adamw.py'   -> AdamW + cosine LR schedule w/ 10% warmup. Gentler,
 #                           more stable. (NOTE: its weight_decay=0.01 and 10%
-#                           warmup are HARD-CODED inside the script — see below.)
+#                           warmup are hard-coded in the script - see below.)
 
 adapt_lr: 0.001
 # Learning rate for the ADAPTATION loop (scalar). Pair with adapt_script:

@@ -8,11 +8,9 @@ import math
 from torch.optim.lr_scheduler import LambdaLR
 from torch.utils.data import DataLoader, TensorDataset
 
-# Import your custom modules
 from model import get_model
 from metrics import calculate_macro_f1, calculate_feature_wasserstein
 
-# Hardware configuration
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def load_data(path_X, path_y):
@@ -73,7 +71,7 @@ if __name__ == "__main__":
     parser.add_argument("--ref_x", type=str, required=True, help="Reference source data for Wasserstein")
     parser.add_argument("--output_model", type=str, required=True)
     parser.add_argument("--batch_size", type=int, default=64)
-    parser.add_argument("--lr", type=float, default=5e-5) # Gentle default learning rate
+    parser.add_argument("--lr", type=float, default=5e-5)
     parser.add_argument("--hidden_dim", type=int, default=512)
     parser.add_argument("--dropout", type=float, default=0.1)
     parser.add_argument("--num_classes", type=int, default=100, help="Number of protein families")
@@ -100,7 +98,7 @@ if __name__ == "__main__":
     
     criterion = nn.CrossEntropyLoss()
     
-    # 4. GENTLE FINE-TUNING SETUP: AdamW + Cosine Warmup
+    # 4. AdamW + cosine LR warmup
     optimizer = optim.AdamW(model.parameters(), lr=args.lr, weight_decay=0.01)
     
     total_steps = len(pool_loader)
@@ -124,7 +122,7 @@ if __name__ == "__main__":
     # 7. The Active Learning Loop
     global_batch = 0
     samples_seen = 0
-    eval_every = 1000  # <--- Evaluates every 1000 batches to speed up runtime
+    eval_every = 1000
 
     for batch_X, batch_y in pool_loader:
         global_batch += 1
@@ -139,7 +137,6 @@ if __name__ == "__main__":
         train_loss = criterion(predictions, batch_y)
         train_loss.backward()
         
-        # B. Step the optimizer AND the scheduler
         optimizer.step()
         scheduler.step()
         

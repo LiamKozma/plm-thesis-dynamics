@@ -6,18 +6,15 @@ class ProteinFamilyPredictor(nn.Module):
         super(ProteinFamilyPredictor, self).__init__()
         
         self.net = nn.Sequential(
-            # Layer 1: Dynamically sized input (e.g., 1280 for ESM-2)
             nn.Linear(input_dim, hidden_dim),
             nn.BatchNorm1d(hidden_dim),
             nn.ReLU(),
             nn.Dropout(dropout),
-            
-            # Layer 2: Non-linear processing
+
             nn.Linear(hidden_dim, hidden_dim // 2),
             nn.ReLU(),
             nn.Dropout(dropout),
-            
-            # Layer 3: Output (Raw logits for CrossEntropyLoss)
+
             nn.Linear(hidden_dim // 2, num_classes)
         )
         

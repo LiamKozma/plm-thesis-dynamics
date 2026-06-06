@@ -3,11 +3,10 @@ import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 import argparse
-import random # Added for complete seeding
+import random
 from torch.utils.data import DataLoader, TensorDataset
 from sklearn.model_selection import train_test_split
 
-# Import your custom modules
 from model import get_model
 from metrics import calculate_macro_f1, calculate_feature_wasserstein
 
@@ -67,7 +66,7 @@ if __name__ == "__main__":
     criterion = nn.CrossEntropyLoss() 
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
     
-    #  Training Loop
+    # Training Loop
     for epoch in range(args.epochs):
         model.train()
         train_loss_accum = 0
@@ -99,15 +98,12 @@ if __name__ == "__main__":
                 
                 val_loss_accum += loss.item()
                 
-                # Extract the predicted class
                 preds_classes = torch.argmax(preds, dim=1)
-                
                 all_preds.append(preds_classes.cpu())
                 all_targets.append(batch_y.cpu())
         
         avg_val_loss = val_loss_accum / len(val_loader)
         
-        # Calculate custom Macro F1 metric
         val_f1 = calculate_macro_f1(
             torch.cat(all_targets), 
             torch.cat(all_preds)
@@ -119,8 +115,7 @@ if __name__ == "__main__":
     torch.save(model.state_dict(), args.output_model)
     print(f"\nModel saved to {args.output_model}")
 
-    # 8. Calculate and Output Wasserstein Distance
-    # Calculate the distance between the source (ref_X) and the current training data (X)
+    # 8. Calculate Wasserstein distance between source reference and training data
     w_dist = calculate_feature_wasserstein(ref_X, X)
     
     print("-" * 50)

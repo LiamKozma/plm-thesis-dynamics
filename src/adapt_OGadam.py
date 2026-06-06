@@ -6,11 +6,9 @@ import argparse
 import os
 from torch.utils.data import DataLoader, TensorDataset
 
-# Import your custom modules
 from model import get_model
 from metrics import calculate_macro_f1, calculate_feature_wasserstein
 
-# Hardware configuration
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def load_data(path_X, path_y):
@@ -38,17 +36,12 @@ def evaluate_model(model, test_loader, criterion):
             
             test_loss_accum += loss.item()
             
-            # --- THE CRITICAL CLASSIFICATION CHANGE ---
-            # Get the index of the max logit (the predicted class)
             preds_classes = torch.argmax(preds, dim=1)
-            
-            # Append the predicted classes, not the raw logits
             all_preds.append(preds_classes.cpu())
             all_targets.append(batch_y.cpu())
             
     avg_test_loss = test_loss_accum / len(test_loader)
     
-    # Calculate Macro F1 instead of rBME
     test_f1 = calculate_macro_f1(torch.cat(all_targets), torch.cat(all_preds))
     
     return avg_test_loss, test_f1
@@ -91,7 +84,7 @@ if __name__ == "__main__":
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
-    # 4. Setup CSV Logging (Changed headers to test_ce and test_f1)
+    # 4. Setup CSV Logging
     batch_log_file = args.output_model.replace('.pt', '_batch_log.csv')
     with open(batch_log_file, 'w') as f:
         f.write("batch_number,samples_seen,train_loss,test_ce,test_f1\n")
@@ -108,7 +101,7 @@ if __name__ == "__main__":
     # 6. The Active Learning Loop
     global_batch = 0
     samples_seen = 0
-    eval_every = 500  # <--- Evaluates every 500 batches instead of every 1 batch
+    eval_every = 500
 
     for batch_X, batch_y in pool_loader:
         global_batch += 1
@@ -124,7 +117,6 @@ if __name__ == "__main__":
         train_loss.backward()
         optimizer.step()
         
-        # B & C. Evaluate and log ONLY every 500 batches or on the final batch
         if global_batch % eval_every == 0 or global_batch == len(pool_loader):
             test_ce, test_f1 = evaluate_model(model, test_loader, criterion)
             

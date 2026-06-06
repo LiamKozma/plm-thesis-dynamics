@@ -1,8 +1,8 @@
 # Identifying the Recovery Threshold for Protein Language Models under Data Distribution Shift
 
-> Master's Thesis — synthetic-data framework for measuring how, and *when*, a predictive model fine-tuned on Protein Language Model (PLM) embeddings can recover performance after the data distribution shifts beneath it.
+> Master's Thesis. A synthetic-data framework for measuring how, and when, a predictive model fine-tuned on Protein Language Model (PLM) embeddings can recover performance after its data distribution shifts.
 
-This repository contains the full experimental apparatus: a controllable synthetic protein universe, a frozen ground-truth labeler, a distributed training/adaptation pipeline, and the analysis code used to locate the **recovery threshold** — the point of distribution shift past which active adaptation can no longer restore the model.
+This repository contains the full experimental apparatus: a controllable synthetic protein universe, a frozen ground-truth labeler, a distributed training/adaptation pipeline, and the analysis code used to locate the **recovery threshold**: the point of distribution shift past which active adaptation can no longer restore the model.
 
 ---
 
@@ -15,8 +15,8 @@ This repository contains the full experimental apparatus: a controllable synthet
    - [Simulating Covariate Shift](#3-simulating-evolutionary-covariate-shift)
    - [Metrics](#4-metrics)
 3. [The Two Workflows](#the-two-workflows)
-   - [Phase 1 — Oracle Grid Search](#phase-1--oracle-grid-search-srcoracle_search)
-   - [Phase 2 — Main Adaptation Pipeline](#phase-2--main-adaptation-pipeline-mainnf)
+   - [Phase 1: Oracle Grid Search](#phase-1-oracle-grid-search-srcoracle_search)
+   - [Phase 2: Main Adaptation Pipeline](#phase-2-main-adaptation-pipeline-mainnf)
 4. [Repository Structure](#repository-structure)
 5. [Environment Setup](#environment-setup)
 6. [Reproducing the Experiments](#reproducing-the-experiments)
@@ -28,83 +28,83 @@ This repository contains the full experimental apparatus: a controllable synthet
 
 ## Motivation
 
-Protein Language Models (e.g. ESM-2) produce high-dimensional embeddings (1280-D) that downstream predictors use to assign functional or taxonomic labels. In the real world, the protein distribution a model is trained on (its **source** distribution `P`) drifts away from the distribution it is later asked to predict (its **target** distribution `Q`) — through evolutionary divergence, sampling bias, or newly discovered families. This is **covariate shift**.
+Protein Language Models (e.g. ESM-2) produce high-dimensional embeddings (1280-D) that downstream predictors use to assign functional or taxonomic labels. In practice, the protein distribution a model is trained on (its **source** distribution `P`) drifts away from the distribution it is later asked to predict (its **target** distribution `Q`), through evolutionary divergence, sampling bias, or newly discovered families. This is **covariate shift**.
 
-This thesis asks a sharp, quantitative question:
+This thesis poses a single quantitative question:
 
-> Given a model trained on a source distribution, **how far can the target distribution drift before active adaptation on new data can no longer recover the lost performance?**
+> Given a model trained on a source distribution, how far can the target distribution drift before active adaptation on new data can no longer recover the lost performance?
 
-Because real protein data offers no ground-truth control over the *magnitude* of shift, we build a fully synthetic — but biologically motivated — universe in which shift is a single tunable scalar. This lets us sweep shift continuously and map the recovery threshold precisely.
+Real protein data offers no ground-truth control over the magnitude of shift. We therefore construct a fully synthetic (but biologically motivated) universe in which shift is a single tunable scalar, allowing the shift axis to be swept continuously and the recovery threshold to be mapped precisely.
 
 ---
 
 ## Core Methodology
 
-The central idea is to replace a real PLM + real labels with a **controllable simulator** that preserves the key statistical structure (clustered families, label boundaries, a covariate-shift axis) while making every variable reproducible and dial-able.
+We replace a real PLM and real labels with a controllable simulator that preserves the key statistical structure (clustered families, label boundaries, a covariate-shift axis) while keeping every variable reproducible and tunable.
 
 ### 1. The Frozen Oracle (Ground-Truth Labeling)
 
-A **`RandomOracleNN`** (defined in `src/generate_simulation.py`) is a randomly-initialized, **never-trained** neural network that maps a 1280-D embedding to one of `n_classes` taxonomic labels via `argmax` over its output logits.
+A `RandomOracleNN` (defined in `src/generate_simulation.py`) is a randomly-initialized, never-trained neural network that maps a 1280-D embedding to one of `n_classes` taxonomic labels via `argmax` over its output logits.
 
-- It is seeded deterministically, so the *same* oracle defines the labeling function for both source and target data within a run.
+- It is seeded deterministically, so the same oracle defines the labeling function for both source and target data within a run.
 - Its weights are frozen (Kaiming-initialized hidden layers, L2-normalized final layer, LayerNorm + ReLU between layers).
-- It plays the role of "ground-truth biology": a fixed, complex, non-linear decision surface over embedding space.
+- It acts as ground-truth biology: a fixed, complex, non-linear decision surface over embedding space.
 
-Because the oracle is fixed, the label of any point in 1280-D space is determined purely by *where* the point lands — which is exactly what lets us inject covariate shift cleanly.
+Because the oracle is fixed, the label of any point in 1280-D space is determined purely by where the point lands, which is what permits clean injection of covariate shift.
 
 ### 2. The GMM Embedding Universe
 
 Embeddings are drawn from a high-dimensional **Gaussian Mixture Model** representing a synthetic protein landscape:
 
-- **`n_families`** cluster centroids are scattered through 1280-D space (default `gaussian` topology; `hypercube`, `hypersphere`, and `projection` topologies are also implemented).
-- Family membership is sampled from a **Zipf distribution** (`rank^-1.5`), reproducing the heavy-tailed family-size imbalance seen in real protein databases (a few huge families, a long tail of rare ones).
+- `n_families` cluster centroids are scattered through 1280-D space (default `gaussian` topology; `hypercube`, `hypersphere`, and `projection` topologies are also implemented).
+- Family membership is sampled from a **Zipf distribution** (`rank^-1.5`), reproducing the heavy-tailed family-size imbalance seen in real protein databases (a few large families, a long tail of rare ones).
 - Each sample is `centroid + Gaussian noise`, where the noise scale `σ` (`base_sigma`) controls within-family dispersion.
-- The frozen Oracle then labels every sampled point.
+- The frozen oracle then labels every sampled point.
 
-The landscape is validated by three diagnostics (printed during source generation):
+The landscape is validated by three diagnostics, printed during source generation:
 
 | Diagnostic | Meaning | Target Range |
 |---|---|---|
-| **Within-family purity** | fraction of a family sharing its majority label | 50–70% |
-| **Family promiscuity** | fraction of families spanning >1 label | 40–60% |
-| **Class coverage** | average families per class | ~10 |
+| Within-family purity | fraction of a family sharing its majority label | 50–70% |
+| Family promiscuity | fraction of families spanning >1 label | 40–60% |
+| Class coverage | average families per class | ~10 |
 
-These targets are what **Phase 1 (the oracle grid search)** exists to satisfy.
+Phase 1 (the oracle grid search) exists to satisfy these targets.
 
 ### 3. Simulating Evolutionary Covariate Shift
 
-Shift is injected through the **dispersion** of the source vs. target distributions, controlled by the scalar `shift_k`:
+Shift is injected through the dispersion of the source vs. target distributions, controlled by the scalar `shift_delta` (δ):
 
-- **Source** data is sampled *tightly* around centroids: `σ_source = base_sigma / max(1, shift_k)`. The model trains on a narrow, biased view of each family.
-- **Target** data is sampled at full dispersion: `σ_target = base_sigma`. The target pool and test set explore the *broad*, true extent of each family — including regions the source model never saw.
-- The target PRNG is offset (`seed + 99999`) so target points are genuinely **new draws** from the *same* GMM universe, never copies of source points.
+- **Source** data is sampled tightly around centroids: `σ_source = base_sigma / max(1, shift_delta)`. The model trains on a narrow, biased view of each family.
+- **Target** data is sampled at full dispersion: `σ_target = base_sigma`. The target pool and test set explore the broad, true extent of each family, including regions the source model never saw.
+- The target PRNG is offset (`seed + 99999`) so target points are new draws from the same GMM universe, never copies of source points.
 
-A larger `shift_k` ⇒ a narrower, more biased source ⇒ a larger gap between what the model learned and the true target distribution ⇒ more covariate shift to recover from. The empirical magnitude of this gap is measured with the **Wasserstein distance** between source and target features.
+A larger `shift_delta` yields a narrower, more biased source, hence a larger gap between what the model learned and the true target distribution, hence more covariate shift to recover from. The empirical magnitude of this gap is measured by the **Wasserstein distance** between source and target features.
 
 ### 4. Metrics
 
 Defined in `src/metrics.py` and logged throughout adaptation:
 
-- **Cross-Entropy (CE) Loss** — primary training/evaluation objective (`CrossEntropyLoss`).
-- **Macro F1** — class-balanced recovery metric; treats every taxonomic class equally regardless of Zipf imbalance.
-- **Feature Wasserstein Distance** — average per-feature 1-D Wasserstein distance between source and target embeddings; the empirical x-axis against which the recovery threshold is plotted.
+- **Cross-Entropy (CE) Loss**: primary training/evaluation objective (`CrossEntropyLoss`).
+- **Macro F1**: class-balanced recovery metric; treats every taxonomic class equally regardless of Zipf imbalance.
+- **Feature Wasserstein Distance**: average per-feature 1-D Wasserstein distance between source and target embeddings; the empirical x-axis against which the recovery threshold is plotted.
 
 ---
 
 ## The Two Workflows
 
-The project is split into two clearly separated phases. **Phase 1 calibrates the simulator; Phase 2 runs the science.**
+The project is split into two phases: Phase 1 calibrates the simulator, Phase 2 runs the experiments.
 
-### Phase 1 — Oracle Grid Search (`src/oracle_search/`)
+### Phase 1: Oracle Grid Search (`src/oracle_search/`)
 
-**Goal:** find the `(oracle architecture, base_sigma)` combination that produces a biologically realistic landscape — i.e. one that hits the purity / promiscuity / coverage targets above. This is a *calibration* step, run once, and is **fully decoupled from the main pipeline**.
+**Goal:** find the `(oracle architecture, base_sigma)` combination that produces a biologically realistic landscape, i.e. one that hits the purity / promiscuity / coverage targets above. This is a calibration step, run once, and is fully decoupled from the main pipeline.
 
 | File | Role |
 |---|---|
-| `run_tuner.sh` | SLURM **array** launcher (`--array=0-23`) — fans the 24-cell grid across array tasks |
+| `run_tuner.sh` | SLURM array launcher (`--array=0-23`): fans the 24-cell grid across array tasks |
 | `tune_landscape_array.py` | Array worker: maps `$SLURM_ARRAY_TASK_ID` → one `(architecture, sigma)` cell, invokes the simulator, scrapes the diagnostics, writes `tuning_result_<id>.csv` |
 | `run_massive_grid.py` | Standalone multiprocessing sweep over `(seed, shift, n_pool, sigma, ratio)` computing source↔target Wasserstein distances at scale |
-| `generate_simulation.py` | Self-contained copy of the simulator used **only** by `run_massive_grid.py` (co-located so its `from generate_simulation import …` / `from metrics import …` imports resolve locally) |
+| `generate_simulation.py` | Self-contained copy of the simulator used only by `run_massive_grid.py` (co-located so its `from generate_simulation import …` / `from metrics import …` imports resolve locally) |
 | `metrics.py` | Self-contained metrics copy for the same standalone sweep |
 
 The grid swept by `tune_landscape_array.py`:
@@ -114,11 +114,11 @@ architectures = ["512,256", "1024,512", "2048,1024", "1024,1024,512"]
 sigmas        = [0.1, 0.3, 0.5, 0.7, 1.0, 1.4]   # 4 × 6 = 24 cells
 ```
 
-> **Note:** `tune_landscape_array.py` shells out to the **canonical** `src/generate_simulation.py` (invoked from the project root), so it exercises the exact same simulator the main pipeline uses. The chosen winner from this phase — `oracle: "1024,1024,512"`, `base_sigma: 0.5` — is what you'll see hard-coded into the Phase 2 configs.
+> **Note:** `tune_landscape_array.py` shells out to the canonical `src/generate_simulation.py` (invoked from the project root), so it exercises the same simulator the main pipeline uses. The chosen configuration from this phase (`oracle: "1024,1024,512"`, `base_sigma: 0.5`) is hard-coded into the Phase 2 configs.
 
-### Phase 2 — Main Adaptation Pipeline (`main.nf`)
+### Phase 2: Main Adaptation Pipeline (`main.nf`)
 
-**Goal:** for each point in a large hyperparameter grid, train a source model, generate shifted target data, run an active-adaptation loop, and log the recovery trajectory. This is a **Nextflow** DAG that fans a combinatorial sweep across SLURM (the Sapelo2 HPC cluster).
+**Goal:** for each point in a large hyperparameter grid, train a source model, generate shifted target data, run an active-adaptation loop, and log the recovery trajectory. This is a Nextflow DAG that fans a combinatorial sweep across SLURM (the Sapelo2 HPC cluster).
 
 The DAG has four processes:
 
@@ -126,13 +126,13 @@ The DAG has four processes:
 |---|---|---|---|
 | `GEN_SOURCE` | `src/generate_simulation.py --mode source` | CPU (32 GB) | Build the GMM universe + frozen oracle; emit tight (biased) source embeddings + labels |
 | `TRAIN_SOURCE` | `src/train.py` | GPU (A100) | Train `ProteinFamilyPredictor` (CE + Adam) on source; emit `.pt` weights |
-| `GEN_TARGET` | `src/generate_simulation.py --mode target` | CPU (32 GB) | Draw broad target data; slice into a disjoint **adaptation pool** and **test set** |
+| `GEN_TARGET` | `src/generate_simulation.py --mode target` | CPU (32 GB) | Draw broad target data; slice into a disjoint adaptation pool and test set |
 | `TEST_ADAPTATION` | `src/${adapt_script}` | GPU (A100) | Load source model; stream pool batches, update weights, re-evaluate on the held-out test set after each eval interval; log the recovery curve |
 
-The adaptation optimizer is **swappable per experiment** via the `adapt_script` config field:
+The adaptation optimizer is swappable per experiment via the `adapt_script` config field:
 
-- `adapt_OGadam.py` — vanilla **Adam** (`lr = 1e-3`)
-- `adapt_adamw.py` — **AdamW** + warmup LR scheduler + weight decay (`lr = 5e-5`)
+- `adapt_OGadam.py`: vanilla Adam (`lr = 1e-3`)
+- `adapt_adamw.py`: AdamW + warmup LR scheduler + weight decay (`lr = 5e-5`)
 
 The predictive model itself (`src/model.py`) is a 3-layer MLP: `1280 → hidden_dim → hidden_dim/2 → n_classes`, with BatchNorm, ReLU, and dropout.
 
@@ -152,14 +152,14 @@ PLM_GMM_Thesis_Archive/
 │   └── experiment{1..5}.yaml     # The five thesis experiments (see matrix below)
 │
 ├── src/                          # Active pipeline code (everything main.nf invokes)
-│   ├── generate_simulation.py    # Frozen Oracle + GMM simulator (source/target modes)
+│   ├── generate_simulation.py    # Frozen oracle + GMM simulator (source/target modes)
 │   ├── model.py                  # ProteinFamilyPredictor (MLP)
 │   ├── train.py                  # Source-domain training (Phase 2, TRAIN_SOURCE)
-│   ├── adapt.py                  # Adaptation loop — baseline reference
-│   ├── adapt_OGadam.py           # Adaptation loop — vanilla Adam (Exp 1, 3)
-│   ├── adapt_adamw.py            # Adaptation loop — AdamW + warmup (Exp 2, 4, 5)
+│   ├── adapt.py                  # Adaptation loop: baseline reference
+│   ├── adapt_OGadam.py           # Adaptation loop: vanilla Adam (Exp 1, 3)
+│   ├── adapt_adamw.py            # Adaptation loop: AdamW + warmup (Exp 2, 4, 5)
 │   ├── metrics.py                # Macro F1 + feature Wasserstein
-│   └── oracle_search/            # ── PHASE 1: oracle calibration (decoupled) ──
+│   └── oracle_search/            # PHASE 1: oracle calibration (decoupled)
 │       ├── run_tuner.sh
 │       ├── tune_landscape_array.py
 │       ├── run_massive_grid.py
@@ -175,15 +175,15 @@ PLM_GMM_Thesis_Archive/
 └── README.md
 ```
 
-> `archive/` holds exploratory compilation, plotting, and diagnostic scripts that are **not** invoked by `main.nf` or the oracle search. They are preserved for provenance but are off the execution path.
+> `archive/` holds exploratory compilation, plotting, and diagnostic scripts that are not invoked by `main.nf` or the oracle search. They are preserved for provenance but are off the execution path.
 
 ---
 
 ## Environment Setup
 
-The pipeline requires **Python 3.11+**, **PyTorch (CUDA)**, and **Nextflow** (for Phase 2). Pick one of the following.
+The pipeline requires Python 3.11+, PyTorch (CUDA), and Nextflow (for Phase 2). Pick one of the following.
 
-### Option A — Conda (recommended; matches the HPC environment)
+### Option A: Conda (recommended; matches the HPC environment)
 
 ```bash
 # Create and activate an environment
@@ -193,12 +193,12 @@ conda activate plm_dynamics
 # Install pinned dependencies
 pip install -r requirements.txt
 
-# Install Nextflow (Phase 2 only) — requires Java 11+
+# Install Nextflow (Phase 2 only): requires Java 11+
 curl -s https://get.nextflow.io | bash
 sudo mv nextflow /usr/local/bin/   # or add to PATH
 ```
 
-### Option B — Docker / Apptainer (reproducible container)
+### Option B: Docker / Apptainer (reproducible container)
 
 ```bash
 docker build -t plm-thesis:1.0 .
@@ -208,7 +208,7 @@ docker run --gpus all -it -v "$PWD":/app plm-thesis:1.0 bash
 
 The image is built on `pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime` and installs `requirements.txt`. On HPC, convert to Apptainer/Singularity as your site requires.
 
-### Option C — Sapelo2 HPC (UGA cluster — as used for the thesis)
+### Option C: Sapelo2 HPC (UGA cluster, as used for the thesis)
 
 The provided SLURM scripts load the cluster modules and activate a pre-built conda env. They expect:
 
@@ -219,14 +219,14 @@ source activate /work/ah2lab/LiamK/conda_envs/plm_dynamics
 ```
 
 > **Important:** the `configs/experiment*.yaml` files write to absolute cluster paths
-> (`data_dir: /scratch/...`, `metrics_dir: /work/...`). **Edit these to valid paths on your
-> system before running**, or override them on the command line with `--data_dir` / `--metrics_dir`.
+> (`data_dir: /scratch/...`, `metrics_dir: /work/...`). Edit these to valid paths on your
+> system before running, or override them on the command line with `--data_dir` / `--metrics_dir`.
 
 ---
 
 ## Reproducing the Experiments
 
-### Step 0 — Sanity-check the simulator (any machine, no GPU needed)
+### Step 0: Sanity-check the simulator (any machine, no GPU needed)
 
 Generate a small source landscape and inspect the diagnostics:
 
@@ -238,18 +238,18 @@ python src/generate_simulation.py \
     --oracle_layers "1024,512" --base_sigma 0.5 --seed 42
 ```
 
-You should see the **Landscape Diagnostics** block (purity / promiscuity / coverage) and a saved
-`landscape_diagnostic_seed_42.png`.
+The Landscape Diagnostics block (purity / promiscuity / coverage) prints to stdout and a
+`landscape_diagnostic_seed_42.png` is saved.
 
-### Step 1 — Phase 1: Calibrate the Oracle
+### Step 1: Calibrate the Oracle (Phase 1)
 
-**On SLURM** (runs all 24 grid cells as an array, then auto-merges):
+On SLURM (runs all 24 grid cells as an array, then auto-merges):
 
 ```bash
-# With an explicit run name — results land in full_grid_results_baseline.csv
+# With an explicit run name: results land in full_grid_results_baseline.csv
 bash submit_oracle_search.sh baseline
 
-# Without a run name — a timestamp suffix is generated automatically
+# Without a run name: a timestamp suffix is generated automatically
 bash submit_oracle_search.sh
 # → results/oracle_search/full_grid_results_20260604_143021.csv
 ```
@@ -257,29 +257,29 @@ bash submit_oracle_search.sh
 `submit_oracle_search.sh` creates the required output and log directories, submits the 24-task
 SLURM array, and chains a lightweight merge job that concatenates the per-cell CSVs into a single
 `results/oracle_search/full_grid_results_<suffix>.csv` once every array task succeeds. The raw
-per-cell CSVs are deleted automatically after the merge. Using a distinct run name (or the
-auto-generated timestamp) for each submission prevents results from being overwritten.
+per-cell CSVs are deleted automatically after the merge. A distinct run name (or the
+auto-generated timestamp) per submission prevents results from being overwritten.
 
-**Locally** (run a single grid cell by its task index, 0–23):
+Locally (run a single grid cell by its task index, 0–23):
 
 ```bash
 python src/oracle_search/tune_landscape_array.py 14
 ```
 
 Inspect the per-cell CSVs in `results/oracle_search/raw_csvs/` and pick the `(oracle, sigma)`
-whose diagnostics sit inside the target ranges. (The thesis selection — `"1024,1024,512"` @
-`sigma=0.5` — is already baked into the Phase 2 configs, so you can skip straight to Step 2 to
-reproduce the published runs.)
+whose diagnostics sit inside the target ranges. (The thesis selection, `"1024,1024,512"` @
+`sigma=0.5`, is already baked into the Phase 2 configs, so Step 2 reproduces the published runs
+directly.)
 
-*Optional* large-scale Wasserstein characterization:
+Optional large-scale Wasserstein characterization:
 
 ```bash
 sbatch src/oracle_search/run_massive_grid.py   # via a SLURM wrapper, or run directly with python
 ```
 
-### Step 2 — Phase 2: Run the Main Pipeline
+### Step 2: Run the Main Pipeline (Phase 2)
 
-**On SLURM (Sapelo2)** — each experiment has an isolated launcher with its own work-dir and log:
+On SLURM (Sapelo2), each experiment has an isolated launcher with its own work-dir and log:
 
 ```bash
 sbatch run_exp1.sh     # Adam baseline,  arch/training sweep
@@ -298,7 +298,7 @@ nextflow -log nextflow_expN.log run main.nf \
     -work-dir work_expN
 ```
 
-**Locally / single node** (use the `standard` profile, which executes processes on the local machine):
+Locally / single node (use the `standard` profile, which executes processes on the local machine):
 
 ```bash
 nextflow run main.nf \
@@ -311,7 +311,7 @@ nextflow run main.nf \
 > recomputes what changed. The per-experiment scripts use distinct `-work-dir`s so concurrent
 > experiments never collide in the Nextflow cache.
 
-### Step 3 — Analyze
+### Step 3: Analyze
 
 Outputs land under `<metrics_dir>/<dataset>/experiments/adapt/` as `adapt_log_*.log` (final
 metrics + Wasserstein) and `*_batch_log.csv` (the full per-batch recovery trajectory). The
@@ -322,22 +322,22 @@ compilation and plotting scripts used to turn these into thesis figures are pres
 
 ## Configuration Reference
 
-Every run is fully described by a single YAML in `configs/`. Nextflow forms the **Cartesian
-product** of all array-valued fields, so the number of pipeline runs = the product of the array
+Every run is fully described by a single YAML in `configs/`. Nextflow forms the Cartesian
+product of all array-valued fields, so the number of pipeline runs equals the product of the array
 lengths. `configs/master.yaml` documents every field; the key knobs:
 
 | Field | Meaning |
 |---|---|
-| `mode` | `adapt` (active-learning recovery) — the routing for `main.nf` |
+| `mode` | `adapt` (active-learning recovery): routing for `main.nf` |
 | `dataset` | output namespace (root directory name for data/models/results) |
-| `data_dir` / `metrics_dir` | **absolute** output locations (edit for your system) |
+| `data_dir` / `metrics_dir` | absolute output locations (edit for your system) |
 | `n_families`, `n_classes`, `dim` | landscape size (dim = 1280, ESM-2 embedding width) |
-| `oracle_architectures` | hidden-layer spec(s) for the Frozen Oracle |
+| `oracle_architectures` | hidden-layer spec(s) for the frozen oracle |
 | `base_sigmas` | within-family dispersion σ |
 | `starting_seed`, `num_seeds` | reproducibility seeds (runs `seed … seed+num_seeds-1`) |
 | `n_trains` | source training set sizes |
 | `n_pools` | target adaptation-pool sizes |
-| `shifts` | covariate-shift multipliers `shift_k` (1.0 = no shift) |
+| `shifts` | covariate-shift multipliers `shift_delta` (1.0 = no shift) |
 | `n_test` | held-out disjoint target test-set size |
 | `batch_sizes`, `hidden_dims` | MLP sweep axes |
 | `adapt_script` | which adaptation optimizer to use (`adapt_OGadam.py` / `adapt_adamw.py`) |
@@ -353,9 +353,8 @@ lengths. `configs/master.yaml` documents every field; the key knobs:
 | **4** | AdamW (`adapt_adamw`) | training-set size | 4 | 50k–500k | 1 M | 2,3,4,5,6 | 256 × 512 |
 | **5** | AdamW (`adapt_adamw`) | dispersion σ | 3 | 500k | 1 M | 1,3,5 | 256 × 512 |
 
-All five fix the calibrated oracle (`"1024,1024,512"`). Experiments 3–6 widen the pool to 1 M to
-eliminate the "data-starvation" confound and sample the shift axis densely to resolve the
-threshold.
+All five fix the calibrated oracle (`"1024,1024,512"`). Experiments 3–5 widen the pool to 1 M to
+eliminate the data-starvation confound and sample the shift axis densely to resolve the threshold.
 
 ---
 
@@ -363,14 +362,14 @@ threshold.
 
 For every grid cell, `TEST_ADAPTATION` emits:
 
-- **`adapt_log_S{seed}_N{ntrain}_NP{npool}_Shf{shift}_B{batch}_H{hdim}.log`** — human-readable
+- `adapt_log_S{seed}_N{ntrain}_NP{npool}_Shf{shift}_B{batch}_H{hdim}.log`: human-readable
   log ending with the final Wasserstein distance, test CE, and test Macro F1.
-- **`*_batch_log.csv`** — the recovery trajectory: `batch_number, samples_seen, train_loss,
-  test_ce, test_f1`, one row per evaluation interval (including the pre-adaptation **Batch 0**
+- `*_batch_log.csv`: the recovery trajectory: `batch_number, samples_seen, train_loss,
+  test_ce, test_f1`, one row per evaluation interval (including the pre-adaptation Batch 0
   baseline).
 
-The recovery threshold is read off by plotting **final test Macro F1 vs. source↔target Wasserstein
-distance**: performance holds as shift grows, then collapses past a critical distance — the
+The recovery threshold is read off by plotting final test Macro F1 vs. source↔target Wasserstein
+distance: performance holds as shift grows, then collapses past a critical distance, the
 threshold this thesis sets out to identify.
 
 ---
@@ -382,7 +381,7 @@ graph TD
     subgraph Config [Experimental Design]
         CONFIG_ROOT["experimentN.yaml<br/>(Hyperparameter Matrix)"]
         
-        CONFIG_DATA["Matrix & Data<br/>• Mode: adapt<br/>• Seeds: num_seeds, starting_seed<br/>• Samples: n_trains, n_pools, n_test<br/>• Shifts: shifts array (shift_k)"] 
+        CONFIG_DATA["Matrix & Data<br/>• Mode: adapt<br/>• Seeds: num_seeds, starting_seed<br/>• Samples: n_trains, n_pools, n_test<br/>• Shifts: shifts array (shift_delta)"] 
         CONFIG_MODEL["Model & Training<br/>• Optim: batch_sizes, learning_rate, adapt_lr<br/>• Epochs: base_epochs<br/>• Arch: hidden_dims, dropout<br/>• Adapt: adapt_script (Adam / AdamW)"]
         
         ORCH["Nextflow Orchestrator<br/>(Parallel cross-product engine)"]
@@ -395,7 +394,7 @@ graph TD
     end
 
     subgraph Phase1 [Phase 1: Source Distribution P - GEN_SOURCE & TRAIN_SOURCE]
-        GEN_SRC["Generate Source Data<br/>• Tight / biased sampling<br/>• sigma_src = base_sigma / max(1, shift_k)<br/>• Output: source_X, source_y"]
+        GEN_SRC["Generate Source Data<br/>• Tight / biased sampling<br/>• sigma_src = base_sigma / max(1, shift_delta)<br/>• Output: source_X, source_y"]
         TRAIN["Fit Baseline Model (ProteinFamilyPredictor)<br/>• Loss: CrossEntropyLoss<br/>• Optimizer: Adam<br/>• Epochs: base_epochs · Val: Macro F1"]
         BASE_MODEL(("Baseline Model<br/>(Source Weights .pt)"))
         

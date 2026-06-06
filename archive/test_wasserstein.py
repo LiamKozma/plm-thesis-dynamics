@@ -5,7 +5,6 @@ from itertools import product
 from tqdm import tqdm
 import time
 
-# Import your existing logic directly from your scripts!
 from generate_simulation import generate_dispersion_gmm
 from metrics import calculate_feature_wasserstein
 
@@ -20,7 +19,7 @@ def calculate_wasserstein_for_run(params):
         n_families=n_families,
         n_classes=n_classes,
         hidden_layers=[256, 128],
-        shift_k=shift,       # Shift is applied to the source
+        shift_delta=shift,
         seed=seed,
         is_target=False,
         centroid_spread=10.0,
@@ -35,7 +34,7 @@ def calculate_wasserstein_for_run(params):
         n_families=n_families,
         n_classes=n_classes,
         hidden_layers=[256, 128],
-        shift_k=shift,       # generate_dispersion_gmm ignores this when is_target=True
+        shift_delta=shift,
         seed=seed,
         is_target=True,      
         centroid_spread=10.0,

@@ -16,7 +16,7 @@ def run_experiment(
     n_families=10000,
     n_classes=1000,
 ):
-    # Lock spread to 1.0 and use the default gaussian topology per Dr. Hoarfrost
+    # lock spread to 1.0, use gaussian topology
     cmd = [
         "python",
         "src/generate_simulation.py",
@@ -79,7 +79,6 @@ def main():
 
     task_id = int(sys.argv[1])
 
-    # The Professor's Parameters
     architectures = ["512,256", "1024,512", "2048,1024", "1024,1024,512"]
     sigmas = [0.1, 0.3, 0.5, 0.7, 1.0, 1.4]
 
