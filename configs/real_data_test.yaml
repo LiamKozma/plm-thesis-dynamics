@@ -1,0 +1,46 @@
+# =============================================================================
+# Real-data recovery-threshold test (consumed by main_precomputed.nf)
+# Embeddings are PRECOMPUTED by src/precompute_real_embeddings.py -- there is no
+# data-generation step here. See HOW_TO_SEE_THE_DIP.md.
+# =============================================================================
+
+dataset: 'real_data_test'
+
+# Where precompute_embeddings.slurm wrote the .npy files:
+precomputed_dir: '/scratch/lmk04992/somedir/embeddings'
+
+# Where trained models + adaptation logs/CSVs are published:
+metrics_dir: '/scratch/lmk04992/somedir/results'
+
+# MUST match dataset_info.json -> num_classes (printed by the precompute script).
+# Default below assumes the 5 Pfam families in fetch_sequences.py's default list.
+num_classes: 16
+
+# The OOD-fraction sweep. Each value r reinterprets the old `shift` axis as
+# "fraction of the adaptation pool drawn from the TARGET group". These STRINGS
+# must exactly match the filename suffixes the precompute script wrote
+# (Shf0.0, Shf0.1, ...). Find the recovery threshold by reading each run's
+# *_batch_log.csv (test_f1 vs samples_seen).
+shifts: ['0.0', '0.1', '0.25', '0.5', '1.0']
+
+# Seeds for error bars. Embeddings are deterministic, so each seed varies only
+# model init + pool shuffle order -> bounds the SGD noise floor (the ~0.09 dip
+# the r=0 run showed with a single seed). 5 runs x 3 seeds = 15 train+adapt jobs.
+seeds: [42, 43, 44]
+
+# --- Network / training hyperparameters (same knobs as the synthetic runs) ---
+base_epochs: 20
+learning_rate: 0.001
+dropout: 0.1
+batch_size: 256
+hidden_dim: 512
+
+adapt_script: 'adapt_OGadam.py'
+adapt_lr: 0.001
+
+# --- Resolution knobs so the dip is actually visible on small real pools ------
+# The synthetic defaults (batch 256, eval every 500) give only ~2 eval points on
+# a few-thousand-sample pool -> you literally cannot see a dip. Small batch =
+# more gradient steps; eval_every 1 = a point per step. See HOW_TO_SEE_THE_DIP.md.
+adapt_batch_size: 32
+eval_every: 1

@@ -1,0 +1,32 @@
+mode: 'adapt'
+dataset: 'parity_test'
+
+# ==========================================
+# !!! EDIT THESE TO VALID SAPELO2 PATHS !!!
+# ==========================================
+data_dir: '/scratch/lmk04992/parity_test_tidy/data'
+metrics_dir: '/scratch/lmk04992/parity_test_tidy/metrics'
+
+# Landscape geometry
+n_families: 10000
+n_classes: 1000
+dim: 1280
+oracle_architectures: ["1024,1024,512"]
+base_sigmas: [0.5]
+
+# Sweep axes (shrunk for speed)
+starting_seed: 42
+num_seeds: 1
+n_trains: [15000]
+n_pools: [15000]
+shifts: [2.0]
+n_test: 1000
+
+# Training hyperparameters
+base_epochs: 1
+learning_rate: 0.001
+dropout: 0.1
+adapt_script: 'adapt_OGadam.py'
+adapt_lr: 0.001
+batch_sizes: [256]
+hidden_dims: [512]

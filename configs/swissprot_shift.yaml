@@ -1,0 +1,42 @@
+# =============================================================================
+# SwissProt -> distance-from-SwissProt recovery-threshold test (ESM-C embeddings).
+# Consumed by main_precomputed.nf. Embeddings are PRECOMPUTED by
+# precompute_swissprot_esmc.slurm. See june17_premeeting.md / HOW_TO_SEE_THE_DIP.md.
+#
+# ESM-2 vs ESM-C comparison: to run the ESM-2 baseline instead, change
+# precomputed_dir to /scratch/lmk04992/swissprot_esm2/embeddings (num_classes is
+# the same -- same sequences, same families). The embedding width differs (960 vs
+# 1280) but train.py infers input_dim from the .npy, so nothing else changes.
+# =============================================================================
+
+dataset: 'swissprot_shift_esmc'
+
+# ESM-C output from precompute_swissprot_esmc.slurm:
+precomputed_dir: '/scratch/lmk04992/swissprot_esmc/embeddings'
+metrics_dir: '/scratch/lmk04992/swissprot_esmc/results'
+
+# MUST match dataset_info.json -> num_classes (printed by the precompute script).
+# 16 families requested; some Bacteria-reviewed buckets may come back empty, so
+# VERIFY against dataset_info.json before launching the sweep.
+num_classes: 16
+
+# OOD-fraction sweep r = fraction of the adaptation pool drawn from the TARGET
+# (TrEMBL) group. Strings must match the Shf* filename suffixes the precompute wrote.
+shifts: ['0.0', '0.1', '0.25', '0.5', '1.0']
+
+# Seeds for error bars (model init + pool shuffle only; embeddings deterministic).
+seeds: [42, 43, 44]
+
+# --- Network / training hyperparameters (same knobs as the June-17 runs) -------
+base_epochs: 20
+learning_rate: 0.001
+dropout: 0.1
+batch_size: 256
+hidden_dim: 512
+
+adapt_script: 'adapt_OGadam.py'
+adapt_lr: 0.001
+
+# --- Resolution knobs so the dip is actually visible on small real pools ------
+adapt_batch_size: 32
+eval_every: 1

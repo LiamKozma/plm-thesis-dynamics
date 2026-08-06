@@ -33,6 +33,7 @@ env/
 .nextflow.log*
 work/
 work_exp*/
+work_realtest*/
 
 # --- Heavy Artifact Directories (Data, Models, Results) ---
 data/
