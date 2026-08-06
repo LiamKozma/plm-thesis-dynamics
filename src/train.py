@@ -43,9 +43,10 @@ if __name__ == "__main__":
     parser.add_argument("--hidden_dim", type=int, default=512)
     parser.add_argument("--dropout", type=float, default=0.1)
     parser.add_argument("--num_classes", type=int, default=20, help="Number of protein families")
+    parser.add_argument("--seed", type=int, default=42, help="Seed for reproducibility / error bars")
     args = parser.parse_args()
 
-    set_seed(42)
+    set_seed(args.seed)
 
     X, y = load_data(args.source_x, args.source_y)
     ref_X = np.load(args.ref_x) 

@@ -60,7 +60,19 @@ if __name__ == "__main__":
     parser.add_argument("--hidden_dim", type=int, default=512)
     parser.add_argument("--dropout", type=float, default=0.1)
     parser.add_argument("--num_classes", type=int, default=20, help="Number of protein families")
+    parser.add_argument("--eval_every", type=int, default=500,
+                        help="Evaluate test set every N batches. Use a small value (e.g. 1) "
+                             "on small pools to resolve the negative-transfer dip.")
+    parser.add_argument("--seed", type=int, default=42,
+                        help="Seeds model init + pool shuffle order, for error bars across runs.")
     args = parser.parse_args()
+
+    # Seed everything so multi-seed runs differ only by RNG (init + shuffle order).
+    import random
+    torch.manual_seed(args.seed)
+    torch.cuda.manual_seed_all(args.seed)
+    np.random.seed(args.seed)
+    random.seed(args.seed)
 
     # 1. Load Data
     pool_X, pool_y = load_data(args.pool_x, args.pool_y)
@@ -101,7 +113,7 @@ if __name__ == "__main__":
     # 6. The Active Learning Loop
     global_batch = 0
     samples_seen = 0
-    eval_every = 500
+    eval_every = args.eval_every
 
     for batch_X, batch_y in pool_loader:
         global_batch += 1
