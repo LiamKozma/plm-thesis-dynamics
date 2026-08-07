@@ -141,39 +141,52 @@ The predictive model itself (`src/model.py`) is a 3-layer MLP: `1280 → hidden_
 ## Repository Structure
 
 ```
-PLM_GMM_Thesis_Archive/
+tidythesis/
 ├── main.nf                       # Phase 2 orchestrator (Nextflow DAG)
+├── main_precomputed.nf           # Phase 2 variant that consumes a precomputed embedding cache
 ├── nextflow.config               # Executor profiles: `standard` (local) & `sapelo2` (SLURM)
-├── run_experiments.sh            # Generic master launcher (params-file driven)
-├── run_exp1.sh … run_exp5.sh     # Per-experiment SLURM launchers (isolated work-dirs/logs)
+├── verify_setup.sh               # Environment sanity check — run this first
+├── run_example_experiment.sh     # Worked example: one experiment, config-driven
+├── run_example_grid_search.sh    # Worked example: Phase 1 oracle grid search
+├── run_quick_test.sh             # Fast smoke test of the simulator
 │
-├── configs/
-│   ├── master.yaml               # Annotated reference config (documents every knob)
-│   └── experiment{1..5}.yaml     # The five thesis experiments (see matrix below)
+├── configs/                      # YAML experiment configs (copy template_master.yaml to start)
 │
-├── src/                          # Active pipeline code (everything main.nf invokes)
-│   ├── generate_simulation.py    # Frozen oracle + GMM simulator (source/target modes)
-│   ├── model.py                  # ProteinFamilyPredictor (MLP)
-│   ├── train.py                  # Source-domain training (Phase 2, TRAIN_SOURCE)
-│   ├── adapt.py                  # Adaptation loop: baseline reference
-│   ├── adapt_OGadam.py           # Adaptation loop: vanilla Adam (Exp 1, 3)
-│   ├── adapt_adamw.py            # Adaptation loop: AdamW + warmup (Exp 2, 4, 5)
-│   ├── metrics.py                # Macro F1 + feature Wasserstein
-│   └── oracle_search/            # PHASE 1: oracle calibration (decoupled)
-│       ├── run_tuner.sh
-│       ├── tune_landscape_array.py
-│       ├── run_massive_grid.py
-│       ├── generate_simulation.py
-│       └── metrics.py
+├── src/                          # All Python. Flat on purpose — see note below.
+│   └── oracle_search/            # Phase 1: oracle calibration (decoupled from main.nf)
 │
-├── archive/                      # Inactive analysis/plotting/diagnostics (not on any path)
-│   ├── *.py                      # compile_*, plot_*, verify_*, diagnostics, etc.
-│   └── src/                      # archived former-src visualizers & eval
+├── slurm/                        # Every SLURM batch script, plus their launchers
 │
+├── docs/
+│   ├── notes/                    # Dated lab notes, newest last (JULY22 → AUG4 → AUG6)
+│   └── figures/                  # Generated figures + how to regenerate each one
+│
+├── archive/                      # Superseded analysis/plotting/diagnostics, kept for provenance
 ├── requirements.txt              # Pinned Python environment
 ├── Dockerfile                    # Containerized PyTorch+CUDA environment
 └── README.md
 ```
+
+**Where to start reading.** `docs/notes/` is the narrative in date order —
+[`JULY22.md`](docs/notes/JULY22.md) explains why the synthetic generator was rebuilt,
+[`AUG4.md`](docs/notes/AUG4.md) adds a functional (EC) label axis, and
+[`AUG6.md`](docs/notes/AUG6.md) re-runs everything on a 231k-protein dataset and
+overturns two earlier conclusions.
+
+**Why `src/` is flat.** The scripts import one another by bare module name
+(`from measure_ec_geometry import …`), and `main.nf` plus the SLURM jobs invoke them as
+`src/<name>.py`. Splitting them into subpackages would break both, so they stay in one
+directory and are grouped by purpose here instead:
+
+| Group | Files |
+|---|---|
+| **Pipeline core** (invoked by `main.nf`) | `model.py`, `train.py`, `adapt_OGadam.py`, `metrics.py`, `generate_simulation.py` |
+| **Synthetic generators** | `generate_synthetic_v2.py` (current), `generate_synthetic_precomputed.py` (v1, superseded) |
+| **Real data** | `fetch_sequences.py`, `fetch_ec_swissprot.py`, `fetch_ec_annotations.py`, `build_ec_dataset.py`, `precompute_real_embeddings.py` |
+| **Measuring real geometry** | `measure_real_geometry.py`, `measure_ec_geometry.py`, `measure_ec_damage.py`, `ec_allpairs.py`, `ec_permutations.py`, `beta_diagnosis.py` |
+| **Calibration & scoring** | `calibrate_v2.py`, `oracle_label_space.py`, `realism_scorecard.py`, `compute_validation.py` |
+| **Sweeps** | `run_distance_sweep.py`, `run_distance_sweep_v2.py` |
+| **Plotting** | `plot_*.py`, `make_*.py`, `replot_*.py` |
 
 > `archive/` holds exploratory compilation, plotting, and diagnostic scripts that are not invoked by `main.nf` or the oracle search. They are preserved for provenance but are off the execution path.
 

@@ -10,7 +10,7 @@
 # 'other_bacteria' and 'other_eukaryota' are remainders, not clades, so they are
 # excluded from the shift analyses.
 #
-#   sbatch run_ec_swissprot_analysis.slurm
+#   sbatch slurm/run_ec_swissprot_analysis.slurm
 # =============================================================================
 #SBATCH --job-name=ecsp_analysis
 #SBATCH --partition=batch

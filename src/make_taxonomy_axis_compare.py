@@ -2,7 +2,7 @@
 """Compare the taxonomy-axis statistic (pairwise cosine of family shift vectors)
 across real vs v2 vs v1 — does the synthetic reproduce the shared-direction structure?
 Run on the cluster."""
-import sys, numpy as np, matplotlib
+import os, sys, numpy as np, matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from itertools import combinations
@@ -74,5 +74,8 @@ fig.text(0.5,0.925,"v1's seat-swap sends families in independent directions (cos
          "v2's shared-translation knob α puts them on a common axis — matching the real +0.47 at α≈0.5.",
          ha="center",fontsize=10.5,color="#555")
 fig.tight_layout(rect=[0,0,1,0.90])
-out="/work/ah2lab/LiamK/tidythesis/taxonomy_axis_compare.png"
+out=os.environ.get("FIG_OUT", os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "docs", "figures", "taxonomy_axis_compare.png"))
+os.makedirs(os.path.dirname(out), exist_ok=True)
 fig.savefig(out,dpi=150,bbox_inches="tight",facecolor="white"); print("saved",out)

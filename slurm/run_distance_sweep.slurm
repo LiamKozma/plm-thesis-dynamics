@@ -3,7 +3,7 @@
 # Recovery-threshold-vs-distance sweep on the FIXED synthetic generator.
 # Runs the whole (distance x OOD-fraction x seed) grid in one GPU job and writes
 # the threshold curve + heatmap + adaptation curves.
-#   sbatch run_distance_sweep.slurm
+#   sbatch slurm/run_distance_sweep.slurm
 # =============================================================================
 #SBATCH --job-name=dist_sweep
 #SBATCH --partition=gpu_p

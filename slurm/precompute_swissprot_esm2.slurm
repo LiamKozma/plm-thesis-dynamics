@@ -5,7 +5,7 @@
 # split logic; only the embedding model -- hence D: 1280 vs 960 -- differs).
 # Output: /scratch/lmk04992/swissprot_esm2/embeddings.
 # Submit AFTER precompute_swissprot_esmc.slurm (it reuses that job's raw fetch):
-#   sbatch precompute_swissprot_esm2.slurm
+#   sbatch slurm/precompute_swissprot_esm2.slurm
 # =============================================================================
 #SBATCH --job-name=precompute_esm2_sp
 #SBATCH --partition=gpu_p

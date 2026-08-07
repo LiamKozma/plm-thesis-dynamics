@@ -4,7 +4,7 @@
 #   1. fetch ~10k labelled sequences (UniProt taxonomic shift by default)
 #   2. embed with esm2_t33_650M_UR50D + build source/pool/test .npy sets
 # Output lands in /scratch/lmk04992/somedir/embeddings, ready for
-# main_precomputed.nf.  Submit with:  sbatch precompute_embeddings.slurm
+# main_precomputed.nf.  Submit with:  sbatch slurm/precompute_embeddings.slurm
 # =============================================================================
 #SBATCH --job-name=precompute_esm2
 #SBATCH --partition=gpu_p

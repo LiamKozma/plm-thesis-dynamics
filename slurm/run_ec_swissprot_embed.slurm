@@ -12,7 +12,7 @@
 # The ladder took 18.5 min on one A100 for 37k sequences, so ~200k is ~100 min.
 # Only the embedding CACHE matters here; the Shf* split files the script also
 # writes are a harmless by-product of reusing it.
-#   sbatch run_ec_swissprot_embed.slurm
+#   sbatch slurm/run_ec_swissprot_embed.slurm
 # =============================================================================
 #SBATCH --job-name=ecsp_embed
 #SBATCH --partition=gpu_p

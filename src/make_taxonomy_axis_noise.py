@@ -2,10 +2,10 @@
 """Is real's bimodal cosine distribution real structure, or centroid-estimation noise?
 Compare real vs v2-EXACT (noise-free centroids) vs v2-SAMPLED (centroids estimated from
 the same # of points as real). Also split real cosines by family size. Run on cluster."""
-import sys, numpy as np, matplotlib
+import os, sys, numpy as np, matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-sys.path.insert(0,"/work/ah2lab/LiamK/tidythesis/src")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import generate_synthetic_v2 as v2g
 rng=np.random.default_rng(1)
 
@@ -82,5 +82,8 @@ fig.text(0.5,0.925,"Left: exact v2 centroids vs v2 sampled with real's protein c
          "Right: v2 has ONE shared axis by construction, yet every 16-family draw is lumpy and different — so real's bumps aren't extra modes.",
          ha="center",fontsize=10,color="#555")
 fig.tight_layout(rect=[0,0,1,0.90])
-out="/work/ah2lab/LiamK/tidythesis/taxonomy_axis_noise.png"
+out=os.environ.get("FIG_OUT", os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "docs", "figures", "taxonomy_axis_noise.png"))
+os.makedirs(os.path.dirname(out), exist_ok=True)
 fig.savefig(out,dpi=150,bbox_inches="tight",facecolor="white"); print("saved",out)

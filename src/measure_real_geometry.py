@@ -10,7 +10,9 @@ Questions:
 import json, os, sys
 import numpy as np
 
-ROOT = "/home/dude/sapelo2_files/scratch"
+# Where the precomputed embedding sets live. Defaults to the cluster scratch path;
+# override with EMB_ROOT to point at a local copy.
+ROOT = os.environ.get("EMB_ROOT", "/scratch/lmk04992")
 SETS = {
     "bact->arch (ESM-2 650M)": f"{ROOT}/somedir/embeddings",
     "swissprot ESM-C":          f"{ROOT}/swissprot_esmc/embeddings",

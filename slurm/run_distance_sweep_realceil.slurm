@@ -7,7 +7,7 @@
 #   within_sigma=4.0 -> ceiling ~0.92 (matches the real Bacteria->Archaea ~0.94)
 #   within_sigma=6.0 -> ceiling ~0.75 (harder / more irreducible confusion)
 # Writes one outdir per sigma so the originals are untouched.
-#   sbatch run_distance_sweep_realceil.slurm
+#   sbatch slurm/run_distance_sweep_realceil.slurm
 # =============================================================================
 #SBATCH --job-name=dist_sweep_realceil
 #SBATCH --partition=gpu_p

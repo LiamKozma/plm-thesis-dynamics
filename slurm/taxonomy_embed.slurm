@@ -3,7 +3,7 @@
 # Taxonomic distance ladder: embed all taxa ONCE with ESM-C (cached), then split
 # per target (Bacteria = source; Archaea / Fungi / Metazoa / Plants = targets at
 # increasing taxonomic distance). Produces one Shf* set per target for the sweeps.
-#   sbatch taxonomy_embed.slurm
+#   sbatch slurm/taxonomy_embed.slurm
 # Prereq: sequences pre-fetched to $ROOT/raw (fetch_sequences.py --source uniprot).
 # =============================================================================
 #SBATCH --job-name=tax_embed

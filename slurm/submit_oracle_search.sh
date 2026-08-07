@@ -1,12 +1,14 @@
 #!/bin/bash
 # Run from project root:
-#   bash submit_oracle_search.sh [run_name]
+#   bash slurm/submit_oracle_search.sh [run_name]
 # If no run_name is given, a timestamp is used as the suffix.
 
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$SCRIPT_DIR"
+# This script lives in slurm/, but every path below (src/, results/, logs/) is
+# relative to the PROJECT ROOT, so resolve to the parent and work from there.
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$PROJECT_ROOT"
 
 SUFFIX="${1:-$(date +%Y%m%d_%H%M%S)}"
 
@@ -29,7 +31,7 @@ MERGE_JOB_ID=$(sbatch --parsable \
   --dependency=afterok:"${ARRAY_JOB_ID}" \
   --wrap="
     set -euo pipefail
-    cd \"${SCRIPT_DIR}\"
+    cd \"${PROJECT_ROOT}\"
     awk 'NR==1 || FNR!=1' results/oracle_search/raw_csvs/tuning_result_*.csv \
       > results/oracle_search/full_grid_results_${SUFFIX}.csv
     rm -rf results/oracle_search/raw_csvs

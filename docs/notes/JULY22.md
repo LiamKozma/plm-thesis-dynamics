@@ -120,9 +120,37 @@ derangement `perm`, crashing the standalone CLI/Nextflow path (IndexError) for a
    ceiling declines a touch more than at α=0 despite identical Bayes error — an optimisation
    effect from the large mean input offset, not geometry. Does not affect r*(d).
 
+## Figures
+
+All four are in [`docs/figures/`](../figures/README.md), with regeneration commands.
+
+**The bug.** v1's ceiling dips and rebounds with distance, so `r*` was graded against a
+moving bar:
+
+![v1's U-shaped ceiling](../figures/the_problem_with_v1.png)
+
+**The fix, in the embedding space.** v1 slides families onto one another and they collide
+mid-distance; v2 slides them all the same way and the arrangement survives:
+
+![v1 vs v2 embedding structure](../figures/embedding_2d_v1_v2.png)
+
+**Does it look like reality?** v1 vs v2 vs real ESM-C, same data volume, same projection:
+
+![v1 vs v2 vs real embeddings](../figures/realism_v1_v2_real.png)
+
+**What the fix bought.** v2's ceiling declines smoothly, so `r*(d)` measures one thing:
+
+![recovery threshold, v1 vs v2](../figures/recovery_v1_v2.png)
+
+**Validation.** v2's geometry against real, and its out-of-sample recovery prediction:
+
+![validation geometry](../figures/validation_geometry.png)
+
+![validation recovery](../figures/validation_recovery.png)
+
 ## Files
 
 New: `src/{generate_synthetic_v2, run_distance_sweep_v2, calibrate_v2,
-measure_real_geometry, plot_v2_results}.py`, `run_distance_sweep_v2.slurm`.
+measure_real_geometry, plot_v2_results}.py`, `slurm/run_distance_sweep_v2.slurm`.
 Modified: `src/generate_synthetic_precomputed.py` (crash fix).
 Outputs: `/scratch/lmk04992/synth_v2_{distance,alpha_sweep,beta_0.05,beta_0.15,beta_0.30,beta_0.50}/`.

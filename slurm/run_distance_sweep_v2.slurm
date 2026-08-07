@@ -15,7 +15,7 @@
 #
 # Arm A sweeps alpha (covariate <-> concept dial) at the real distances.
 # Arm B pins alpha=0.5 (the real ladder value) and pushes d out to 2.0.
-#   sbatch run_distance_sweep_v2.slurm
+#   sbatch slurm/run_distance_sweep_v2.slurm
 # =============================================================================
 #SBATCH --job-name=dist_sweep_v2
 #SBATCH --partition=gpu_p

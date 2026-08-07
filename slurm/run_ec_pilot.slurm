@@ -14,7 +14,7 @@
 # Stage 3  all 20 ordered domain pairs -- the only version with enough points to
 #          ask whether beta or raw distance predicts the damage
 #
-#   sbatch run_ec_pilot.slurm
+#   sbatch slurm/run_ec_pilot.slurm
 # =============================================================================
 #SBATCH --job-name=ec_pilot
 #SBATCH --partition=batch

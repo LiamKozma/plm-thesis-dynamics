@@ -218,4 +218,10 @@ New: `src/{fetch_ec_annotations, measure_ec_geometry, measure_ec_damage,
 ec_allpairs, oracle_label_space, make_ec_figs}.py`,
 `run_{ec_pilot, ec_pilot2, oracle_pilot}.slurm`.
 Data: `scratch/taxonomy_ladder/raw/ec_annotations.tsv` (36,981 rows).
-Figures: `ec_embedding_2d.png`, `ec_shift_angles.png`.
+Figures: [`ec_embedding_2d.png`](../figures/ec_embedding_2d.png),
+[`ec_shift_angles.png`](../figures/ec_shift_angles.png) — see
+[`docs/figures/`](../figures/README.md) for how to regenerate them.
+
+![EC groups in 2D](../figures/ec_embedding_2d.png)
+
+![Shift angle distributions against the null](../figures/ec_shift_angles.png)

@@ -14,7 +14,7 @@
 #                                            hierarchy in ec_permutations.py
 #
 # CPU only -- reuses the existing ESM-C cache, nothing is re-embedded.
-#   sbatch run_prof_followup.slurm
+#   sbatch slurm/run_prof_followup.slurm
 # =============================================================================
 #SBATCH --job-name=prof_followup
 #SBATCH --partition=batch

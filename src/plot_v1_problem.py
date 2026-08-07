@@ -45,6 +45,6 @@ fig.text(0.5,0.905,"r* is scored as “reach 90% of the ceiling” — but that 
          "with distance,\nso r* confounds “how far the target moved” with “how hard the target happens to be.”",
          ha="center",fontsize=11,color="#555")
 fig.tight_layout(rect=[0,0,1,0.88])
-out=os.environ.get("FIG_OUT","the_problem_with_v1.png")
+out=os.environ.get("FIG_OUT", os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "docs", "figures", "the_problem_with_v1.png"))
 fig.savefig(out,dpi=150,bbox_inches="tight",facecolor="white")
 print("saved",out)

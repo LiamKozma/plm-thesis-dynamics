@@ -13,7 +13,7 @@
 #   2. the 20 pairs come from 5 domains and are not independent. A domain-level
 #      permutation test replaces the naive p-value.
 #
-#   sbatch run_ec_pilot2.slurm
+#   sbatch slurm/run_ec_pilot2.slurm
 # =============================================================================
 #SBATCH --job-name=ec_pilot2
 #SBATCH --partition=batch

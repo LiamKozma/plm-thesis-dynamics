@@ -1,15 +1,21 @@
 #!/usr/bin/env python
 """Validation figures: (1) v2 copies real geometry across all datasets;
 (2) v2 predicts real recovery out-of-sample. Cluster only."""
-import sys, json, numpy as np, matplotlib
+import os, sys, json, numpy as np, matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
-sys.path.insert(0,"/work/ah2lab/LiamK/tidythesis/src")
+
+# Resolve paths relative to this file so the script works from any checkout,
+# not just the one it was written on.
+SRC = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(SRC)
+sys.path.insert(0, SRC)
 import generate_synthetic_v2 as v2g
 
-D=json.load(open("/work/ah2lab/LiamK/tidythesis/validation_data.json"))
-REP="/work/ah2lab/LiamK/tidythesis"
+D=json.load(open(os.path.join(ROOT,"docs","figures","validation_data.json")))
+REP=os.environ.get("FIG_OUT_DIR", os.path.join(ROOT,"docs","figures"))
+os.makedirs(REP, exist_ok=True)
 
 # ---- v2 geometry, computed the SAME way as real ----
 uni=v2g.build_universe(np.random.default_rng(7),16,960,8,64,3.0,1.5,3.0,2.0,1.9,36.0)

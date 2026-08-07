@@ -68,6 +68,6 @@ fig.suptitle("Recovery threshold: what the ceiling fix changed",fontsize=17,font
 fig.text(0.5,0.945,"v1's ceiling craters mid-distance then rebounds — so r* was scored against a bar that moved with it. "
          "v2's ceiling declines smoothly, so r*(d) finally measures one thing.",ha="center",fontsize=11,color="#555")
 fig.tight_layout(rect=[0,0.07,1,0.90])
-out=os.environ.get("FIG_OUT","recovery_v1_v2.png")
+out=os.environ.get("FIG_OUT", os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "docs", "figures", "recovery_v1_v2.png"))
 fig.savefig(out,dpi=150,bbox_inches="tight",facecolor="white")
 print("saved",out)

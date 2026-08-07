@@ -9,7 +9,7 @@
 # real to hit. The oracle also runs on top of the v2 geometry rather than the old
 # isotropic GMM, so the embedding it labels has realistic anisotropy.
 #
-#   sbatch run_oracle_pilot.slurm
+#   sbatch slurm/run_oracle_pilot.slurm
 # =============================================================================
 #SBATCH --job-name=oracle_pilot
 #SBATCH --partition=batch

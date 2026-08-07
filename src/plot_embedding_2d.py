@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from sklearn.decomposition import PCA
 
-SRC = "/home/dude/sapelo2_files/work/tidythesis/src"
+SRC = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, SRC)
 import generate_synthetic_precomputed as v1
 import generate_synthetic_v2 as v2
@@ -145,7 +145,7 @@ fig.text(0.5, 0.028,
          ha="center", fontsize=10, color="#333", fontweight="medium")
 
 fig.tight_layout(rect=[0.02, 0.085, 1, 0.93])
-out = os.environ.get("FIG_OUT", "embedding_2d_v1_v2.png")
+out = os.environ.get("FIG_OUT", os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "docs", "figures", "embedding_2d_v1_v2.png"))
 fig.savefig(out, dpi=150, bbox_inches="tight", facecolor="white")
 print("saved", out)
 

@@ -4,7 +4,7 @@
 # (~0.8, like real data) instead of the clean 1.0 of the first run. Same driver,
 # just a lower-rank / more-overlapping universe (latent_dim 8, tighter spread).
 # Second output dir so it sits ALONGSIDE synth_distance_sweep (clean ceiling).
-#   sbatch run_distance_sweep_hardceil.slurm
+#   sbatch slurm/run_distance_sweep_hardceil.slurm
 # =============================================================================
 #SBATCH --job-name=dist_sweep_hc
 #SBATCH --partition=gpu_p

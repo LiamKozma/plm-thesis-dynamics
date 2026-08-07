@@ -41,10 +41,10 @@ dynamically sized), so **nothing downstream changed** — only the embed step.
 bash setup_esmc_env.sh
 
 # 1. Fetch SwissProt+TrEMBL and embed with ESM-C (fetches the shared raw sequences).
-sbatch precompute_swissprot_esmc.slurm
+sbatch slurm/precompute_swissprot_esmc.slurm
 
 # 2. AFTER (1) finishes: ESM-2 baseline on the SAME sequences (reuses (1)'s raw fetch).
-sbatch precompute_swissprot_esm2.slurm
+sbatch slurm/precompute_swissprot_esm2.slurm
 
 # 3. CHECK num_classes actually returned, then edit configs/swissprot_shift.yaml if needed:
 cat /scratch/lmk04992/swissprot_esmc/embeddings/dataset_info.json   # -> num_classes

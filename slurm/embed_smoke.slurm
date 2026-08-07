@@ -1,7 +1,7 @@
 #!/bin/bash
 # GPU smoke test for the ESM-C path: (1) does torch (cu130) actually see the A100,
 # and (2) does embed_esmc() run end-to-end on a few sequences? Cheap; validates
-# before the full ~21k-seq embed job.  sbatch embed_smoke.slurm
+# before the full ~21k-seq embed job.  sbatch slurm/embed_smoke.slurm
 #SBATCH --job-name=esmc_smoke
 #SBATCH --partition=gpu_p
 #SBATCH --gres=gpu:A100:1

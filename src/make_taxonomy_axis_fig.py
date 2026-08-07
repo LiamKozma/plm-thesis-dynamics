@@ -2,6 +2,7 @@
 """Show the 'taxonomy axis': real family shift vectors share a common direction.
 Statistic = pairwise cosine between family shift vectors (real vs an independent-shift null).
 Run on the cluster (real .npy live there)."""
+import os
 import numpy as np, matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -90,6 +91,9 @@ fig.text(0.5,0.925,f"A random / family-specific shift would give cosines near 0 
          f"directions are themselves aligned (cos {xr.mean():+.2f}): a single shared taxonomy axis.",
          ha="center",fontsize=10.5,color="#555")
 fig.tight_layout(rect=[0,0,1,0.90])
-out="/work/ah2lab/LiamK/tidythesis/taxonomy_axis.png"
+out=os.environ.get("FIG_OUT", os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "docs", "figures", "taxonomy_axis.png"))
+os.makedirs(os.path.dirname(out), exist_ok=True)
 fig.savefig(out,dpi=150,bbox_inches="tight",facecolor="white")
 print("saved",out)

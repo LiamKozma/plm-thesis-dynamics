@@ -2,14 +2,17 @@
 """Realism check: 2D projection of v1 vs v2 SYNTHETIC vs REAL embeddings, same
 amount of data, same projection method. Shows which synthetic looks like reality.
 Run on the cluster (needs real .npy + the two generators + sklearn/matplotlib)."""
-import sys, numpy as np
+import os, sys, numpy as np
 import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from sklearn.decomposition import PCA
 from itertools import combinations
 
-sys.path.insert(0, "/work/ah2lab/LiamK/tidythesis/src")
+# Resolve paths relative to this file so the script works from any checkout.
+SRC = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(SRC)
+sys.path.insert(0, SRC)
 import generate_synthetic_precomputed as v1
 import generate_synthetic_v2 as v2
 
@@ -115,6 +118,7 @@ fig.suptitle("Which synthetic looks real?  2D projection, same data volume, same
 fig.text(0.5,0.925,"In real embeddings the family clouds OVERLAP (min gap < spread). v2 reproduces that messy overlap; "
          "v1's tight, well-separated blobs (min gap > 2x spread) look like a textbook toy, not real biology.",ha="center",fontsize=10.5,color="#555")
 fig.tight_layout(rect=[0,0.05,1,0.90])
-out="/work/ah2lab/LiamK/tidythesis/realism_v1_v2_real.png"
+out=os.environ.get("FIG_OUT", os.path.join(ROOT,"docs","figures","realism_v1_v2_real.png"))
+os.makedirs(os.path.dirname(out), exist_ok=True)
 fig.savefig(out,dpi=150,bbox_inches="tight",facecolor="white")
 print("saved",out)

@@ -101,5 +101,8 @@ if a is not None:
                       ceil=float(r["ceiling"]),rstar=None if np.isnan(r["r_star"]) else float(r["r_star"])) for r in np.atleast_1d(a)]
 
 print("\nv2 beta@d=1:",[(x["beta"],round(x["zero"],2),x["rstar"]) for x in betas])
-json.dump(dict(real=out, v2=v2), open("/work/ah2lab/LiamK/tidythesis/validation_data.json","w"), indent=1)
-print("saved validation_data.json")
+_dest = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                     "docs", "figures", "validation_data.json")
+os.makedirs(os.path.dirname(_dest), exist_ok=True)
+json.dump(dict(real=out, v2=v2), open(_dest, "w"), indent=1)
+print("saved", _dest)

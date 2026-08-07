@@ -6,7 +6,7 @@
 #      shift, fetchable via UniProt REST (no GCP).
 #   2. embed with ESM-C esmc_300m (960-D) + build source/pool/test .npy sets.
 # Output: /scratch/lmk04992/swissprot_esmc/embeddings, ready for main_precomputed.nf.
-# Submit with:  sbatch precompute_swissprot_esmc.slurm
+# Submit with:  sbatch slurm/precompute_swissprot_esmc.slurm
 #
 # PREREQ: run setup_esmc_env.sh ONCE first (creates the plm_esmc conda env).
 # =============================================================================
