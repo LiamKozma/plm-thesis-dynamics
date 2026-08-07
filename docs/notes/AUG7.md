@@ -6,18 +6,36 @@ table to be filled: a recovery threshold measured against **EC labels on real
 data**, and a statement of how it depends on a **distance a biologist or an ML
 person would actually ask for**.
 
-**The result, stated once, up front.** On a fixed budget of 500 EC labels:
+**The result, stated once, up front.** The full ladder (all 14 targets, four
+budgets, three seeds) finished while this was being written, and it moved the
+answer twice. What survives:
 
-> **Bacterial targets need none of that budget spent on their own proteins — a
-> gammaproteobacteria-trained model beats what 500 of the target's own proteins
-> can train from scratch. Archaeal and eukaryotic targets need roughly a third to
-> a half of it. Two independent estimators agree on 13 of 14 targets; the one
-> disagreement, actinobacteria, is the borderline case.**
+> **The robust quantity is not r\*. It is zero-shot retention — what fraction of
+> the achievable ceiling a gammaproteobacterial model keeps with no target labels
+> at all. That separates the tree of life with no overlap:**
 >
-> The boundary sits between **36.7% and 42.0%** median sequence identity to the
+> | | zero-shot ÷ ceiling |
+> |---|---|
+> | 8 bacterial targets | **0.707 – 1.001** |
+> | 6 archaeal / eukaryotic targets | **0.221 – 0.537** |
+>
+> The gap runs from insecta (0.537) to actinobacteria (0.707) with nothing in it.
+> Fourteen of fourteen, in both estimators and every configuration tried. The
+> same split falls between **36.7% and 42.0%** median sequence identity to the
 > nearest training protein — straddling the ~40% threshold the enzyme-function
 > literature independently gives for reliable EC-level-3 annotation transfer.
 > Nothing was tuned to land there.
+>
+> **r\* itself is fragile.** It is a threshold on that curve against a bar that
+> moves with the budget, read off an eight-point grid. At a budget of 1,000 it
+> reproduces the split cleanly — bacteria 0.0, everything else 0.3–0.5. At 200 it
+> says 0.0 for **twelve of fourteen targets**, including vertebrates. At 2,000 the
+> bacteria drift up to 0.2–0.3. Same data, same estimator, three different
+> stories. **Report the retention curve; quote r\* only with its budget attached.**
+
+That last point is the actual deliverable for the thesis, and it was not visible
+until the full sweep landed — the reduced arm ran at one budget and could not
+have shown it.
 
 **But the more transferable finding is that the estimator inherited from the
 synthetic sweep does not survive contact with real embeddings, and that six
@@ -52,8 +70,8 @@ Jobs submitted (all writing to `/scratch/lmk04992/ec_rstar/`):
 | `ec_distances` | 47292604 | label-free distances, 210 pairs | **complete** |
 | `ec_seqid` | 47292605 | BLAST identity + BLAST-NN EC baseline, 15 groups | **complete** |
 | `ec_homology` | 47292610 | homology-confound arm | **complete** |
-| `ec_rstar_fast` | 47292734 | reduced 14-target ladder, P = 500 | **complete** — §5 |
-| `ec_rstar_ladder` | 47292627 | the four full r* arms | running (6/14 targets of arm 1) |
+| `ec_rstar_fast` | 47292734 | reduced 14-target ladder, P = 500 | **complete** — superseded by arm 1, kept in §5 |
+| `ec_rstar_ladder` | 47292627 | the four full r* arms | **arm 1 complete (§5)**; arm 2 running |
 | `ec_rstar_allpairs` | 47292628 | 210-pair linear-probe r*, rerun | **complete** — §7 |
 | `ec_rstar_report` | 47292629 | join + regression, `afterany` on the two above | queued |
 
@@ -327,88 +345,115 @@ numbers and the failure this caused.
 
 ---
 
-## 5. r* on real EC labels — the first numbers
+## 5. r* on real EC labels
 
-**These are from the reduced arm (job 47292734, `ladder_fast/`), not the full
-ladder.** It runs all 14 targets but with 2 seeds instead of 3, one budget
-(P = 500) instead of four, 8,000 source / 4,000 target training proteins instead
-of 20,000 / 10,000, and 20 adaptation epochs instead of 30. It was submitted
-alongside the full ladder specifically so that this note would have measured
-numbers in it rather than a promise. The full ladder (47292627) supersedes it and
-was still running at write-up; **if the two disagree, the full ladder wins.**
+**Arm 1 of the full ladder (job 47292627, `_pair`) completed: all 14 targets, four
+budgets, three seeds, 20,000 source / up to 10,000 target training proteins.**
+This is the authoritative table. Sorted by zero-shot ÷ ceiling.
 
-Sorted by zero-shot ÷ ceiling. `barBud` = 0.9 × a from-scratch model on 500
-target proteins; `r*bud` is the smallest target fraction of a 500-label budget
-that reaches it.
-
-| target | K | ceiling | zero-shot | 0shot÷ceil | barBud | **r\*bud** | r\* (abs) |
+| target | K | ceiling | 0shot÷ceil | P=200 | P=500 | P=1000 | P=2000 |
 |---|---|---|---|---|---|---|---|
-| betaproteobacteria | 100 | 0.948 | 0.932 | 0.983 | 0.544 | **0.0** | 0.2 |
-| spirochaetes | 45 | 0.916 | 0.825 | 0.900 | 0.685 | **0.0** | 0.5 |
-| bacteroidetes | 40 | 0.926 | 0.808 | 0.873 | 0.741 | **0.0** | 0.5 |
-| alphaproteobacteria | 105 | 0.903 | 0.775 | 0.858 | 0.441 | **0.0** | nan |
-| cyanobacteria | 74 | 0.960 | 0.792 | 0.825 | 0.627 | **0.0** | nan |
-| epsilonproteobacteria | 67 | 0.963 | 0.754 | 0.783 | 0.688 | **0.0** | 0.75 |
-| firmicutes | 112 | 0.863 | 0.674 | 0.781 | 0.370 | **0.0** | nan |
-| actinobacteria | 102 | 0.891 | 0.532 | 0.596 | 0.411 | **0.0** | nan |
-| insecta | 30 | 0.873 | 0.385 | 0.441 | 0.701 | **0.5** | 0.75 |
-| euryarchaeota | 70 | 0.937 | 0.393 | 0.419 | 0.434 | **0.5** | nan |
-| crenarchaeota | 40 | 0.959 | 0.357 | 0.372 | 0.755 | **0.5** | 0.75 |
-| streptophyta | 88 | 0.821 | 0.218 | 0.266 | 0.348 | **0.5** | nan |
-| ascomycota | 78 | 0.876 | 0.219 | 0.249 | 0.386 | **0.5** | nan |
-| vertebrata | 89 | 0.816 | 0.145 | 0.177 | 0.247 | **0.5** | nan |
+| bacteroidetes | 40 | 0.912 | **1.001** | 0.0 | 0.0 | — | — |
+| spirochaetes | 45 | 0.891 | **0.983** | 0.0 | 0.0 | 0.0 | — |
+| betaproteobacteria | 100 | 0.965 | **0.953** | 0.0 | 0.0 | 0.0 | 0.0 |
+| alphaproteobacteria | 105 | 0.955 | **0.892** | 0.0 | 0.0 | 0.0 | 0.0 |
+| cyanobacteria | 74 | 0.963 | **0.886** | 0.0 | 0.0 | 0.0 | 0.0 |
+| epsilonproteobacteria | 67 | 0.967 | **0.843** | 0.0 | 0.0 | 0.0 | 0.2 |
+| firmicutes | 112 | 0.931 | **0.731** | 0.0 | 0.0 | 0.0 | 0.3 |
+| actinobacteria | 102 | 0.948 | **0.707** | 0.0 | 0.0 | 0.0 | 0.2 |
+| — *gap* — | | | | | | | |
+| insecta | 30 | 0.837 | **0.537** | 0.5 | 0.5 | — | — |
+| euryarchaeota | 70 | 0.935 | **0.469** | 0.0 | 0.0 | 0.5 | 0.75 |
+| crenarchaeota | 40 | 0.958 | **0.343** | 0.5 | 0.5 | 0.5 | — |
+| ascomycota | 78 | 0.892 | **0.326** | 0.0 | 0.3 | 0.5 | 0.5 |
+| streptophyta | 88 | 0.898 | **0.292** | 0.0 | 0.3 | 0.3 | 0.75 |
+| vertebrata | 89 | 0.951 | **0.221** | 0.0 | 0.5 | 0.5 | 0.75 |
 
-### r* takes two values, and the split is exactly the domain of life
+(`—` = that budget exceeds the target's training reservoir and was skipped, which
+is why the small groups have fewer columns.)
 
-**Every one of the eight bacterial targets has r\*bud = 0. Every one of the six
-archaeal and eukaryotic targets has r\*bud = 0.5.**
+### What is robust: the retention column, not r*
 
-> **Partly walked back — read §7 before quoting this.** The 210-pair linear-probe
-> arm landed after this section was written and agrees on 13 of the 14, but flips
-> **actinobacteria** from 0.0 to 1.0. Actinobacteria is the borderline case (the
-> lowest retained of any bacterial target). So this is a strong tendency with one
-> real exception, not the exceptionless split the MLP arm alone suggests.
+**Zero-shot retention separates the eight bacteria (0.707–1.001) from the six
+archaea and eukaryotes (0.221–0.537) with a clean gap and no overlap.** It does so
+in the full ladder, in the reduced arm, and in the 210-pair linear probe — three
+configurations and two estimators. That is the finding worth carrying into the
+thesis.
 
-The two halves mean different things, and both are worth stating plainly:
+Note `bacteroidetes` at 1.001: the zero-shot gammaproteobacterial model is
+*better* on bacteroidetes than a model trained on all 1,264 bacteroidetes
+proteins. For close relatives, a big foreign training set beats a small native
+one outright.
 
-* **Bacteria → bacteria: you need no target labels at all.** r*bud = 0 because
-  the zero-shot gammaproteobacterial model *by itself* already beats a model
-  trained from scratch on 500 of the target's own proteins — 0.932 vs 0.605 for
-  betaproteobacteria, and still 0.532 vs 0.456 for actinobacteria, the worst
-  case. Spending any of a 500-label budget on target data is worse than spending
-  none of it.
-* **Out of bacteria: about half the budget must be target-native.** For all six,
-  the curve crosses the bar between r = 0.3 and r = 0.5.
+### What is not robust: r* itself, and the budget is why
 
-### But the grid cannot resolve the second number, and the honest reading is 0.3–0.5
+Read the four r* columns across a row and the story changes with the budget:
 
-The uniform 0.5 is partly grid granularity. Looking at the curves, five of the
-six non-bacterial targets fall *just* short at r = 0.3:
+| budget | what r* says |
+|---|---|
+| **200** | 0.0 for **twelve of fourteen** targets, vertebrates included. Useless. |
+| **500** | bacteria 0.0; non-bacteria 0.0–0.5. Euryarchaeota still reads 0.0. |
+| **1000** | **the clean version**: bacteria 0.0, non-bacteria 0.3–0.5 |
+| **2000** | non-bacteria 0.5–0.75, but bacteria drift up to 0.2–0.3 |
 
-| target | barBud | F1 at r=0.3 | F1 at r=0.5 |
-|---|---|---|---|
-| insecta | 0.701 | 0.681 | 0.777 |
-| euryarchaeota | 0.434 | 0.416 | 0.496 |
-| ascomycota | 0.386 | 0.371 | 0.450 |
-| streptophyta | 0.348 | 0.322 | 0.390 |
-| vertebrata | 0.247 | 0.220 | 0.294 |
-| crenarchaeota | 0.755 | 0.630 | 0.784 |
+The cause is §3(f): the bar is `0.9 × from-scratch-on-P`, and at P = 200 that bar
+is so low that a badly-transferring zero-shot model clears it. As P rises the bar
+rises faster than the adapted model improves for the near targets, so *their* r*
+goes up. **r\* is a threshold on a curve, evaluated against a moving bar, read off
+an eight-point grid — three separate sources of fragility stacked on one number.**
 
-So the true threshold is somewhere in 0.3–0.5 for all six and the eight-point
-grid puts it at 0.5. It should be quoted as **"roughly a third to a half"**, not
-as 0.5. The curves are also visibly noisy at 2 seeds — vertebrata goes 0.241 at
-r = 0.2 then *down* to 0.220 at r = 0.3 — which is another reason to wait for the
-3-seed full ladder before hardening the number.
+The practical rule: **report the retention curve, and quote r\* only with its
+budget attached.** At P = 1000 the earlier summary ("bacteria need none,
+everything else a third to a half") is exactly right; at P = 200 it is wrong in
+both directions.
 
-### The absolute r* is censored for 8 of 14, as §3(d) predicted
+<details>
+<summary>The reduced arm (job 47292734), superseded — kept for the record</summary>
 
-The `r*` column is `nan` wherever 500 labels cannot reach 90% of what the target's
-whole reservoir buys. It is censored exactly for the targets with many classes
-and a hard task, which is a statement about the budget, not the shift. This is
-the column that would have been reported as the headline under the original
-estimator, and it would have said "most of the tree of life is unrecoverable"
-when what it measures is "500 is fewer than 4,000".
+Two seeds, one budget (P = 500), 8,000 source / 4,000 target proteins, 20
+adaptation epochs. It was submitted alongside the full ladder so this note would
+have measured numbers rather than a promise, and its P = 500 column read a
+uniform 0.5 for all six non-bacterial targets. The full ladder's larger source
+model (20,000 vs 8,000 proteins) transfers better, which pulls those down to
+0.0–0.5. Same direction, softer numbers.
 
+| target | K | ceiling | zero-shot | 0shot÷ceil | **r\*bud** |
+|---|---|---|---|---|---|
+| betaproteobacteria | 100 | 0.948 | 0.932 | 0.983 | 0.0 |
+| spirochaetes | 45 | 0.916 | 0.825 | 0.900 | 0.0 |
+| bacteroidetes | 40 | 0.926 | 0.808 | 0.873 | 0.0 |
+| alphaproteobacteria | 105 | 0.903 | 0.775 | 0.858 | 0.0 |
+| cyanobacteria | 74 | 0.960 | 0.792 | 0.825 | 0.0 |
+| epsilonproteobacteria | 67 | 0.963 | 0.754 | 0.783 | 0.0 |
+| firmicutes | 112 | 0.863 | 0.674 | 0.781 | 0.0 |
+| actinobacteria | 102 | 0.891 | 0.532 | 0.596 | 0.0 |
+| insecta | 30 | 0.873 | 0.385 | 0.441 | 0.5 |
+| euryarchaeota | 70 | 0.937 | 0.393 | 0.419 | 0.5 |
+| crenarchaeota | 40 | 0.959 | 0.357 | 0.372 | 0.5 |
+| streptophyta | 88 | 0.821 | 0.218 | 0.266 | 0.5 |
+| ascomycota | 78 | 0.876 | 0.219 | 0.249 | 0.5 |
+| vertebrata | 89 | 0.816 | 0.145 | 0.177 | 0.5 |
+
+Its retention column gives the same ordering and the same clean gap
+(actinobacteria 0.596 vs insecta 0.441), which is the point: **retention is stable
+across configurations, r\* is not.**
+
+</details>
+
+### The absolute r*, for the record
+
+The absolute `r*` (bar = 0.9 × the target's *whole* reservoir, not the budget) is
+censored for most targets at small budgets — 8 of 14 in the reduced arm, and
+78.9% of the 210 pairs in the linear-probe scan at P = 500 (§7). It is censored
+exactly for the targets with many classes and a hard task, which is a statement
+about the budget rather than the shift. That column is what would have been the
+headline under the original estimator, and it would have read "most of the tree
+of life is unrecoverable" when what it measures is "500 is fewer than 8,000".
+
+It is still the right column for one job — comparing *budgets*, since its bar
+does not move with P. §7 has that comparison.
+
+---
 
 ## 6. The distances themselves — jobs 47292604 and 47292605, both complete
 
@@ -620,10 +665,18 @@ gammaproteobacteria source, against the MLP arm:
 
 Thirteen of fourteen agree on the qualitative call ("needs none" vs "needs
 some"). **Actinobacteria flips**, and it is exactly the borderline case: it has
-the lowest retained of any bacterial target (0.52 LR, 0.60 MLP), well below the
-next bacterium. So the domain-of-life split is a strong tendency with one
-genuine exception, not a law — and §5's "fourteen out of fourteen, no
-exceptions" is an artefact of one estimator. Corrected there.
+the lowest retained of any bacterial target (0.52 LR, 0.60 reduced MLP), well
+below the next bacterium.
+
+> **Resolved by the full ladder.** Arm 1 finished after this was written.
+> Actinobacteria stays firmly on the bacterial side under the full estimator —
+> r\* = 0.0 at P = 200, 500 and 1000, rising only to 0.2 at P = 2000 — and its
+> retention is 0.707, above the 0.537 gap. The flip was the linear probe's, and
+> it is explained: a refit logistic regression gets no warm start, so the target
+> with the weakest transfer among the bacteria is the one it pushes over. **On
+> retention, which is the robust quantity, all three configurations agree
+> 14 / 14.** What the full ladder *does* overturn is the claim that r\* itself is
+> stable — see §5.
 
 The non-bacterial values are also systematically *higher* under the linear probe
 (0.5–1.0) than under the MLP (uniformly 0.5), which is expected: a refit
@@ -763,21 +816,24 @@ nothing.
 | BLAST identity + BLAST-NN EC baseline | 47292605 | **complete** | `seq_identity.json`, `seqid/` |
 | homology confound (Pfam lookup, within-Pfam, shuffle) | 47292610 | **complete** | `homology/` |
 | reduced 14-target ladder, P = 500 | 47292734 | **complete** — this is §5 | `ladder_fast/` |
-| r* ladder, four full arms | 47292627 | **running**, 6/14 targets of arm 1 done | `ladder/rstar_summary_*.csv` |
+| r* ladder, four full arms | 47292627 | **arm 1 (`_pair`) complete — this is §5**; arm 2 (`_matched`) running, 1/14 | `ladder/rstar_summary_*.csv` |
 | 210-pair linear-probe r*, rerun | 47292628 | **complete** — §7 | `rstar_allpairs.json` |
 | join + regression | 47292629 | **queued**, `afterany` on the two above | `rstar_vs_distance_P*.json` |
 
-The full ladder was at roughly six minutes per target when this was written, so
-arm 1 (`_pair`, 14 targets, four budgets, three seeds) needs about 90 minutes and
-all four arms several hours. It writes `rstar_summary_pair.csv` incrementally
-after every target, so partial results are readable at any point. **Nothing in §5
-depends on it** — §5 is the reduced arm, which completed.
+Arm 1 (`_pair`, 14 targets × 4 budgets × 3 seeds) took about 80 minutes and is
+**complete** — it is the §5 table. Arm 2 (`_matched`, the class-count-matched
+control) started immediately after and was 1/14 targets in at write-up; it
+confirms the 20-class label set of §2 and gave `actinobacteria` ceiling 0.970,
+retention 0.817, r\*bud 0.0, consistent with arm 1.
 
-Three arms have not produced any output yet and will only exist once 47292627
-gets past `_pair`: `_matched` (class-count-matched label set), `_novelty`
-(constructed functional novelty, ν ∈ {0, 0.25, 0.5}) and `_sizematched` (equal
-training volume on both sides). Check which `rstar_summary_*.csv` files exist
-before relying on them.
+**Arms 3 and 4 have produced no output yet**: `_novelty` (constructed functional
+novelty, ν ∈ {0, 0.25, 0.5}) and `_sizematched` (equal training volume on both
+sides, the arm directly comparable to the synthetic sweep). Both run inside the
+same job and will appear as `rstar_summary_novelty.csv` and
+`rstar_summary_sizematched.csv`. Check which files exist before relying on them.
+
+Everything writes incrementally after each target, so a killed job leaves usable
+partial output.
 
 Superseded first attempts are kept, not deleted:
 `ladder_run1_superseded/`, `rstar_allpairs_run1_superseded.json`. They are the
