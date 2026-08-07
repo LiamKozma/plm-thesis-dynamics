@@ -1,4 +1,4 @@
-# Aug 7 — r* for EC (function) labels on real data, and three ways the estimator lied
+# Aug 7 — r* for EC (function) labels on real data, and six ways the estimator lied
 
 Answers [`BRIEF_ec_recovery_threshold.md`](BRIEF_ec_recovery_threshold.md). That
 brief left four design questions open (§4) and asked for the empty cell in its
@@ -8,11 +8,11 @@ person would actually ask for**.
 
 **The result, stated once, up front.** On a fixed budget of 500 EC labels:
 
-> **Every bacterial target needs none of that budget spent on its own proteins —
-> a gammaproteobacteria-trained model beats what 500 of the target's own proteins
-> can train from scratch. Every archaeal and eukaryotic target needs roughly a
-> third to a half of it. Fourteen targets out of fourteen, split exactly on the
-> domain of life.**
+> **Bacterial targets need none of that budget spent on their own proteins — a
+> gammaproteobacteria-trained model beats what 500 of the target's own proteins
+> can train from scratch. Archaeal and eukaryotic targets need roughly a third to
+> a half of it. Two independent estimators agree on 13 of 14 targets; the one
+> disagreement, actinobacteria, is the borderline case.**
 >
 > The boundary sits between **36.7% and 42.0%** median sequence identity to the
 > nearest training protein — straddling the ~40% threshold the enzyme-function
@@ -20,9 +20,9 @@ person would actually ask for**.
 > Nothing was tuned to land there.
 
 **But the more transferable finding is that the estimator inherited from the
-synthetic sweep does not survive contact with real embeddings, and that five
+synthetic sweep does not survive contact with real embeddings, and that six
 separate versions of it would each have produced a confident wrong answer.** All
-five are documented in §3, because each is exactly the kind of thing §5 of the
+six are documented in §3, because each is exactly the kind of thing §5 of the
 brief exists to prevent. Everything in §5 is from the repaired estimator.
 
 Two of the brief's own open questions turned out to be **answered by the data
@@ -53,8 +53,8 @@ Jobs submitted (all writing to `/scratch/lmk04992/ec_rstar/`):
 | `ec_seqid` | 47292605 | BLAST identity + BLAST-NN EC baseline, 15 groups | **complete** |
 | `ec_homology` | 47292610 | homology-confound arm | **complete** |
 | `ec_rstar_fast` | 47292734 | reduced 14-target ladder, P = 500 | **complete** — §5 |
-| `ec_rstar_ladder` | 47292627 | the four full r* arms | running (1/14 targets of arm 1) |
-| `ec_rstar_allpairs` | 47292628 | 210-pair linear-probe r*, rerun | running |
+| `ec_rstar_ladder` | 47292627 | the four full r* arms | running (6/14 targets of arm 1) |
+| `ec_rstar_allpairs` | 47292628 | 210-pair linear-probe r*, rerun | **complete** — §7 |
 | `ec_rstar_report` | 47292629 | join + regression, `afterany` on the two above | queued |
 
 Jobs 47292608/09/11 were the first attempt; they were cancelled and resubmitted
@@ -184,7 +184,7 @@ reported; if they disagree, neither gets quoted alone.
 
 ---
 
-## 3. Five ways the estimator lied, and what each would have cost
+## 3. Six ways the estimator lied, and what each would have cost
 
 This is the part worth reading. The r* definition was inherited from
 `run_distance_sweep_v2.py` and looks innocuous. On real ESM-C embeddings with
@@ -267,7 +267,7 @@ budget, and it isolates the composition question from the budget question. r*
 against the full ceiling is still reported — it is the honest absolute number,
 and how often it is censored is itself a finding — but it is not the headline.
 
-### (e) A fifth, smaller one: r* must allow doing nothing
+### (e) r* must allow doing nothing
 
 With the repaired estimator, `gamma → betaproteobacteria` at P = 500 has zero-shot
 at **99.8% of the ceiling** and still scored r* = 1.0, because fine-tuning on 500
@@ -277,6 +277,25 @@ Nobody ships a model worse than the one they started with. `r_star_noadapt` take
 the better of {adapted, un-adapted} at each r, which restores monotonicity and
 makes r* mean "how much target data before the best available model clears the
 bar". Both columns are reported.
+
+### (f) …and the fix in (d) reintroduced a moving bar, which I did not notice until the rerun landed
+
+`r*_budget` is scored against `0.9 × from-scratch-on-P-target-proteins`. That bar
+**rises with P**, so `r*_budget` is comparable across *targets* at a fixed budget
+and is **not** comparable across *budgets*. In the 210-pair rerun it goes *up*
+with budget for several pairs — spirochaetes 0.0 → 0.5, cyanobacteria
+0.0 → 0.5 → 0.3, epsilonproteobacteria 0.0 → 0.5 → 0.2 — which reads as "more
+labels made it worse" and is nothing of the kind.
+
+This is landmine 9 again: I removed one moving ceiling in (d) and installed
+another. The division of labour that is actually correct:
+
+| question | use | why |
+|---|---|---|
+| which targets are expensive, at a fixed budget | `r*_budget` | bar is fixed across targets |
+| how does the requirement change with budget | absolute `r*` | bar is fixed across budgets; report the censoring rate with it |
+
+They must never go on the same axis. §7 has the numbers.
 
 ---
 
@@ -295,8 +314,16 @@ bar". Both columns are reported.
 
 Sweeping P at all is deliberate: Ben-David et al. (2010) give an optimal
 source/target mixing weight with a phase transition at an *absolute* target
-sample count, which predicts r* should scale roughly as 1/P. Three budgets is
-enough to see whether it does.
+sample count, which predicts r* should fall as P grows. It does — see §7, where
+the absolute r*'s censoring rate falls 78.9 → 61.8 → 15.9% and its median falls
+0.75 → 0.50 as P goes 500 → 2000.
+
+**Use the right r\* for the right comparison.** `r*_budget` has a bar that moves
+with P (it is 0.9 × from-scratch-on-P), so it compares *targets at a fixed
+budget* and must not be compared *across* budgets. The absolute `r*` has a bar
+fixed by the target's whole reservoir, so it is the one that can be compared
+across budgets — at the cost of being censored when P is small. §7 has the
+numbers and the failure this caused.
 
 ---
 
@@ -334,8 +361,13 @@ that reaches it.
 ### r* takes two values, and the split is exactly the domain of life
 
 **Every one of the eight bacterial targets has r\*bud = 0. Every one of the six
-archaeal and eukaryotic targets has r\*bud = 0.5. Fourteen out of fourteen, no
-exceptions.**
+archaeal and eukaryotic targets has r\*bud = 0.5.**
+
+> **Partly walked back — read §7 before quoting this.** The 210-pair linear-probe
+> arm landed after this section was written and agrees on 13 of the 14, but flips
+> **actinobacteria** from 0.0 to 1.0. Actinobacteria is the borderline case (the
+> lowest retained of any bacterial target). So this is a strong tendency with one
+> real exception, not the exceptionless split the MLP arm alone suggests.
 
 The two halves mean different things, and both are worth stating plainly:
 
@@ -534,6 +566,71 @@ different route, and they come back −0.787, +0.297 and +0.051 here.
 14 points from a single source group and must be treated as suggestive until
 BLAST is run for all 210 pairs (§11.1).
 
+### The 210-pair rerun landed — and it partly walks back §5
+
+Job 47292628 completed: 209 of 210 pairs, three budgets, linear probe,
+budget-relative r*. Two things it settles and one it complicates.
+
+**The budget-relative fix does what it was meant to.** Censoring, i.e. pairs that
+never reach the bar at any r:
+
+| budget | r\* (absolute bar) | **r\*_budget** |
+|---|---|---|
+| 500 | 165/209 censored (**78.9%**) | 2/209 (**1.0%**) |
+| 1000 | 110/178 (61.8%) | 0/178 (**0.0%**) |
+| 2000 | 24/151 (15.9%) | 0/151 (**0.0%**) |
+
+**The absolute r* does show the budget effect the theory predicts**, once you can
+see it at all: censoring falls 78.9 → 61.8 → 15.9% and the median r* falls from
+0.75 to 0.50 as the budget goes 500 → 2000. That is the Ben-David direction —
+more target labels, less of the budget needs to be target-native.
+
+**But r\*_budget is not comparable across budgets, and I should have seen it
+sooner.** Its bar is `0.9 × from-scratch-on-P-target-proteins`, and that bar
+*rises with P*. So r\*_budget can go **up** as the budget grows — spirochaetes
+0.0 → 0.5, cyanobacteria 0.0 → 0.5 → 0.3, epsilonproteobacteria 0.0 → 0.5 → 0.2.
+This is landmine 9 wearing a new hat: I removed one moving ceiling in §3(d) and
+introduced another. The correct division of labour is:
+
+* **fixed P, comparing targets** → use `r*_budget` (a fixed bar across targets)
+* **comparing budgets** → use absolute `r*` (a fixed bar across budgets), and
+  report the censoring rate alongside it
+
+They must not be plotted on the same axis.
+
+**And the clean 14/14 split of §5 is really 13/14.** The linear probe at P = 500,
+gammaproteobacteria source, against the MLP arm:
+
+| target | MLP `r*bud` | LR `r*bud` | agree? |
+|---|---|---|---|
+| betaproteobacteria | 0.0 | 0.0 | ✓ |
+| spirochaetes | 0.0 | 0.0 | ✓ |
+| bacteroidetes | 0.0 | 0.0 | ✓ |
+| alphaproteobacteria | 0.0 | 0.0 | ✓ |
+| epsilonproteobacteria | 0.0 | 0.0 | ✓ |
+| cyanobacteria | 0.0 | 0.0 | ✓ |
+| firmicutes | 0.0 | 0.0 | ✓ |
+| **actinobacteria** | **0.0** | **1.0** | **✗** |
+| insecta | 0.5 | 0.5 | ✓ |
+| crenarchaeota | 0.5 | 0.75 | ✓ (both > 0) |
+| ascomycota | 0.5 | 0.75 | ✓ |
+| streptophyta | 0.5 | 0.75 | ✓ |
+| euryarchaeota | 0.5 | 1.0 | ✓ |
+| vertebrata | 0.5 | 1.0 | ✓ |
+
+Thirteen of fourteen agree on the qualitative call ("needs none" vs "needs
+some"). **Actinobacteria flips**, and it is exactly the borderline case: it has
+the lowest retained of any bacterial target (0.52 LR, 0.60 MLP), well below the
+next bacterium. So the domain-of-life split is a strong tendency with one
+genuine exception, not a law — and §5's "fourteen out of fourteen, no
+exceptions" is an artefact of one estimator. Corrected there.
+
+The non-bacterial values are also systematically *higher* under the linear probe
+(0.5–1.0) than under the MLP (uniformly 0.5), which is expected: a refit
+logistic regression gets no benefit from the source model's warm start, so it
+needs more target data to reach the same bar. The two estimators are not the same
+number and are not pooled anywhere.
+
 ---
 
 *(filled from 47292629)*
@@ -666,8 +763,8 @@ nothing.
 | BLAST identity + BLAST-NN EC baseline | 47292605 | **complete** | `seq_identity.json`, `seqid/` |
 | homology confound (Pfam lookup, within-Pfam, shuffle) | 47292610 | **complete** | `homology/` |
 | reduced 14-target ladder, P = 500 | 47292734 | **complete** — this is §5 | `ladder_fast/` |
-| r* ladder, four full arms | 47292627 | **running**, 1/14 targets of arm 1 done | `ladder/rstar_summary_*.csv` |
-| 210-pair linear-probe r*, rerun | 47292628 | **running** | `rstar_allpairs.json` |
+| r* ladder, four full arms | 47292627 | **running**, 6/14 targets of arm 1 done | `ladder/rstar_summary_*.csv` |
+| 210-pair linear-probe r*, rerun | 47292628 | **complete** — §7 | `rstar_allpairs.json` |
 | join + regression | 47292629 | **queued**, `afterany` on the two above | `rstar_vs_distance_P*.json` |
 
 The full ladder was at roughly six minutes per target when this was written, so
