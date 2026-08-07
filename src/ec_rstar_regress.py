@@ -104,6 +104,9 @@ def main():
                 continue
             d = slot(r["source"], r["target"])
             d["mlp_rstar"] = fnum(r["r_star"])
+            if r.get("r_star_budget") not in (None, ""):
+                d["mlp_rstar_budget"] = fnum(r["r_star_budget"])
+                d["mlp_budget_ceiling"] = fnum(r.get("budget_ceiling"))
             if r.get("r_star_matched") not in (None, ""):
                 d["mlp_rstar_matched"] = fnum(r["r_star_matched"])
                 d["mlp_ceiling_matched"] = fnum(r.get("ceiling_matched"))
@@ -125,6 +128,10 @@ def main():
             key = str(a.budget) if str(a.budget) in row["budgets"] else str(bs[0])
             b = row["budgets"][key]
             d["lr_rstar"] = (b["r_star"] if b["r_star"] is not None else float("nan"))
+            if "r_star_budget" in b:
+                d["lr_rstar_budget"] = (b["r_star_budget"]
+                                        if b["r_star_budget"] is not None
+                                        else float("nan"))
             d["lr_ceiling"] = row["ceiling_f1"]
             d["lr_zeroshot"] = row["zeroshot_f1"]
             d["lr_retained"] = row["retained"]
@@ -152,6 +159,10 @@ def main():
                       "frac_below_30", "frac_below_30_censored", "frac_nohit"):
                 if row.get(k) is not None:
                     d[k] = float(row[k])
+            # carried as a comparator column, not as a predictor: this is the
+            # homology baseline the embedding has to beat, not a distance
+            if row.get("blast_nn_macro_f1") is not None:
+                d["blastnn_macro_f1"] = float(row["blast_nn_macro_f1"])
         print(f"sequence identity: {len(sid['rows'])} groups")
 
     geo = load_json(a.geometry)
@@ -178,25 +189,46 @@ def main():
             and k not in ("geo_retained",)]
 
     def perm_p(pred, targ, obs, rows_used):
-        """Relabel whole GROUPS, not pairs -- copied from beta_diagnosis.perm_p."""
+        """Relabel whole GROUPS, not pairs -- after beta_diagnosis.perm_p.
+
+        One change from that version, and it matters. Some predictors here (all
+        the BLAST sequence-identity ones) exist only for the 14 pairs out of
+        gammaproteobacteria, so every row shares a source. Permuting both members
+        of the pair then almost always produces a key that is not in the table,
+        the `len(xs) > 5` guard rejects the draw, and p comes back ~0 for a
+        predictor that has not been tested at all. When the rows share a single
+        source, the correct null holds the source fixed and permutes only the
+        targets among themselves.
+        """
         rng = np.random.default_rng(a.seed)
-        doms = sorted({r["source"] for r in rows_used} |
-                      {r["target"] for r in rows_used})
+        srcs = {r["source"] for r in rows_used}
+        single_source = len(srcs) == 1
         look = {(r["source"], r["target"]): r for r in rows_used}
-        cnt = 0
+        if single_source:
+            doms = sorted({r["target"] for r in rows_used})
+        else:
+            doms = sorted(srcs | {r["target"] for r in rows_used})
+        cnt = n_valid = 0
         for _ in range(a.n_perm):
             mp = dict(zip(doms, rng.permutation(doms)))
             xs, ys = [], []
             for r in rows_used:
-                rr = look.get((mp[r["source"]], mp[r["target"]]))
+                key = ((r["source"], mp[r["target"]]) if single_source
+                       else (mp[r["source"]], mp[r["target"]]))
+                rr = look.get(key)
                 if rr is not None and pred in rr and targ in r:
                     xv, yv = fnum(rr[pred]), fnum(r[targ])
                     if xv == xv and yv == yv:
                         xs.append(xv)
                         ys.append(yv)
-            if len(xs) > 5 and abs(spearman(xs, ys)) >= obs:
+            if len(xs) <= 5:
+                continue                  # draw produced too little overlap
+            n_valid += 1
+            if abs(spearman(xs, ys)) >= obs:
                 cnt += 1
-        return cnt / a.n_perm
+        if n_valid < 0.5 * a.n_perm:
+            return float("nan")           # the null could not be built; say so
+        return (cnt + 1) / (n_valid + 1)  # +1 so p is never exactly 0
 
     report = {"n_rows": len(rows), "predictors_tested": PRED, "tables": {}}
     out_lines = []
@@ -205,8 +237,8 @@ def main():
         print(msg, flush=True)
         out_lines.append(msg)
 
-    for targ in ("mlp_rstar", "mlp_rstar_matched", "lr_rstar",
-                 "mlp_retained", "lr_retained"):
+    for targ in ("mlp_rstar_budget", "mlp_rstar", "mlp_rstar_matched",
+                 "lr_rstar_budget", "lr_rstar", "mlp_retained", "lr_retained"):
         have = [r for r in rows if targ in r]
         if len(have) < 6:
             continue
@@ -251,7 +283,7 @@ def main():
                         if all(v == v for v in kk) else float("nan"))
                 tab.append((abs(rho), p, rho, pv, prho, len(ok)))
             for _, p, rho, pv, prho, n in sorted(tab, reverse=True):
-                star = " *" if pv < 0.05 else ""
+                star = " *" if (pv == pv and pv < 0.05) else ("  ?" if pv != pv else "")
                 emit(f"  {p:<26s} {rho:+7.3f} {pv:8.3f} {prho:+7.3f} {n:5d}{star}")
             emit(f"  {len(tab)} predictors tested -> about "
                  f"{0.05*len(tab):.1f} false positives at p<0.05 by chance.")

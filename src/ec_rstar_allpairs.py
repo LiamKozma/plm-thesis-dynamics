@@ -99,6 +99,15 @@ def _pair_row(st):
     budgets = [p for p in a.budgets if p <= len(t_tr)]
     if not budgets or ceil <= 0:
         return None
+    # From-scratch on P target proteins: the budget-matched bar. Without it,
+    # r* asks whether P labels can beat 90% of what len(t_tr) labels buy, and
+    # for small P the answer is no whatever the shift -- which censored 80-100%
+    # of these pairs on the first run.
+    bceil = {}
+    for P in budgets:
+        r2 = np.random.default_rng(500)
+        sub = r2.permutation(len(Xt))[:P]
+        bceil[P] = fit_eval(Xt[sub], yt[sub], Xe, ye, 0, scaler)
 
     per_budget = {}
     for P in budgets:
@@ -117,10 +126,17 @@ def _pair_row(st):
                 vals.append(fit_eval(px, py, Xe, ye, seed, scaler))
             fin[r] = float(np.mean(vals))
         bar = a.recover_at * ceil
-        rstar = next((r for r in sorted(a.ood_fracs) if fin[r] >= bar), None)
+        bar_b = a.recover_at * bceil[P]
+        rstar = next((r for r in sorted(a.ood_fracs)
+                      if max(zs, fin[r]) >= bar), None)
+        rstar_b = next((r for r in sorted(a.ood_fracs)
+                        if max(zs, fin[r]) >= bar_b), None)
         per_budget[str(P)] = {
             "bar": round(bar, 4),
+            "bar_budget": round(bar_b, 4),
+            "budget_ceiling": round(bceil[P], 4),
             "r_star": (rstar if rstar is not None else None),
+            "r_star_budget": (rstar_b if rstar_b is not None else None),
             "final": {str(r): round(v, 4) for r, v in fin.items()}}
     return dict(source=s, target=t, n_classes=K, n_src_train=len(s_tr),
                 n_tgt_train=len(t_tr), n_tgt_test=len(t_te),
@@ -175,8 +191,13 @@ def main():
         for P, b in r["budgets"].items():
             flat.append({k: v for k, v in r.items() if k != "budgets"}
                         | {"budget": int(P), "bar": b["bar"],
+                           "bar_budget": b["bar_budget"],
+                           "budget_ceiling": b["budget_ceiling"],
                            "r_star": (b["r_star"] if b["r_star"] is not None
-                                      else float("nan"))})
+                                      else float("nan")),
+                           "r_star_budget": (b["r_star_budget"]
+                                             if b["r_star_budget"] is not None
+                                             else float("nan"))})
     if flat:
         csv_path = a.out.replace(".json", "_flat.csv")
         with open(csv_path, "w", newline="") as f:

@@ -34,8 +34,8 @@ mkdir -p $OUT
 python src/ec_rstar_allpairs.py \
     --emb $ROOT/emb_cache_esmc.npy --meta $ROOT/data/metadata.tsv \
     --ec $ROOT/data/ec_annotations.tsv \
-    --ec_level 3 --min_n 15 --budgets 200,500 --n_rep 3 \
-    --max_train 6000 --max_test 3000 --jobs 16 \
+    --ec_level 3 --min_n 15 --budgets 500,1000,2000 --n_rep 3 \
+    --max_train 4000 --max_test 3000 --jobs 16 \
     --out $OUT/rstar_allpairs.json
 
 echo

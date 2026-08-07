@@ -47,10 +47,13 @@ mkdir -p $OUT
 DATA="--emb $ROOT/emb_cache_esmc.npy --meta $ROOT/data/metadata.tsv --ec $ROOT/data/ec_annotations.tsv"
 COMMON="--source_domain gammaproteobacteria --max_test 3000 --seeds 42,43,44"
 
-echo "######## 1/3  per-pair shared-EC label set, three budgets ########"
+echo "######## 1/4  per-pair shared-EC label set, four budgets ########"
+# Budgets span an order of magnitude on purpose: Ben-David et al. (2010) put the
+# source/target phase transition at an ABSOLUTE target sample count, which
+# predicts r* should fall roughly as 1/P. Four points is enough to see it.
 python src/ec_recovery_threshold.py $DATA --outdir $OUT $COMMON \
     --label_set pair --min_n 15 \
-    --budgets 200,500,1000 --holdouts 0.0 --tag _pair
+    --budgets 200,500,1000,2000 --holdouts 0.0 --tag _pair
 
 echo
 echo "######## 2/3  class-count-matched label set (identical task everywhere) ########"

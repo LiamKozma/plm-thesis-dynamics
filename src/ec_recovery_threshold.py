@@ -400,6 +400,19 @@ def run_target(T, source, target, a, keys, rng_master, log):
             # fine-tuning on a 500-protein pool damages it.
             rstar_na = next((r for r in sorted(a.ood_fracs)
                              if max(zs, fin.get(r, -1)) >= target_bar), None)
+            # THE BUDGET-RELATIVE THRESHOLD, and the one that is actually
+            # well-posed. r* against the full ceiling asks "can P labels beat 90%
+            # of what 10,000 target labels buy?", and for a small P the answer is
+            # no whatever the shift is -- which is why the 210-pair linear-probe
+            # scan came back 80-100% censored. Scoring against `budget_ceiling`
+            # (from scratch on P target proteins) asks the composition question
+            # on its own: of a budget of P labels, what fraction must be
+            # target-native to match spending the whole budget on target data?
+            # r = 1.0 reaches it by construction, so it is never censored for
+            # want of budget, and the number isolates the shift from the budget.
+            bar_b = a.recover_at * bceil[P]
+            rstar_b = next((r for r in sorted(a.ood_fracs)
+                            if max(zs, fin.get(r, -1)) >= bar_b), None)
             summary.append(dict(
                 source=source, target=target, holdout=nu, budget=P,
                 n_classes=K, n_src_train=len(s_tr), n_tgt_train=len(t_tr),
@@ -413,6 +426,8 @@ def run_target(T, source, target, a, keys, rng_master, log):
                 r_star_matched=(rstar_m if rstar_m is not None else float("nan")),
                 r_star_1pass=(rstar_1p if rstar_1p is not None else float("nan")),
                 r_star_noadapt=(rstar_na if rstar_na is not None else float("nan")),
+                r_star_budget=(rstar_b if rstar_b is not None else float("nan")),
+                bar_budget=round(bar_b, 4),
                 best_final=round(max(fin.values()), 4),
                 best_1pass=(round(max(fin1.values()), 4) if fin1 else None),
                 dropped_budgets=";".join(str(x) for x in dropped_budgets),
@@ -531,7 +546,7 @@ def main():
         f"achievable ceiling ===")
     hdr = (f"  {'target':22s} {'nu':>5s} {'P':>5s} {'K':>4s} {'ceil':>6s} "
            f"{'ceilM':>6s} {'bar':>6s} {'0shot':>6s} {'0s/ceil':>8s} "
-           f"{'r*':>6s} {'r*na':>6s} {'best':>6s}")
+           f"{'r*':>6s} {'r*bud':>6s} {'best':>6s}")
     log(hdr)
     log("  " + "-" * (len(hdr) - 2))
     for s in all_sum:
@@ -539,11 +554,14 @@ def main():
             f"{s['n_classes']:4d} {s['ceiling']:6.3f} {s['ceiling_matched']:6.3f} "
             f"{s['bar']:6.3f} {s['zero_shot']:6.3f} "
             f"{(s['zero_shot_over_ceiling'] or float('nan')):8.3f} "
-            f"{str(s['r_star']):>6s} {str(s['r_star_noadapt']):>6s} "
+            f"{str(s['r_star']):>6s} {str(s['r_star_budget']):>6s} "
             f"{s['best_final']:6.3f}")
-    log("\n  r*   is scored against `ceiling` after adapting to convergence")
-    log("  r*na is the same, but keeping the un-adapted model when adapting "
-        "would make things worse -- which is what anyone would actually do.")
+    log("\n  r*    is scored against `ceiling` (ALL the target's own data). It is "
+        "censored whenever the budget P simply cannot buy that much.")
+    log("  r*bud is scored against `budget_ceiling` (from scratch on P target "
+        "proteins) -- the composition question with the budget question removed. "
+        "This is the better-posed one. Both keep the un-adapted model when "
+        "adapting would make things worse.")
     log("  r*_1pass (in the CSV) uses ONE pass over the pool, the estimator the "
         "synthetic sweep uses. Where it differs, the difference is optimisation, "
         "not information.")
