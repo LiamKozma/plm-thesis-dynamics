@@ -1,461 +1,378 @@
 # Identifying the Recovery Threshold for Protein Language Models under Data Distribution Shift
 
-> Master's Thesis. A synthetic-data framework for measuring how, and when, a predictive model fine-tuned on Protein Language Model (PLM) embeddings can recover performance after its data distribution shifts.
+> M.S. Statistics thesis, University of Georgia. How much out-of-distribution data must an
+> adapting classifier see before it overcomes negative transfer — and how much of that number
+> is a property of the data rather than of the estimator that measured it.
 
-This repository contains the full experimental apparatus: a controllable synthetic protein universe, a frozen ground-truth labeler, a distributed training/adaptation pipeline, and the analysis code used to locate the **recovery threshold**: the point of distribution shift past which active adaptation can no longer restore the model.
+A model trained on one region of protein space and asked to predict on another loses accuracy.
+Some of that loss comes back if you fine-tune on labelled target data, and the question here is
+how much of that data it takes. Call the answer `r*`: the smallest target fraction of a fixed
+labelling budget at which an adapted model reaches 90% of the ceiling a target-trained model
+reaches.
+
+Most of the work in this repository turned out to be about making `r*` mean something. Two of
+the three synthetic generators here produce a number that looks like a recovery threshold and
+is not one, and the estimator that survived simulation broke six further ways on real
+embeddings. Both failures are documented below with the measurements that exposed them,
+because they are the part of this project I would most want a reader to check.
+
+## What it found
+
+**Synthetic arm.** `r*` depends on the *type* of shift, not its size. At one shift distance, a
+pure covariate shift — families translating together along a shared direction — recovers on 30%
+out-of-distribution adaptation data, while a pure concept shift of equal magnitude needs 75%.
+Distance alone does not determine cost.
+
+**Real arm.** Over 231,285 Swiss-Prot proteins in ESM-C embeddings, `r*` itself is fragile: it
+is a threshold on a curve, scored against a budget-dependent bar, read off an eight-point grid,
+and it tells three different stories at three annotation budgets. The stable quantity is
+zero-shot retention. Eight bacterial targets keep 0.707–1.001 of their ceiling; six archaeal and
+eukaryotic targets keep 0.221–0.537. Nothing falls in the gap. That boundary sits between 36.7%
+and 42.0% median sequence identity to the nearest training protein, straddling the ~40% line the
+enzyme-function literature gives for reliable EC-level-3 annotation transfer. Nothing was tuned
+to land there.
+
+**The lab notes are the real narrative**, in date order:
+[`JULY22`](docs/notes/JULY22.md) rebuilds the generator ·
+[`AUG4`](docs/notes/AUG4.md) adds the EC (function) label axis ·
+[`AUG6`](docs/notes/AUG6.md) re-runs everything on a 231k-protein dataset and overturns two
+earlier conclusions ·
+[`AUG7`](docs/notes/AUG7.md) measures `r*` on real EC labels and enumerates six ways the
+estimator lied.
 
 ---
 
 ## Table of Contents
 
-1. [Motivation](#motivation)
-2. [Core Methodology](#core-methodology)
-   - [The Frozen Oracle](#1-the-frozen-oracle-ground-truth-labeling)
-   - [GMM Embedding Universe](#2-the-gmm-embedding-universe)
-   - [Simulating Covariate Shift](#3-simulating-evolutionary-covariate-shift)
-   - [Metrics](#4-metrics)
-3. [The Two Workflows](#the-two-workflows)
-   - [Phase 1: Oracle Grid Search](#phase-1-oracle-grid-search-srcoracle_search)
-   - [Phase 2: Main Adaptation Pipeline](#phase-2-main-adaptation-pipeline-mainnf)
-4. [Repository Structure](#repository-structure)
-5. [Environment Setup](#environment-setup)
-6. [Reproducing the Experiments](#reproducing-the-experiments)
-7. [Configuration Reference](#configuration-reference)
-8. [Outputs & Analysis](#outputs--analysis)
-9. [Pipeline Architecture Diagram](#pipeline-architecture-diagram)
+1. [The three generators, and why there are three](#the-three-generators-and-why-there-are-three)
+2. [The real-data arm](#the-real-data-arm)
+3. [Repository structure](#repository-structure)
+4. [Environment setup](#environment-setup)
+5. [Running the current work](#running-the-current-work)
+6. [The legacy Nextflow pipeline](#the-legacy-nextflow-pipeline)
+7. [Citation](#citation)
 
 ---
 
-## Motivation
+## The three generators, and why there are three
 
-Protein Language Models (e.g. ESM-2) produce high-dimensional embeddings (1280-D) that downstream predictors use to assign functional or taxonomic labels. In practice, the protein distribution a model is trained on (its **source** distribution `P`) drifts away from the distribution it is later asked to predict (its **target** distribution `Q`), through evolutionary divergence, sampling bias, or newly discovered families. This is **covariate shift**.
+`src/` contains three generations of synthetic data generator. Only the third is current, and
+the first two are kept because the notes cite them and because what went wrong in each is the
+argument for the design of the next.
 
-This thesis poses a single quantitative question:
+### v0 — frozen oracle over a GMM (`src/generate_simulation.py`)
 
-> Given a model trained on a source distribution, how far can the target distribution drift before active adaptation on new data can no longer recover the lost performance?
+Embeddings are drawn from a Gaussian mixture; labels come from a `RandomOracleNN`, a
+randomly-initialised network that is never trained, applied by `argmax` over its logits. Shift
+is injected by tightening the source dispersion, `sigma_source = base_sigma / max(1, shift)`,
+while the target keeps the full spread.
 
-Real protein data offers no ground-truth control over the magnitude of shift. We therefore construct a fully synthetic (but biologically motivated) universe in which shift is a single tunable scalar, allowing the shift axis to be swept continuously and the recovery threshold to be mapped precisely.
+**Why it cannot show negative transfer.** One global oracle labels both source and target, so
+`P(y|x)` is identical everywhere — pure covariate shift with a perfectly consistent labelling
+function. The source is a lower-variance subset of the same manifold, so no decision boundary is
+right for the source and wrong for the target. Adaptation can only add information, and target
+performance rises monotonically. Turning the shift knob up makes the source *tighter*, never
+displaced, so no setting of it produces a dip. This is structural, not a tuning problem.
 
----
+### v1 — derangement interpolation (`src/generate_synthetic_precomputed.py`)
 
-## Core Methodology
+Labels become the family index directly, and target centroids interpolate toward a derangement
+of the source centroids, `M_f(d) = (1-d)·C_f + d·C_π(f)`. This does produce a dip. It also
+produces an artifact that invalidates the number the dip was measured to obtain.
 
-We replace a real PLM and real labels with a controllable simulator that preserves the key statistical structure (clustered families, label boundaries, a covariate-shift axis) while keeping every variable reproducible and tunable.
+**The U-shaped ceiling.** The interpolation has no variance correction, so the centroid
+configuration contracts by `sqrt((1-d)² + d²)`. At `d=1` the centroid set is the source set
+permuted, which is isometric to it, so the ceiling returns to its starting value; at `d≈0.5`
+every family sits at a midpoint, classes overlap, and the ceiling craters. Bayes accuracy
+computed from the centroid geometry alone predicts the measured ceilings at `r = 0.993` (σ=4)
+and `0.997` (σ=6), which is how I know the U is geometry rather than training noise. Because
+`r*` was scored against `0.9 × ceiling(d)`, the bar dipped exactly where the ceiling dipped:
+shift distance and target task difficulty were confounded, and `r*(d)` could not separate them.
 
-### 1. The Frozen Oracle (Ground-Truth Labeling)
+**A second problem: the realism was fake.** Real ESM and ESM-C embeddings have a mean
+inter-family gap of roughly one within-family sigma and still classify at macro-F1 0.90. An
+isotropic mixture at that separation ratio caps at 0.18 accuracy. v1 reached 0.93 only by
+inflating separation about sixfold, which papered over the missing anisotropy rather than
+reproducing it.
 
-A `RandomOracleNN` (defined in `src/generate_simulation.py`) is a randomly-initialized, never-trained neural network that maps a 1280-D embedding to one of `n_classes` taxonomic labels via `argmax` over its output logits.
+### v2 — calibrated shift geometry (`src/generate_synthetic_v2.py`)
 
-- It is seeded deterministically, so the same oracle defines the labeling function for both source and target data within a run.
-- Its weights are frozen (Kaiming-initialized hidden layers, L2-normalized final layer, LayerNorm + ReLU between layers).
-- It acts as ground-truth biology: a fixed, complex, non-linear decision surface over embedding space.
+The latent space splits into a **signal subspace** where family identity lives and a
+**nuisance subspace** carrying most of the variance under a power-law spectrum and no label
+information. That one change reproduces "gap ≈ sigma yet F1 ≈ 0.90" and the low effective rank
+of real embeddings at the same time.
 
-Because the oracle is fixed, the label of any point in 1280-D space is determined purely by where the point lands, which is what permits clean injection of covariate shift.
+Shift decomposes into four knobs, each anchored to something measurable on real data:
 
-### 2. The GMM Embedding Universe
-
-Embeddings are drawn from a high-dimensional **Gaussian Mixture Model** representing a synthetic protein landscape:
-
-- `n_families` cluster centroids are scattered through 1280-D space (default `gaussian` topology; `hypercube`, `hypersphere`, and `projection` topologies are also implemented).
-- Family membership is sampled from a **Zipf distribution** (`rank^-1.5`), reproducing the heavy-tailed family-size imbalance seen in real protein databases (a few large families, a long tail of rare ones).
-- Each sample is `centroid + Gaussian noise`, where the noise scale `σ` (`base_sigma`) controls within-family dispersion.
-- The frozen oracle then labels every sampled point.
-
-The landscape is validated by three diagnostics, printed during source generation:
-
-| Diagnostic | Meaning | Target Range |
+| Knob | Meaning | Anchor |
 |---|---|---|
-| Within-family purity | fraction of a family sharing its majority label | 50–70% |
-| Family promiscuity | fraction of families spanning >1 label | 40–60% |
-| Class coverage | average families per class | ~10 |
+| `d` | displacement magnitude, in units of the real bacteria→plants rung | `d_unit_gaps = 1.20` mean gaps, measured |
+| `alpha` | fraction of squared displacement that is a shared direction, so `E[cos(shift_i, shift_j)] = alpha` | the +0.41 to +0.71 measured across the real ladder |
+| `beta` | fraction of the *shared* translation lying in the signal subspace | archaea and plants shift by nearly the same distance (1.16 vs 1.20 gaps) yet differ in zero-shot F1 (0.85 vs 0.61), so distance cannot be the whole story |
+| `target_sigma_inflate` | the only knob that lowers the ceiling | set to reproduce the real ladder's mild decline |
 
-Phase 1 (the oracle grid search) exists to satisfy these targets.
+`alpha = 1` is pure covariate shift, `alpha = 0` pure concept shift.
 
-### 3. Simulating Evolutionary Covariate Shift
+#### The ceiling-invariance rule, and three ways I got it wrong
 
-Shift is injected through the dispersion of the source vs. target distributions, controlled by the scalar `shift_delta` (δ):
+The rule that makes `r*(d)` interpretable: **any family-specific displacement must be an exact
+isometry of the centroid configuration.** If it is not, target task difficulty moves with the
+distance knob and the bar moves again. The shared component is a rigid translation, which
+preserves every pairwise centroid distance exactly. The family-specific component rotates the
+centroid configuration inside the signal subspace, `M = C @ R(θ)ᵀ`, with `θ` solved by bisection
+to hit the requested mean displacement. A rotation is an isometry at every angle, so families
+move relative to the source-trained boundary with no drift in difficulty.
 
-- **Source** data is sampled tightly around centroids: `σ_source = base_sigma / max(1, shift_delta)`. The model trains on a narrow, biased view of each family.
-- **Target** data is sampled at full dispersion: `σ_target = base_sigma`. The target pool and test set explore the broad, true extent of each family, including regions the source model never saw.
-- The target PRNG is offset (`seed + 99999`) so target points are new draws from the same GMM universe, never copies of source points.
+Three designs failed before that one, and each failed in a way worth recording:
 
-A larger `shift_delta` yields a narrower, more biased source, hence a larger gap between what the model learned and the true target distribution, hence more covariate shift to recover from. The empirical magnitude of this gap is measured by the **Wasserstein distance** between source and target features.
+| Attempt | Mechanism | Measured failure |
+|---|---|---|
+| v1 | interpolate toward a derangement of the same centroids | configuration contracts; ceiling craters at `d≈0.5` and returns at `d=1`; 21-point swing |
+| v2a | displace each family by an independent random vector | in high dimensions random vectors are near-orthogonal, so gaps *inflate*, `g → sqrt(g² + 2m²)` (+56% at `d=1`); ceiling pinned at 1.00 for every `d>0` |
+| v2b | interpolate toward a fresh centroid draw with sqrt weights | preserves the distribution of configurations but not the realisation; with 16 families the fresh draw was more separable and the ceiling drifted 0.90 → 0.95 |
+| **v2c (kept)** | rotate the configuration in the signal subspace | mean gap 10.15 and min gap 3.53 hold to all printed digits across every `alpha` and `d` |
 
-### 4. Metrics
+A related trap, also measured: `beta` must apply to the shared translation only. Centroids have
+no nuisance component to begin with, so displacing each family by a *different* nuisance vector
+makes the nuisance subspace label-informative and sends the ceiling to 1.00.
 
-Defined in `src/metrics.py` and logged throughout adaptation:
+**On the phrase "flat ceiling."** The isometry argument fixes the geometry, but the shipped
+default `target_sigma_inflate = 0.15` lowers the ceiling with distance on purpose, so the
+measured ceiling declines monotonically (about 0.850 to 0.707 over `d = 0 → 2`) rather than
+staying flat. The point is that it now moves under one deliberate knob instead of swinging as a
+side effect of the distance axis. Some source comments still say "flat"; read them as
+"invariant under the shift geometry."
 
-- **Cross-Entropy (CE) Loss**: primary training/evaluation objective (`CrossEntropyLoss`).
-- **Macro F1**: class-balanced recovery metric; treats every taxonomic class equally regardless of Zipf imbalance.
-- **Feature Wasserstein Distance**: average per-feature 1-D Wasserstein distance between source and target embeddings; the empirical x-axis against which the recovery threshold is plotted.
+#### Calibration
 
----
+`src/calibrate_v2.py` scores candidate geometries against a five-statistic target box measured
+off real embeddings by `src/measure_real_geometry.py`:
 
-## The Two Workflows
-
-The project is split into two phases: Phase 1 calibrates the simulator, Phase 2 runs the experiments.
-
-### Phase 1: Oracle Grid Search (`src/oracle_search/`)
-
-**Goal:** find the `(oracle architecture, base_sigma)` combination that produces a biologically realistic landscape, i.e. one that hits the purity / promiscuity / coverage targets above. This is a calibration step, run once, and is fully decoupled from the main pipeline.
-
-| File | Role |
-|---|---|
-| `run_tuner.sh` | SLURM array launcher (`--array=0-23`): fans the 24-cell grid across array tasks |
-| `tune_landscape_array.py` | Array worker: maps `$SLURM_ARRAY_TASK_ID` → one `(architecture, sigma)` cell, invokes the simulator, scrapes the diagnostics, writes `tuning_result_<id>.csv` |
-| `run_massive_grid.py` | Standalone multiprocessing sweep over `(seed, shift, n_pool, sigma, ratio)` computing source↔target Wasserstein distances at scale |
-| `generate_simulation.py` | Self-contained copy of the simulator used only by `run_massive_grid.py` (co-located so its `from generate_simulation import …` / `from metrics import …` imports resolve locally) |
-| `metrics.py` | Self-contained metrics copy for the same standalone sweep |
-
-The grid swept by `tune_landscape_array.py`:
-
-```python
-architectures = ["512,256", "1024,512", "2048,1024", "1024,1024,512"]
-sigmas        = [0.1, 0.3, 0.5, 0.7, 1.0, 1.4]   # 4 × 6 = 24 cells
+```
+mean_gap / within_sigma     1.0  – 1.3
+min_gap  / within_sigma     0.28 – 0.38
+effective rank              3    – 11
+per-family sigma spread     1.7  – 2.1
+in-domain macro-F1 at d=0   0.90 – 0.94
 ```
 
-> **Note:** `tune_landscape_array.py` shells out to the canonical `src/generate_simulation.py` (invoked from the project root), so it exercises the same simulator the main pipeline uses. The chosen configuration from this phase (`oracle: "1024,1024,512"`, `base_sigma: 0.5`) is hard-coded into the Phase 2 configs.
+The search is an exhaustive 36-cell grid over `sigma_signal × nuisance_ratio ×
+spectrum_exponent`, scored by relative distance outside the box.
 
-### Phase 2: Main Adaptation Pipeline (`main.nf`)
+> **Known inconsistency, not yet resolved.** `slurm/run_distance_sweep_v2.slurm` pins
+> `sigma_signal 1.5, nuisance_ratio 3.0, spectrum_exponent 2.0`, which is *not* a point in the
+> grid above; the generator's own argparse defaults are `1.15 / 3.3 / 1.6`, which are.
+> `slurm/structure_sweep.slurm` notes the same conflict. Any run of `run_distance_sweep_v2.py`
+> that does not pin these explicitly uses a different universe from the published sweep. Pick
+> one setting and re-label or re-run before the manuscript.
 
-**Goal:** for each point in a large hyperparameter grid, train a source model, generate shifted target data, run an active-adaptation loop, and log the recovery trajectory. This is a Nextflow DAG that fans a combinatorial sweep across SLURM (the Sapelo2 HPC cluster).
+#### What the rebuilt generator showed
 
-The DAG has four processes:
+`r*` rises with distance and depends on the type of shift, across `d = 0 → 1`:
 
-| Nextflow Process | Script Called | Hardware | What it does |
-|---|---|---|---|
-| `GEN_SOURCE` | `src/generate_simulation.py --mode source` | CPU (32 GB) | Build the GMM universe + frozen oracle; emit tight (biased) source embeddings + labels |
-| `TRAIN_SOURCE` | `src/train.py` | GPU (A100) | Train `ProteinFamilyPredictor` (CE + Adam) on source; emit `.pt` weights |
-| `GEN_TARGET` | `src/generate_simulation.py --mode target` | CPU (32 GB) | Draw broad target data; slice into a disjoint adaptation pool and test set |
-| `TEST_ADAPTATION` | `src/${adapt_script}` | GPU (A100) | Load source model; stream pool batches, update weights, re-evaluate on the held-out test set after each eval interval; log the recovery curve |
+| `alpha` | `r*` across `d = 0 → 1` |
+|---|---|
+| 1.0 (pure covariate) | 0, 0, 0.3, 0.3, 0.2 |
+| 0.7 | 0, 0.05, 0.75, 0.75, 1.0 |
+| 0.5 | 0, 0.1, 0.75, 1.0, off-grid |
+| 0.0 (pure concept) | 0, 0.2, 0.75, off-grid, off-grid |
 
-The adaptation optimizer is swappable per experiment via the `adapt_script` config field:
+A displaced but functionally intact sample needs few novel proteins; a function-reorganising one
+needs many.
 
-- `adapt_OGadam.py`: vanilla Adam (`lr = 1e-3`)
-- `adapt_adamw.py`: AdamW + warmup LR scheduler + weight decay (`lr = 5e-5`)
-
-The predictive model itself (`src/model.py`) is a 3-layer MLP: `1280 → hidden_dim → hidden_dim/2 → n_classes`, with BatchNorm, ReLU, and dropout.
+As an out-of-sample check, `beta = 0.15` reproduces three real eukaryote rungs it was not fitted
+on — synthetic zero-shot 0.628 against fungi 0.619, metazoa 0.632, plants 0.610 — while archaea
+needs `beta ≈ 0.02–0.05`, meaning the bacteria→archaea shift is close to orthogonal to function.
 
 ---
 
-## Repository Structure
+## The real-data arm
+
+Swiss-Prot proteins carrying an EC number, embedded with ESM-C `esmc_300m` (960-D) and grouped
+by NCBI lineage. The embedding cache holds **231,285 proteins**; after keeping only those with a
+single unambiguous EC at level 3 and dropping the two remainder groups, the analysis set is
+**216,592 proteins across 15 taxonomic groups, 269 EC classes and 3,237 Pfam families**, with
+group sizes from 1,970 (insecta) to 64,791 (gammaproteobacteria). Source is gammaproteobacteria;
+the 14 other groups are targets.
+
+Two estimators run over it, reported in separate columns and never pooled: a warm-started MLP
+adaptation loop on the 14-target ladder, and a cheaper logistic probe over all 210 ordered pairs.
+
+**The estimator did not survive contact with real data.** `docs/notes/AUG7.md` §3 enumerates six
+failures, each of which would have produced a confident wrong answer on its own. The two that
+generalise beyond this project:
+
+- **The ceiling is not automatically a bar.** Groups differ in size by 40×, so a target-trained
+  "ceiling" model can be *worse* than the source model — the first run had zero-shot 0.240
+  against a ceiling of 0.219, making `r* = 0` trivially. The fix reports three ceilings beside
+  every `r*`: full-reservoir, size-matched, and budget.
+- **`r*` against a full ceiling is not well posed at a small budget.** At a budget of 200 labels
+  every pair was censored — never reaching the bar at any `r` — and at 500 about four in five
+  were. Redefining the bar as budget-relative, the smallest fraction of a budget of P labels
+  that must be target-native to match spending the whole budget on target data, cut censoring at
+  P=500 to 2 pairs in 209, because `r = 1.0` reaches that bar by construction.
+
+**Controls.** Permutation nulls permute taxonomic *groups*, never pairs, since 210 pairs come
+from 15 groups and are not independent. A Pfam→EC majority-vote lookup with no embedding at all
+reaches macro-F1 0.40–0.85, which bounds how much of the result is homology rather than
+function. Within a single Pfam, where homology is constant by construction, ESM-C still
+separates EC classes at 0.95–1.00 and transfers at 0.75–0.83 zero-shot against a label-shuffle
+floor of 0.19–0.29 — though only three Pfam families had enough EC classes on both sides to
+qualify, so that is a thin basis. The number of predictors tested is printed next to every
+correlation table, and censored values are reported both ways.
+
+**Honest limits**, stated at more length in `AUG7.md` §11: ESM-C is the strongest taxonomic
+classifier of the pLMs tested, so this design cannot separate whether `r*` measures biology or
+the embedding; the `_novelty` and `_sizematched` ladder arms produced no output, so the
+synthetic and real halves are adjacent rather than joined; and the BLAST nearest-neighbour
+baseline reports `nan` in the shipped run despite being the comparator the identity analysis is
+framed against.
+
+---
+
+## Repository structure
 
 ```
 tidythesis/
-├── main.nf                       # Phase 2 orchestrator (Nextflow DAG)
-├── main_precomputed.nf           # Phase 2 variant that consumes a precomputed embedding cache
-├── nextflow.config               # Executor profiles: `standard` (local) & `sapelo2` (SLURM)
-├── verify_setup.sh               # Environment sanity check — run this first
-├── run_example_experiment.sh     # Worked example: one experiment, config-driven
-├── run_example_grid_search.sh    # Worked example: Phase 1 oracle grid search
-├── run_quick_test.sh             # Fast smoke test of the simulator
-│
-├── configs/                      # YAML experiment configs (copy template_master.yaml to start)
-│
 ├── src/                          # All Python. Flat on purpose — see note below.
-│   └── oracle_search/            # Phase 1: oracle calibration (decoupled from main.nf)
-│
-├── slurm/                        # Every SLURM batch script, plus their launchers
-│
+│   └── oracle_search/            # v0 oracle calibration (legacy)
+├── slurm/                        # Every SLURM batch script; the current entry points
+├── configs/                      # YAML configs for the legacy Nextflow pipeline
 ├── docs/
-│   ├── notes/                    # Dated lab notes, newest last (JULY22 → AUG4 → AUG6)
-│   └── figures/                  # Generated figures + how to regenerate each one
-│
-├── archive/                      # Superseded analysis/plotting/diagnostics, kept for provenance
-├── requirements.txt              # Pinned Python environment
-├── Dockerfile                    # Containerized PyTorch+CUDA environment
-└── README.md
+│   ├── notes/                    # Dated lab notes, newest last — start here
+│   └── figures/                  # Generated figures + the command to rebuild each one
+├── archive/                      # Superseded analysis and the five legacy experiments
+├── main.nf                       # Legacy Nextflow DAG (drives v0)
+├── main_precomputed.nf           # Legacy variant consuming a precomputed embedding cache
+├── nextflow.config               # Executor profiles
+├── requirements.txt              # Pinned Python environment (see the ESM-C caveat below)
+├── Dockerfile                    # Containerised PyTorch + CUDA environment
+└── verify_setup.sh               # Environment sanity check
 ```
 
-**Where to start reading.** `docs/notes/` is the narrative in date order —
-[`JULY22.md`](docs/notes/JULY22.md) explains why the synthetic generator was rebuilt,
-[`AUG4.md`](docs/notes/AUG4.md) adds a functional (EC) label axis, and
-[`AUG6.md`](docs/notes/AUG6.md) re-runs everything on a 231k-protein dataset and
-overturns two earlier conclusions.
-
 **Why `src/` is flat.** The scripts import one another by bare module name
-(`from measure_ec_geometry import …`), and `main.nf` plus the SLURM jobs invoke them as
-`src/<name>.py`. Splitting them into subpackages would break both, so they stay in one
-directory and are grouped by purpose here instead:
+(`from measure_ec_geometry import …`) and the SLURM jobs invoke them as `src/<name>.py`.
+Subpackages would break both, so they stay in one directory and are grouped here instead:
 
 | Group | Files |
 |---|---|
-| **Pipeline core** (invoked by `main.nf`) | `model.py`, `train.py`, `adapt_OGadam.py`, `metrics.py`, `generate_simulation.py` |
-| **Synthetic generators** | `generate_synthetic_v2.py` (current), `generate_synthetic_precomputed.py` (v1, superseded) |
-| **Real data** | `fetch_sequences.py`, `fetch_ec_swissprot.py`, `fetch_ec_annotations.py`, `build_ec_dataset.py`, `precompute_real_embeddings.py` |
-| **Measuring real geometry** | `measure_real_geometry.py`, `measure_ec_geometry.py`, `measure_ec_damage.py`, `ec_allpairs.py`, `ec_permutations.py`, `beta_diagnosis.py` |
-| **Calibration & scoring** | `calibrate_v2.py`, `oracle_label_space.py`, `realism_scorecard.py`, `compute_validation.py` |
-| **Sweeps** | `run_distance_sweep.py`, `run_distance_sweep_v2.py` |
-| **Plotting** | `plot_*.py`, `make_*.py`, `replot_*.py` |
+| **Synthetic generators** | `generate_synthetic_v2.py` (current), `generate_synthetic_precomputed.py` (v1), `generate_simulation.py` (v0) |
+| **Calibration & realism** | `calibrate_v2.py`, `measure_real_geometry.py`, `realism_scorecard.py`, `compute_validation.py` |
+| **Synthetic sweeps** | `run_distance_sweep_v2.py`, `run_distance_sweep.py` |
+| **Real data** | `fetch_ec_swissprot.py`, `fetch_ec_annotations.py`, `build_ec_dataset.py`, `precompute_real_embeddings.py`, `embed_esm2_ec.py` |
+| **EC recovery threshold** | `ec_recovery_threshold.py`, `ec_rstar_allpairs.py`, `ec_rstar_regress.py` |
+| **Controls** | `ec_permutations.py`, `ec_homology_confound.py`, `ec_seq_identity.py`, `ec_distance_metrics.py` |
+| **Geometry** | `measure_ec_geometry.py`, `measure_ec_damage.py`, `ec_allpairs.py`, `beta_diagnosis.py`, `subspace_experiment.py`, `whitened_geometry.py` |
+| **Model core** | `model.py`, `train.py`, `adapt_OGadam.py`, `adapt_adamw.py`, `metrics.py` |
+| **Plotting** | `plot_*.py`, `make_*.py`, `replot_*.py`, `export_*.py` |
 
-> `archive/` holds exploratory compilation, plotting, and diagnostic scripts that are not invoked by `main.nf` or the oracle search. They are preserved for provenance but are off the execution path.
+Several analysis scripts carry hardcoded `/scratch/lmk04992/...` input paths as module
+constants with no CLI override. They will need editing to run anywhere else.
 
 ---
 
-## Environment Setup
+## Environment setup
 
-The pipeline requires Python 3.11+, PyTorch (CUDA), and Nextflow (for Phase 2). Pick one of the following.
-
-### Option A: Conda (recommended; matches the HPC environment)
+Python 3.11+ and PyTorch with CUDA. **Two conda environments are needed, not one.** `fair-esm`
+(ESM-2) and the EvolutionaryScale SDK (ESM-C) both claim the import name `esm`, so they cannot
+share an environment and `requirements.txt` cannot express both. `requirements.txt` covers the
+analysis stack and ESM-2; ESM-C needs its own environment with the SDK installed.
 
 ```bash
-# Create and activate an environment
 conda create -n plm_dynamics python=3.11 -y
 conda activate plm_dynamics
-
-# Install pinned dependencies
 pip install -r requirements.txt
-
-# Install Nextflow (Phase 2 only): requires Java 11+
-curl -s https://get.nextflow.io | bash
-sudo mv nextflow /usr/local/bin/   # or add to PATH
+bash verify_setup.sh
 ```
 
-### Option B: Docker / Apptainer (reproducible container)
+Container alternative, built on `pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime`:
 
 ```bash
 docker build -t plm-thesis:1.0 .
-# Run interactively:
 docker run --gpus all -it -v "$PWD":/app plm-thesis:1.0 bash
 ```
 
-The image is built on `pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime` and installs `requirements.txt`. On HPC, convert to Apptainer/Singularity as your site requires.
+On Sapelo2 the SLURM scripts load `Miniforge3` and activate prebuilt environments under
+`/work/ah2lab/LiamK/conda_envs/` (`plm_dynamics` for analysis, `plm_esmc` for ESM-C embedding).
+`slurm/ec_seq_identity.slurm` also loads the `BLAST+` module. `mmseqs`, `diamond` and `foldseek`
+are not available on that cluster.
 
-### Option C: Sapelo2 HPC (UGA cluster, as used for the thesis)
-
-The provided SLURM scripts load the cluster modules and activate a pre-built conda env. They expect:
-
-```bash
-module load Miniforge3
-module load Nextflow
-source activate /work/ah2lab/LiamK/conda_envs/plm_dynamics
-```
-
-> **Important:** the `configs/experiment*.yaml` files write to absolute cluster paths
-> (`data_dir: /scratch/...`, `metrics_dir: /work/...`). Edit these to valid paths on your
-> system before running, or override them on the command line with `--data_dir` / `--metrics_dir`.
+> **Reproducibility caveat.** Several scripts seed RNGs from Python's `hash()` of a string,
+> which is salted per process unless `PYTHONHASHSEED` is set, and none of the SLURM scripts sets
+> it. Re-running those draws different splits. Set `PYTHONHASHSEED=0` if you need exact
+> reproduction. Separately, six SLURM scripts use `set -uo pipefail` without `-e` and swallow
+> per-item errors, so a job can exit 0 and print `ALLDONE` with every invocation having failed —
+> check the log body, not the exit status.
 
 ---
 
-## Reproducing the Experiments
+## Running the current work
 
-### Step 0: Sanity-check the simulator (any machine, no GPU needed)
+Everything current runs as a standalone SLURM script from the repository root. Submit with
+`sbatch slurm/<name>.slurm`; chain stages with `--dependency=afterok:<jobid>` rather than
+waiting interactively.
 
-Generate a small source landscape and inspect the diagnostics:
-
-```bash
-cd PLM_GMM_Thesis_Archive
-python src/generate_simulation.py \
-    --mode source --n_train 20000 \
-    --n_families 1000 --n_classes 100 \
-    --oracle_layers "1024,512" --base_sigma 0.5 --seed 42
-```
-
-The Landscape Diagnostics block (purity / promiscuity / coverage) prints to stdout and a
-`landscape_diagnostic_seed_42.png` is saved.
-
-### Step 1: Calibrate the Oracle (Phase 1)
-
-On SLURM (runs all 24 grid cells as an array, then auto-merges):
+**Synthetic arm**
 
 ```bash
-# With an explicit run name: results land in full_grid_results_baseline.csv
-bash submit_oracle_search.sh baseline
-
-# Without a run name: a timestamp suffix is generated automatically
-bash submit_oracle_search.sh
-# → results/oracle_search/full_grid_results_20260604_143021.csv
+python src/calibrate_v2.py                  # 36-cell geometry grid against the real target box
+sbatch slurm/run_distance_sweep_v2.slurm    # 3 arms: distance, alpha, beta (~1,000 adapt runs)
+sbatch slurm/structure_sweep.slurm          # 18 generator configurations × 5 d × 8 r × 3 seeds
 ```
 
-`submit_oracle_search.sh` creates the required output and log directories, submits the 24-task
-SLURM array, and chains a lightweight merge job that concatenates the per-cell CSVs into a single
-`results/oracle_search/full_grid_results_<suffix>.csv` once every array task succeeds. The raw
-per-cell CSVs are deleted automatically after the merge. A distinct run name (or the
-auto-generated timestamp) per submission prevents results from being overwritten.
-
-Locally (run a single grid cell by its task index, 0–23):
+**Real arm**
 
 ```bash
-python src/oracle_search/tune_landscape_array.py 14
+sbatch slurm/run_ec_swissprot_embed.slurm   # ESM-C embedding of the Swiss-Prot EC corpus
+sbatch slurm/ec_rstar_ladder.slurm          # 14-target ladder, 4 budgets, 3 seeds, MLP estimator
+sbatch slurm/ec_rstar_allpairs.slurm        # 210 ordered pairs, logistic probe, 16 workers
 ```
 
-Inspect the per-cell CSVs in `results/oracle_search/raw_csvs/` and pick the `(oracle, sigma)`
-whose diagnostics sit inside the target ranges. (The thesis selection, `"1024,1024,512"` @
-`sigma=0.5`, is already baked into the Phase 2 configs, so Step 2 reproduces the published runs
-directly.)
-
-Optional large-scale Wasserstein characterization:
+**Controls and distances**
 
 ```bash
-sbatch src/oracle_search/run_massive_grid.py   # via a SLURM wrapper, or run directly with python
+sbatch slurm/ec_distances.slurm             # MMD, energy, proxy-A, feature-Wasserstein
+sbatch slurm/ec_seq_identity.slurm          # BLAST identity to the nearest source protein
+sbatch slurm/ec_homology_confound.slurm     # Pfam→EC lookup baseline + within-Pfam recovery
 ```
 
-### Step 2: Run the Main Pipeline (Phase 2)
-
-On SLURM (Sapelo2), each experiment has an isolated launcher with its own work-dir and log:
-
-```bash
-sbatch run_exp1.sh     # Adam baseline,  arch/training sweep
-sbatch run_exp2.sh     # AdamW baseline, arch/training sweep
-sbatch run_exp3.sh     # High-resolution shift sweep (Adam)
-sbatch run_exp4.sh     # Train-size sweep (AdamW)
-sbatch run_exp5.sh     # Base-sigma sweep (AdamW)
-```
-
-Each script runs, under the hood:
-
-```bash
-nextflow -log nextflow_expN.log run main.nf \
-    -profile sapelo2 \
-    -params-file configs/experimentN.yaml \
-    -work-dir work_expN
-```
-
-Locally / single node (use the `standard` profile, which executes processes on the local machine):
-
-```bash
-nextflow run main.nf \
-    -profile standard \
-    -params-file configs/experiment1.yaml \
-    -resume
-```
-
-> `-resume` reuses cached process results, so re-running after a failure or a config tweak only
-> recomputes what changed. The per-experiment scripts use distinct `-work-dir`s so concurrent
-> experiments never collide in the Nextflow cache.
-
-### Step 3: Analyze
-
-Outputs land under `<metrics_dir>/<dataset>/experiments/adapt/` as `adapt_log_*.log` (final
-metrics + Wasserstein) and `*_batch_log.csv` (the full per-batch recovery trajectory). The
-compilation and plotting scripts used to turn these into thesis figures are preserved in
-`archive/` (e.g. `compile_all_exps.py`, `plot_wasserstein.py`).
+Figures regenerate from `src/`; see [`docs/figures/README.md`](docs/figures/README.md) for the
+command behind each one.
 
 ---
 
-## Configuration Reference
+## The legacy Nextflow pipeline
 
-Every run is fully described by a single YAML in `configs/`. Nextflow forms the Cartesian
-product of all array-valued fields, so the number of pipeline runs equals the product of the array
-lengths. `configs/master.yaml` documents every field; the key knobs:
+`main.nf` is a four-process Nextflow DAG (`GEN_SOURCE`, `TRAIN_SOURCE`, `GEN_TARGET`,
+`TEST_ADAPTATION`) that fans a combinatorial sweep across SLURM, with CPU data generation and
+A100 training. It is kept because it ran the original thesis experiments and because the
+`liam_sapelo2` profile is a working example of Nextflow on a cluster with a job-count limit.
 
-| Field | Meaning |
-|---|---|
-| `mode` | `adapt` (active-learning recovery): routing for `main.nf` |
-| `dataset` | output namespace (root directory name for data/models/results) |
-| `data_dir` / `metrics_dir` | absolute output locations (edit for your system) |
-| `n_families`, `n_classes`, `dim` | landscape size (dim = 1280, ESM-2 embedding width) |
-| `oracle_architectures` | hidden-layer spec(s) for the frozen oracle |
-| `base_sigmas` | within-family dispersion σ |
-| `starting_seed`, `num_seeds` | reproducibility seeds (runs `seed … seed+num_seeds-1`) |
-| `n_trains` | source training set sizes |
-| `n_pools` | target adaptation-pool sizes |
-| `shifts` | covariate-shift multipliers `shift_delta` (1.0 = no shift) |
-| `n_test` | held-out disjoint target test-set size |
-| `batch_sizes`, `hidden_dims` | MLP sweep axes |
-| `adapt_script` | which adaptation optimizer to use (`adapt_OGadam.py` / `adapt_adamw.py`) |
-| `adapt_lr`, `base_epochs`, `learning_rate`, `dropout` | training/adaptation hyperparameters |
+**It is not the current pipeline, and it should not be read as one.** Three reasons:
 
-### The Five Thesis Experiments
+1. It calls `src/generate_simulation.py`, the v0 oracle generator, whose structural defect is
+   described above. None of the v2 or EC work runs through it.
+2. It passes the same file as both `--ref_x` and `--source_x`, so the Wasserstein distance it
+   reports is a comparison of the source set with itself. Older text describing that distance as
+   the x-axis for the recovery threshold is wrong twice over: feature-Wasserstein was separately
+   rejected as an x-axis because it is non-monotone in shift distance and blind to label shift.
+3. It drops `--seed` and `--eval_every` when calling the training and adaptation scripts, so
+   raising `num_seeds` varies only the generated data, and the default 500-batch evaluation
+   interval is too coarse to resolve the dip on realistic pool sizes.
 
-| Exp | Optimizer (`adapt_script`) | Primary Sweep | Seeds | n_train | n_pool | shifts | batch / hidden |
-|----|---------------------------|---------------|:----:|---------|--------|--------|----------------|
-| **1** | Adam (`adapt_OGadam`) | architecture × pool | 3 | 1 M | 100k, 500k | 1, 2, 5 | {64,256} × {512,1024} |
-| **2** | AdamW (`adapt_adamw`) | architecture × pool | 3 | 1 M | 100k, 500k | 1, 2, 5 | {64,256} × {512,1024} |
-| **3** | Adam (`adapt_OGadam`) | high-res shift | 4 | 250k | 1 M | 2,3,4,5,6 | 256 × 1024 |
-| **4** | AdamW (`adapt_adamw`) | training-set size | 4 | 50k–500k | 1 M | 2,3,4,5,6 | 256 × 512 |
-| **5** | AdamW (`adapt_adamw`) | dispersion σ | 3 | 500k | 1 M | 1,3,5 | 256 × 512 |
+The five original experiment launchers and their configs are in `archive/legacy_experiments/`.
+To run the DAG anyway:
 
-All five fix the calibrated oracle (`"1024,1024,512"`). Experiments 3–5 widen the pool to 1 M to
-eliminate the data-starvation confound and sample the shift axis densely to resolve the threshold.
-
----
-
-## Outputs & Analysis
-
-For every grid cell, `TEST_ADAPTATION` emits:
-
-- `adapt_log_S{seed}_N{ntrain}_NP{npool}_Shf{shift}_B{batch}_H{hdim}.log`: human-readable
-  log ending with the final Wasserstein distance, test CE, and test Macro F1.
-- `*_batch_log.csv`: the recovery trajectory: `batch_number, samples_seen, train_loss,
-  test_ce, test_f1`, one row per evaluation interval (including the pre-adaptation Batch 0
-  baseline).
-
-The recovery threshold is read off by plotting final test Macro F1 vs. source↔target Wasserstein
-distance: performance holds as shift grows, then collapses past a critical distance, the
-threshold this thesis sets out to identify.
-
----
-
-## Pipeline Architecture Diagram
-
-```mermaid
-graph TD
-    subgraph Config [Experimental Design]
-        CONFIG_ROOT["experimentN.yaml<br/>(Hyperparameter Matrix)"]
-        
-        CONFIG_DATA["Matrix & Data<br/>• Mode: adapt<br/>• Seeds: num_seeds, starting_seed<br/>• Samples: n_trains, n_pools, n_test<br/>• Shifts: shifts array (shift_delta)"] 
-        CONFIG_MODEL["Model & Training<br/>• Optim: batch_sizes, learning_rate, adapt_lr<br/>• Epochs: base_epochs<br/>• Arch: hidden_dims, dropout<br/>• Adapt: adapt_script (Adam / AdamW)"]
-        
-        ORCH["Nextflow Orchestrator<br/>(Parallel cross-product engine)"]
-        
-        CONFIG_ROOT --> CONFIG_DATA
-        CONFIG_ROOT --> CONFIG_MODEL
-        
-        CONFIG_DATA --> ORCH
-        CONFIG_MODEL --> ORCH
-    end
-
-    subgraph Phase1 [Phase 1: Source Distribution P - GEN_SOURCE & TRAIN_SOURCE]
-        GEN_SRC["Generate Source Data<br/>• Tight / biased sampling<br/>• sigma_src = base_sigma / max(1, shift_delta)<br/>• Output: source_X, source_y"]
-        TRAIN["Fit Baseline Model (ProteinFamilyPredictor)<br/>• Loss: CrossEntropyLoss<br/>• Optimizer: Adam<br/>• Epochs: base_epochs · Val: Macro F1"]
-        BASE_MODEL(("Baseline Model<br/>(Source Weights .pt)"))
-        
-        ORCH -->|seed, n_train, shift| GEN_SRC
-        GEN_SRC --> TRAIN
-        TRAIN --> BASE_MODEL
-    end
-
-    subgraph Phase2 [Phase 2: Shifted Target Distribution Q - GEN_TARGET]
-        GEN_TGT["Generate Combined Target Data<br/>• Broad / full-dispersion sampling<br/>• sigma_tgt = base_sigma · PRNG offset seed+99999<br/>• Samples = n_pool + n_test"]
-        SPLIT{"Strict Array Slicing<br/>(Disjoint Sets)"}
-        TGT_POOL[("Adaptation Pool<br/>(indices 0 : n_pool)")]
-        TGT_TEST[("Target Test Set<br/>(indices n_pool : end)")]
-        
-        ORCH -->|seed, n_pool, shift| GEN_TGT
-        GEN_TGT --> SPLIT
-        SPLIT -->|Indices: 0 to n_pool| TGT_POOL
-        SPLIT -->|Indices: n_pool to end| TGT_TEST
-    end
-
-    subgraph Phase3 [Phase 3: Active Adaptation - TEST_ADAPTATION]
-        ADAPT["Active Adaptation Loop<br/>• Load source weights<br/>• Stream pool batches, update model<br/>• Adam (OGadam) or AdamW + warmup<br/>• Test eval at Batch 0 + each eval interval"]
-        
-        BASE_MODEL ---->|Initial weights| ADAPT
-        TGT_POOL --->|Iterative batches| ADAPT
-        TGT_TEST --->|Held-out monitoring| ADAPT
-    end
-
-    subgraph Phase4 [Phase 4: Analysis]
-        RES_FINAL["Final Metrics<br/>(adapt_log_*.log)"]
-        RES_BATCH["Batch-Wise Recovery Trajectory<br/>(*_batch_log.csv)"]
-        METRICS["Metric Definitions:<br/>• CrossEntropy: classification loss<br/>• Macro F1: class-balanced recovery<br/>• Wasserstein: source↔target distance"]
-        PLOTS["Visualizations<br/>• F1 vs Wasserstein (threshold)<br/>• Per-batch Recovery Curves"]
-        
-        ADAPT -->|End of run| RES_FINAL
-        ADAPT -->|Each eval interval| RES_BATCH
-        
-        RES_FINAL --> METRICS
-        RES_BATCH --> METRICS
-        METRICS --> PLOTS
-    end
+```bash
+nextflow run main.nf -profile standard -params-file configs/template_master.yaml -resume
 ```
+
+Only the `liam_sapelo2` profile is complete; the generic `slurm` profile has its queue and
+`beforeScript` commented out and submits jobs with no partition.
 
 ---
 
 ## Citation
-
-If you use this framework, please cite the thesis:
 
 > Liam Kozma. *Identifying the Recovery Threshold for Protein Language Models under Data
 > Distribution Shift.* Master of Science in Statistics Thesis, University of Georgia, 2026.
