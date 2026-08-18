@@ -590,3 +590,84 @@ that. What survives is the within-Pfam result above, on six families rather than
 three: where homology is held constant, the embedding carries function that homology
 search cannot reach. That is the claim the chapter should make, and it is narrower
 than the one the document currently implies.
+
+---
+
+## 11. Zero-label adaptation for function, and two failure modes rather than one
+
+Prompted by a fair objection: the BLAST arm answers a reviewer's baseline question,
+not this project's question. A homology search has no adaptation curve, no labelling
+budget and no composition — there is no `r*` for a lookup table. It is a paragraph,
+not a chapter, and §7 was over-weighted.
+
+The arm that *is* about improving what the model predicts turned out to already
+exist, outside this repository: `/work/ah2lab/LiamK/threshold_lowering/` holds a
+twelve-method study of how to **lower** the recovery threshold — BN recalibration,
+TENT, CORAL, optimal transport, importance weighting, conflict pruning, active
+margin sampling, LP-FT, head-only tuning. Its real-data results are good and
+directly useful. They were measured on **Pfam labels over 16 classes** and had never
+been run on EC.
+
+`src/export_ec_splits.py` emits EC-labelled splits in that study's own file layout
+(source / unlabelled pool / disjoint held-out test, plus `dataset_info.json`), and
+`real_zero_label.py` gained one `--shifts_json` flag so the identical alignment code
+runs against them. Nothing was re-derived. Eleven of the fourteen rungs have enough
+target data for disjoint pool and test sets at these sizes.
+
+**No target labels are used at all.** Mean of three seeds, macro-F1:
+
+| target | clade | K | baseline | CORAL | OT | BN/TENT | ceiling | best Δ |
+|---|---|---|---|---|---|---|---|---|
+| betaproteobacteria | bacteria | 100 | 0.913 | 0.919 | 0.402 | 0.912 | 0.799 | +0.006 |
+| cyanobacteria | bacteria | 74 | 0.771 | 0.796 | 0.192 | 0.779 | 0.886 | +0.025 |
+| epsilonproteobacteria | bacteria | 67 | 0.743 | 0.838 | 0.236 | 0.830 | 0.928 | **+0.095** |
+| alphaproteobacteria | bacteria | 105 | 0.725 | 0.717 | 0.195 | 0.763 | 0.728 | +0.038 |
+| firmicutes | bacteria | 112 | 0.612 | 0.621 | 0.145 | 0.648 | 0.645 | +0.036 |
+| actinobacteria | bacteria | 102 | 0.568 | 0.573 | 0.141 | 0.607 | 0.660 | +0.039 |
+| euryarchaeota | archaea | 70 | 0.348 | 0.452 | 0.067 | 0.416 | 0.720 | **+0.104** |
+| crenarchaeota | archaea | 40 | 0.299 | 0.533 | 0.112 | 0.535 | 0.941 | **+0.236** |
+| ascomycota | eukaryota | 78 | 0.274 | 0.199 | 0.030 | 0.258 | 0.545 | **−0.016** |
+| streptophyta | eukaryota | 88 | 0.200 | 0.159 | 0.029 | 0.180 | 0.594 | **−0.020** |
+| vertebrata | eukaryota | 89 | 0.161 | 0.121 | 0.024 | 0.115 | 0.555 | **−0.040** |
+
+Three things, in order of how much they matter.
+
+**1. Function prediction improves on all eight prokaryotic and archaeal targets with
+no labelled target protein**, and the largest gains are on the hardest rungs —
+crenarchaeota nearly doubles, 0.299 → 0.535. On the easy rungs the gain is small
+because there is little left to recover.
+
+**2. It fails on all three eukaryotic targets**, where every method makes things
+worse. So the set of targets that transfer badly and the set that can be repaired for
+free **are not the same set**. Archaea retain 0.30–0.35 and are highly fixable;
+eukaryotes retain 0.16–0.27 and are not fixable at all. **Two distinct failure modes,
+and only one has a cheap remedy.** Nothing in the project yet explains the
+difference, and a diagnostic that told you which regime you were in *before*
+labelling anything would be the most practically useful result available here — it
+decides which of two remedies to reach for.
+
+**3. Optimal transport is catastrophic on every rung** (0.024–0.402, against
+baselines of 0.16–0.91). That replicates on function labels what the family-label
+study found: OT is the best method on synthetic data and the worst on every real
+shift tested. Whatever the synthetic universe is missing, OT is the method most
+sensitive to it, which makes it a useful probe rather than only a failure.
+
+**Caveat on the ceilings, and it is the familiar one.** The ceiling here is trained on
+1,000 target proteins because the pool doubles as the unlabelled set, so on the easy
+rungs the source model beats it outright — betaproteobacteria reads 0.913 against a
+0.799 ceiling, and alphaproteobacteria and firmicutes are at parity. That is defect
+(a) of AUG7 again. **The absolute deltas above are sound; any "fraction of the
+achievable gap recovered" figure is not**, and will not be until a larger held-out
+ceiling set is emitted separately from the unlabelled pool. That is a twenty-minute
+fix and it should be done before these numbers are quoted as recovery fractions.
+
+### Where this leaves the project
+
+This gives the thesis a second axis alongside `r*`, and a more practical one: not
+only *how much* target labelling you need, but *how much of the requirement can be
+removed without labelling anything*. It is half-built already — the methods existed,
+they were pointed at the wrong labels.
+
+Next on this arm: the full twelve-method sweep on the EC ladder rather than the four
+label-free ones, which would show which methods lower `r*` itself and not merely
+raise the zero-shot score.
