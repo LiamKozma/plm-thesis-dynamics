@@ -64,24 +64,70 @@ def eval_f1(m, X, y, bs=512):
 
 
 def adapt(src, pool_X, pool_y, test_X, test_y, a, seed, num_classes):
+    """Warm-start from the source model and train on the mixed pool.
+
+    REPAIR, 2026-08-18. The original ran a SINGLE pass over the pool, which is
+    defect (b) of AUG7: with a fixed pool size the number of gradient steps is
+    then fixed too, so what the curve measures is the step count and not what is
+    in the pool. Setting --adapt_epochs > 1 runs to convergence with early
+    stopping on a held-out slice of the pool, which is what the real-data
+    estimator (`ec_recovery_threshold.py`) does. --adapt_epochs 1 reproduces the
+    July behaviour exactly, so the two are comparable on the same data.
+    """
     set_seed(seed)
     m = get_model(pool_X.shape[1], num_classes, a.hidden_dim, a.dropout).to(DEVICE)
     m.load_state_dict(src.state_dict())
     opt = torch.optim.Adam(m.parameters(), lr=a.adapt_lr)
     crit = nn.CrossEntropyLoss()
-    Xt, yt = torch.FloatTensor(pool_X), torch.LongTensor(pool_y)
+
+    if a.adapt_epochs <= 1 or a.val_frac <= 0:
+        Xt, yt = torch.FloatTensor(pool_X), torch.LongTensor(pool_y)
+        traj = [(0, eval_f1(m, test_X, test_y))]
+        perm = torch.randperm(len(Xt))
+        seen = 0
+        for b, i in enumerate(range(0, len(Xt), a.adapt_batch_size), 1):
+            idx = perm[i:i + a.adapt_batch_size]
+            m.train()
+            opt.zero_grad()
+            crit(m(Xt[idx].to(DEVICE)), yt[idx].to(DEVICE)).backward()
+            opt.step()
+            seen += len(idx)
+            if b % a.eval_every == 0 or i + a.adapt_batch_size >= len(Xt):
+                traj.append((seen, eval_f1(m, test_X, test_y)))
+        return traj
+
+    # held-out slice of the POOL, never of the target test set
+    rng = np.random.default_rng(seed)
+    order = rng.permutation(len(pool_X))
+    n_val = max(1, int(round(a.val_frac * len(pool_X))))
+    vi, ti = order[:n_val], order[n_val:]
+    if len(ti) < 1:
+        vi, ti = order[:0], order
+    Xtr = torch.FloatTensor(pool_X[ti]); ytr = torch.LongTensor(pool_y[ti])
+
     traj = [(0, eval_f1(m, test_X, test_y))]
-    perm = torch.randperm(len(Xt))
-    seen = 0
-    for b, i in enumerate(range(0, len(Xt), a.adapt_batch_size), 1):
-        idx = perm[i:i + a.adapt_batch_size]
+    best_val, best_state, bad, seen = -1.0, None, 0, 0
+    for ep in range(a.adapt_epochs):
         m.train()
-        opt.zero_grad()
-        crit(m(Xt[idx].to(DEVICE)), yt[idx].to(DEVICE)).backward()
-        opt.step()
-        seen += len(idx)
-        if b % a.eval_every == 0 or i + a.adapt_batch_size >= len(Xt):
-            traj.append((seen, eval_f1(m, test_X, test_y)))
+        perm = torch.randperm(len(Xtr))
+        for i in range(0, len(Xtr), a.adapt_batch_size):
+            idx = perm[i:i + a.adapt_batch_size]
+            opt.zero_grad()
+            crit(m(Xtr[idx].to(DEVICE)), ytr[idx].to(DEVICE)).backward()
+            opt.step()
+            seen += len(idx)
+        v = eval_f1(m, pool_X[vi], pool_y[vi]) if len(vi) else float("nan")
+        traj.append((seen, eval_f1(m, test_X, test_y)))
+        if len(vi) and v > best_val:
+            best_val, bad = v, 0
+            best_state = {k: t.detach().clone() for k, t in m.state_dict().items()}
+        else:
+            bad += 1
+            if bad >= a.adapt_patience:
+                break
+    if best_state is not None:
+        m.load_state_dict(best_state)
+        traj.append((seen, eval_f1(m, test_X, test_y)))
     return traj
 
 
@@ -106,6 +152,19 @@ def main():
     ap.add_argument("--batch_size", type=int, default=256)
     ap.add_argument("--adapt_lr", type=float, default=1e-3)
     ap.add_argument("--adapt_batch_size", type=int, default=32)
+    ap.add_argument("--adapt_epochs", type=int, default=1,
+                    help="1 reproduces the July single-pass behaviour exactly. >1 trains "
+                         "to convergence with early stopping on a held-out slice of the "
+                         "pool, which is what the real-data estimator does and is the "
+                         "repair for defect (b) of AUG7.")
+    ap.add_argument("--adapt_patience", type=int, default=5)
+    ap.add_argument("--val_frac", type=float, default=0.2,
+                    help="fraction of the POOL held out to early-stop on; 0 disables")
+    ap.add_argument("--budget_ceiling", action="store_true",
+                    help="also train a ceiling from scratch on pool_size target points, "
+                         "not n_source. r* against a ceiling trained on 4x the pool's "
+                         "data asks whether a small pool can match a large one, which is "
+                         "defect (d) of AUG7 and is not the composition question.")
     ap.add_argument("--eval_every", type=int, default=1)
     ap.add_argument("--hidden_dim", type=int, default=512)
     ap.add_argument("--dropout", type=float, default=0.1)
@@ -130,14 +189,28 @@ def main():
                       a.ambient_sigma, a.target_sigma_inflate)
 
     # ---- ceiling per (d, alpha): a model trained directly on target ------------
-    ceil = {}
+    ceil, bceil = {}, {}
     for al in A:
         for d in D:
             rng = np.random.default_rng(1000 + int(d * 1000) + int(al * 97))
             tX, ty = draw(rng, a.n_source, d, al, True)
             teX, tey = draw(rng, a.n_test, d, al, True)
             ceil[(d, al)] = eval_f1(train_model(tX, ty, F, a, 0), teX, tey)
-            print(f"  ceiling(d={d}, alpha={al}) = {ceil[(d, al)]:.4f}", flush=True)
+            msg = f"  ceiling(d={d}, alpha={al}) = {ceil[(d, al)]:.4f}"
+            if a.budget_ceiling:
+                # REPAIR, 2026-08-18, defect (d) of AUG7. The ceiling above is
+                # trained on n_source target points while the adaptation pool holds
+                # pool_size of them -- four times fewer at the defaults. Scoring r*
+                # against it asks "can a 1,000-protein pool match a 4,000-protein
+                # model?", and for a large shift the answer is no whatever the
+                # composition is, which censors r* for a reason that has nothing to
+                # do with the shift. This bar is a model trained from scratch on
+                # pool_size target points, so r = 1.0 reaches it by construction and
+                # the number isolates composition from budget.
+                bX, by = draw(rng, a.pool_size, d, al, True)
+                bceil[(d, al)] = eval_f1(train_model(bX, by, F, a, 0), teX, tey)
+                msg += f"   budget_ceiling = {bceil[(d, al)]:.4f}"
+            print(msg, flush=True)
 
     rows, grid = [], {}
     for seed in S:
@@ -180,10 +253,20 @@ def main():
             zs = st.mean([x["zero_shot"] for x in rows
                           if x["distance"] == d and x["alpha"] == al])
             rstar = next((r for r in sorted(R) if fin[r] >= a.recover_at * c), None)
-            thr.append(dict(distance=d, alpha=al, ceiling=round(c, 4),
-                            zero_shot=round(zs, 4),
-                            r_star=(rstar if rstar is not None else float("nan")),
-                            **{f"finalF1_r{r}": round(fin[r], 4) for r in R}))
+            entry = dict(distance=d, alpha=al, ceiling=round(c, 4),
+                         zero_shot=round(zs, 4),
+                         r_star=(rstar if rstar is not None else float("nan")))
+            if a.budget_ceiling and (d, al) in bceil:
+                bc = bceil[(d, al)]
+                # a practitioner never ships a model worse than the one they have,
+                # so doing nothing is one of the options the bar is measured against
+                rstar_b = next((r for r in sorted(R)
+                                if max(zs, fin[r]) >= a.recover_at * bc), None)
+                entry.update(budget_ceiling=round(bc, 4),
+                             r_star_budget=(rstar_b if rstar_b is not None
+                                            else float("nan")))
+            entry.update({f"finalF1_r{r}": round(fin[r], 4) for r in R})
+            thr.append(entry)
     with open(os.path.join(a.outdir, "threshold_vs_distance.csv"), "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(thr[0].keys())); w.writeheader(); w.writerows(thr)
 
