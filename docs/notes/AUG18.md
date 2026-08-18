@@ -473,3 +473,120 @@ your clade definitions, and never inline them.**
 4. **A target-independent dip band** so T1.3 can be asked properly.
 
 Nothing in this note needed a GPU except §5.
+
+---
+
+## 10. The three follow-up runs, same day
+
+Submitted after §1–§9 was written, all complete: `47542345` MLP against BLAST,
+`47542346` the within-Pfam arm widened, `47542347` the synthetic sweep with its
+estimator repaired.
+
+### T3.4 — the estimator repair changes the synthetic result, in both directions
+
+Three arms on identical universes: a July reproduction, the repair, and an α sweep
+under the repair.
+
+| d | zero-shot | ceiling | r* July (single pass) | r* repaired |
+|---|---|---|---|---|
+| 0.00 | 0.922 | 0.923 | 0.0 | 0.0 |
+| 0.25 | 0.859 | 0.912 | 0.0 | 0.0 |
+| 0.50 | 0.610 | 0.903 | 0.75 | **0.5** |
+| 0.75 | 0.268 | 0.881 | 0.75 | **0.5** |
+| 1.00 | 0.054 | 0.888 | **never** | **0.75** |
+| 1.25 | 0.015 | 0.861 | **never** | **1.0** |
+| 1.50 | 0.006 | 0.875 | **never** | **0.75** |
+| 2.00 | 0.001 | 0.832 | **never** | **0.75** |
+
+**The "never recovers beyond d = 0.75" points were artifacts of the single-pass
+adaptation.** With multiple passes and early stopping on a held-out slice of the
+pool, the model recovers at every distance tested. `r*` is also lower everywhere it
+was already defined.
+
+The shape of the law changes with it. As reported, `r*(d)` rose and then diverged;
+repaired, it rises and then **plateaus at 0.75–1.0**. The statement that survives is
+"past about one unit of distance you need roughly three-quarters of your budget from
+the target, and no more than that", not "past 0.75 it is hopeless". The July curve
+was describing its own step budget.
+
+**The α result survives the repair and gets considerably stronger.** This is the
+central synthetic claim — that `r*` depends on the *type* of shift, not its size:
+
+| α | 0.0 (pure concept) | 0.25 | 0.5 | 0.75 | 1.0 (pure covariate) |
+|---|---|---|---|---|---|
+| r* at d = 0.5 | 0.75 | 0.5 | 0.5 | 0.3 | **0.05** |
+| r* at d = 1.0 | 1.0 | 0.75 | 0.75 | 0.75 | **0.1** |
+
+At d = 0.5 the spread is 0.05 against 0.75, a factor of **15**. The README currently
+reports this as "30% against 75%" from the unrepaired sweep, a factor of 2.5. The
+repaired numbers make the claim much sharper, and the ceiling stays between 0.897
+and 0.911 across the whole α row, so the bar is not moving underneath it.
+
+### The within-Pfam defence, widened from 3 Pfams to 6
+
+`--min_n 8` admits three more families (two further ones, `PF01261` and `PF01266`,
+were found but could not afford even a 100-protein budget on the target side).
+
+| Pfam | K | ceiling | zero-shot | shuffled ceiling | shuffled zero-shot | r* (P = 200) |
+|---|---|---|---|---|---|---|
+| `PF00005` ABC transporter | 5 | 0.956 | 0.817 | 0.170 | 0.156 | 0.05 |
+| `PF04055` radical SAM | 5 | 0.926 | 0.722 | 0.185 | 0.175 | 0.20 |
+| `PF00291` PLP-dependent | 4 | 0.810 | **0.486** | 0.215 | 0.214 | **1.0** |
+| `PF00561` α/β hydrolase | 4 | 0.934 | 0.731 | 0.247 | 0.236 | 0.10 |
+| `PF00701` DHDPS | 3 | 0.945 | 0.662 | 0.328 | 0.271 | 0.05 |
+| `PF00266` aminotransferase V | 3 | 0.973 | 0.826 | 0.317 | 0.292 | 0.10 |
+
+**Every one of the six transfers well above its own label-shuffle floor**, so the
+core claim holds on twice the basis: with homology constant by construction, ESM-C
+carries real functional signal that no Pfam→EC lookup could supply.
+
+Two honest corrections to AUG7 §8. The zero-shot range widens *downward*, 0.49–0.83
+rather than 0.75–0.83, because `PF00291` is much weaker than any of the original
+three. And the individual numbers all drift down a little (`PF00005` 0.833 → 0.817,
+`PF04055` 0.812 → 0.722, `PF00701` 0.747 → 0.662) because `--min_n 8` admits rarer
+classes and makes each problem harder. **"The threshold is small" now holds on 5 of
+6 rather than 3 of 3** — `PF00291` needs the entire budget.
+
+### T2.3 revisited — the MLP does not rescue the comparison
+
+The defence offered in §7 was that the comparator was a linear probe. It was, and
+the MLP is better — but not nearly enough.
+
+| target | median identity | MLP ± sd | probe | BLAST | margin | BLAST no-hit |
+|---|---|---|---|---|---|---|
+| vertebrata | 33.9 | 0.393 ± 0.013 | 0.396 | 0.364 | **+0.029** | 0.423 |
+| ascomycota | 34.0 | 0.435 ± 0.018 | 0.447 | 0.532 | −0.097 | 0.411 |
+| insecta | 34.0 | 0.519 ± 0.025 | 0.512 | 0.513 | **+0.006** | 0.387 |
+| crenarchaeota | 34.6 | 0.495 ± 0.012 | 0.440 | 0.770 | **−0.275** | 0.161 |
+| streptophyta | 35.4 | 0.422 ± 0.018 | 0.382 | 0.514 | −0.093 | 0.319 |
+| euryarchaeota | 36.2 | 0.596 ± 0.007 | 0.543 | 0.738 | −0.142 | 0.198 |
+| spirochaetes | 40.6 | 0.908 ± 0.019 | 0.935 | 0.995 | −0.087 | 0.006 |
+| actinobacteria | 42.3 | 0.854 ± 0.015 | 0.819 | 0.938 | −0.084 | 0.046 |
+| bacteroidetes | 42.6 | 0.928 ± 0.008 | 0.907 | 0.965 | −0.038 | 0.025 |
+| epsilonproteobacteria | 45.2 | 0.911 ± 0.017 | 0.863 | 0.980 | −0.069 | 0.015 |
+| firmicutes | 45.4 | 0.872 ± 0.018 | 0.819 | 0.968 | −0.096 | 0.036 |
+| cyanobacteria | 46.3 | 0.849 ± 0.010 | 0.831 | 0.909 | −0.060 | 0.052 |
+| alphaproteobacteria | 50.3 | 0.957 ± 0.011 | 0.929 | 0.988 | −0.031 | 0.015 |
+| betaproteobacteria | 60.9 | 0.988 ± 0.001 | 0.984 | 0.993 | −0.005 | 0.011 |
+| **mean** | | **0.723** | 0.701 | **0.798** | | |
+
+* The MLP beats the probe on 12 of 14, by **+0.022 on the mean**. Real, and small.
+* **BLAST still wins on 12 of 14.** The two exceptions are vertebrata (+0.029, about
+  2 seed standard deviations) and insecta (+0.006, well inside noise). Only
+  vertebrata is arguably a win at all.
+* **There is no identity-dependent crossover.** Spearman between median identity and
+  the MLP-minus-BLAST margin is **+0.191** (n = 14) — no relationship. The tempting
+  story that the embedding takes over in the twilight zone is not supported:
+  crenarchaeota sits at 34.6% identity and is the single worst loss, −0.275.
+* BLAST wins on vertebrata *despite having no hit at all for 42% of the queries*,
+  which score as wrong. That is how large its advantage is where it has hits.
+* The hybrid — best hit where there is one, model prediction where there is not —
+  is the best system, but only just: mean 0.811, ahead of the better of the two by
+  **+0.011** on average and +0.078 at most, winning outright on 9 of 14.
+
+**So the §7 framing stands and the escape route is closed.** At ladder level the
+representation does not beat homology search, and a stronger readout does not change
+that. What survives is the within-Pfam result above, on six families rather than
+three: where homology is held constant, the embedding carries function that homology
+search cannot reach. That is the claim the chapter should make, and it is narrower
+than the one the document currently implies.
